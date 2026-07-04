@@ -1,22 +1,21 @@
-import { Product } from "src/products/entities/product.entity";
-import { AdjustmentType } from "src/shared/enums/adjustmentType.enum";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Product } from 'src/products/entities/product.entity';
+import { AdjustmentType } from 'src/shared/enums/adjustmentType.enum';
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity()
 export class Adjustment {
+  @PrimaryGeneratedColumn()
+  adjustId!: number;
 
-    @PrimaryGeneratedColumn()
-    adjustId!: number
+  @Column()
+  stockChange!: number;
 
-    @Column()
-    stockChange!: number
+  @Column({ type: 'enum', enum: AdjustmentType })
+  adjustmentType!: AdjustmentType;
 
-    @Column({type: "enum", enum: AdjustmentType})
-    adjustmentType!: AdjustmentType
+  @Column()
+  adjustmentDate!: Date;
 
-    @Column()
-    adjustmentDate!: Date
-
-    @ManyToOne(() => Product, product => product.adjustments)
-    product!: Product
+  @ManyToOne(() => Product, (product) => product.adjustments)
+  product!: Product;
 }

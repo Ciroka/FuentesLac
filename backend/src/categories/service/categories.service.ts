@@ -15,21 +15,26 @@ export class CategoriesService {
   constructor(
     @Inject(CATEGORIES_REPOSITORY)
     private readonly categoriesRepository: ICategoryRepository,
-    private readonly productsService: ProductsService
-  ){}
+    private readonly productsService: ProductsService,
+  ) {}
 
-  async findAll(params: QueryParamsCategories): Promise<PaginatedResult<CategoryEntity>> {
-    const {page, limit, order, sortBy, name} = params;
+  async findAll(
+    params: QueryParamsCategories,
+  ): Promise<PaginatedResult<CategoryEntity>> {
+    const { page, limit, order, sortBy, name } = params;
     return this.categoriesRepository.findAll(page, limit, order, sortBy, name);
   }
 
-  async findOneById(id: number): Promise<CategoryEntity>{
+  async findOneById(id: number): Promise<CategoryEntity> {
     const category = await this.categoriesRepository.findOne(id);
     if (!category) throw new NotFoundException('Category no found');
     return category;
   }
 
-  async findAllProducts (id: number, params: QueryParamsProducts): Promise<PaginatedResult<ProductEntity>>{
+  async findAllProducts(
+    id: number,
+    params: QueryParamsProducts,
+  ): Promise<PaginatedResult<ProductEntity>> {
     await this.findOneById(id);
     return this.productsService.findAllByCategory(id, params);
   }
@@ -41,8 +46,10 @@ export class CategoriesService {
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.findOneById(id);
 
-    if (updateCategoryDto.name !== undefined) category.name = updateCategoryDto.name;
-    if (updateCategoryDto.description !== undefined) category.description = updateCategoryDto.description;
+    if (updateCategoryDto.name !== undefined)
+      category.name = updateCategoryDto.name;
+    if (updateCategoryDto.description !== undefined)
+      category.description = updateCategoryDto.description;
 
     return this.categoriesRepository.update(category);
   }

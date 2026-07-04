@@ -8,7 +8,10 @@ import { TypeOrmProductRespository } from './repository/TypeOrmProducts.reposito
 @Module({
   imports: [TypeOrmModule.forFeature([ProductEntity])],
   controllers: [ProductsController],
-  providers: [ProductsService, {provide: PRODUCTS_REPOSITORY, useClass: TypeOrmProductRespository}],
-  exports: [ProductsService]
+  providers: [
+    ProductsService,
+    { provide: PRODUCTS_REPOSITORY, useClass: TypeOrmProductRespository },
+  ],
+  exports: [ProductsService],
 })
 export class ProductsModule {}
