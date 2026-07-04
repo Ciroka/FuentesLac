@@ -1,5 +1,5 @@
 import { Adjustment } from 'src/adjustments/entities/adjustment.entity';
-import { CategoryEntity } from 'src/categories/entities/category.entity';
+import { Category } from 'src/categories/entities/category.entity';
 import { OrdersDetail } from 'src/orders-detail/entities/orders-detail.entity';
 import { SalesDetail } from 'src/sales-detail/entities/sales-detail.entity';
 import { Supplier } from 'src/suppliers/entities/supplier.entity';
@@ -14,7 +14,7 @@ import {
 } from 'typeorm';
 
 @Entity()
-export class ProductEntity {
+export class Product {
   @PrimaryGeneratedColumn()
   id!: number;
 
@@ -39,9 +39,9 @@ export class ProductEntity {
   @Column({ name: 'category_id', nullable: true })
   categoryId?: number;
 
-  @ManyToOne(() => CategoryEntity, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => Category, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'category_id' })
-  category?: CategoryEntity;
+  category?: Category;
 
   @ManyToMany(() => Supplier, (suppliers) => suppliers.products)
   suppliers!: Supplier[];

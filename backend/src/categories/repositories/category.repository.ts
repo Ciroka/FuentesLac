@@ -1,7 +1,7 @@
 import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
-import { CategoryEntity } from '../entities/category.entity';
+import { Category } from '../entities/category.entity';
 import { OrderEnum } from 'src/shared/enums/order.enum';
 import { SortByCategory } from '../enums/sort-by.enum';
 
@@ -14,9 +14,9 @@ export interface ICategoryRepository {
     order: OrderEnum,
     sortBy?: SortByCategory,
     name?: string,
-  ): Promise<PaginatedResult<CategoryEntity>>;
-  findOne(id: number): Promise<CategoryEntity | null>;
-  create(input: CreateCategoryDto): Promise<CategoryEntity>;
-  update(input: UpdateCategoryDto): Promise<CategoryEntity>;
-  remove(category: CategoryEntity): Promise<CategoryEntity>;
+  ): Promise<PaginatedResult<Category>>;
+  findOne(id: number): Promise<Category | null>;
+  create(input: CreateCategoryDto): Promise<Category>;
+  update(input: UpdateCategoryDto): Promise<Category>;
+  remove(category: Category): Promise<Category>;
 }

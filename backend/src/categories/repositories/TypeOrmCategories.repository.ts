@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ICategoryRepository } from './category.repository';
 import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
-import { CategoryEntity } from '../entities/category.entity';
+import { Category } from '../entities/category.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
@@ -12,8 +12,8 @@ import { OrderEnum } from 'src/shared/enums/order.enum';
 @Injectable()
 export class TypeOrmCategoryRepository implements ICategoryRepository {
   constructor(
-    @InjectRepository(CategoryEntity)
-    private readonly categoriesRepository: Repository<CategoryEntity>,
+    @InjectRepository(Category)
+    private readonly categoriesRepository: Repository<Category>,
   ) {}
 
   async findAll(
@@ -22,7 +22,7 @@ export class TypeOrmCategoryRepository implements ICategoryRepository {
     order: OrderEnum,
     sortBy?: SortByCategory,
     name?: string,
-  ): Promise<PaginatedResult<CategoryEntity>> {
+  ): Promise<PaginatedResult<Category>> {
     const query = this.queryBuilder(sortBy, name, order);
     const offset = (page - 1) * limit;
 
@@ -31,7 +31,7 @@ export class TypeOrmCategoryRepository implements ICategoryRepository {
       .skip(offset)
       .getManyAndCount();
 
-    const PaginatedResult: PaginatedResult<CategoryEntity> = {
+    const PaginatedResult: PaginatedResult<Category> = {
       items: products,
       total,
       page,
@@ -40,16 +40,16 @@ export class TypeOrmCategoryRepository implements ICategoryRepository {
 
     return PaginatedResult;
   }
-  async findOne(id: number): Promise<CategoryEntity | null> {
+  async findOne(id: number): Promise<Category | null> {
     return this.categoriesRepository.findOneBy({ id });
   }
-  async create(input: CreateCategoryDto): Promise<CategoryEntity> {
+  async create(input: CreateCategoryDto): Promise<Category> {
     return this.categoriesRepository.save(input);
   }
-  async update(input: UpdateCategoryDto): Promise<CategoryEntity> {
+  async update(input: UpdateCategoryDto): Promise<Category> {
     return this.categoriesRepository.save(input);
   }
-  async remove(category: CategoryEntity): Promise<CategoryEntity> {
+  async remove(category: Category): Promise<Category> {
     return this.categoriesRepository.remove(category);
   }
 

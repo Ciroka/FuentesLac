@@ -8,7 +8,7 @@ import { CreateProductDto } from '../dto/create-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
 import { PRODUCTS_REPOSITORY } from '../repository/product.repository';
 import type { ProductsRepository } from '../repository/product.repository';
-import { ProductEntity } from '../entities/product.entity';
+import { Product } from '../entities/product.entity';
 import { QueryParamsProducts } from '../dto/params-products.dto';
 import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
 
@@ -21,18 +21,18 @@ export class ProductsService {
 
   async findAll(
     params: QueryParamsProducts,
-  ): Promise<PaginatedResult<ProductEntity>> {
+  ): Promise<PaginatedResult<Product>> {
     const { page, limit, order, sortBy, name } = params;
     return this.productsRepository.findAll(page, limit, order, sortBy, name);
   }
 
-  async findOne(id: number): Promise<ProductEntity> {
+  async findOne(id: number): Promise<Product> {
     const product = await this.productsRepository.finById(id);
     if (!product) throw new NotFoundException('Product not Found');
     return product;
   }
 
-  async create(createProductDto: CreateProductDto): Promise<ProductEntity> {
+  async create(createProductDto: CreateProductDto): Promise<Product> {
     if (!createProductDto.salePrice) {
       createProductDto.salePrice =
         createProductDto.costPrice * (1 + createProductDto.marginPercent);

@@ -1,6 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { ProductEntity } from '../entities/product.entity';
+import { Product } from '../entities/product.entity';
 import { Repository } from 'typeorm';
 import { ProductsRepository } from './product.repository';
 import { CreateProductDto } from '../dto/create-product.dto';
@@ -11,8 +11,8 @@ import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
 @Injectable()
 export class TypeOrmProductRespository implements ProductsRepository {
   constructor(
-    @InjectRepository(ProductEntity)
-    private readonly productRepository: Repository<ProductEntity>,
+    @InjectRepository(Product)
+    private readonly productRepository: Repository<Product>,
   ) {}
 
   async findAll(
@@ -22,7 +22,7 @@ export class TypeOrmProductRespository implements ProductsRepository {
     sortBy?: SortByProduct,
     name?: string,
     categoryId?: number,
-  ): Promise<PaginatedResult<ProductEntity>> {
+  ): Promise<PaginatedResult<Product>> {
     const query = this.queryBuilder(sortBy, name, categoryId, order);
     const offset = (page - 1) * limit;
 
@@ -31,7 +31,7 @@ export class TypeOrmProductRespository implements ProductsRepository {
       .skip(offset)
       .getManyAndCount();
 
-    const PaginatedResult: PaginatedResult<ProductEntity> = {
+    const PaginatedResult: PaginatedResult<Product> = {
       items: products,
       total,
       page,
@@ -41,19 +41,19 @@ export class TypeOrmProductRespository implements ProductsRepository {
     return PaginatedResult;
   }
 
-  async finById(id: number): Promise<ProductEntity | null> {
+  async finById(id: number): Promise<Product | null> {
     return this.productRepository.findOneBy({ id });
   }
 
-  async create(input: CreateProductDto): Promise<ProductEntity> {
+  async create(input: CreateProductDto): Promise<Product> {
     return this.productRepository.save(input);
   }
 
-  async update(product: ProductEntity): Promise<ProductEntity> {
+  async update(product: Product): Promise<Product> {
     return this.productRepository.save(product);
   }
 
-  async remove(product: ProductEntity): Promise<ProductEntity> {
+  async remove(product: Product): Promise<Product> {
     return this.productRepository.remove(product);
   }
 
