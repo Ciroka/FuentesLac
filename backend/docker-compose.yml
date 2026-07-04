@@ -1,0 +1,13 @@
+
+services:
+  stockAIDB:
+    image: postgres:alpine
+    env_file:
+      - .env
+    ports:
+      - 5434:5432
+    volumes:
+      - stockAIDB:/var/lib/postgresql/data
+    
+volumes: 
+  stockAIDB:

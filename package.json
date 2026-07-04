@@ -1,0 +1,24 @@
+{
+  "name": "stockai",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "front": "npm run start --prefix front",
+    "preback": "docker compose -f back/docker-compose.yml up -d",
+    "back": "npm run start:dev --prefix back",
+    "start": "concurrently \"npm run front\" \"npm run back\"",
+    "stop": "docker compose -f back/docker-compose.yml down"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "concurrently": "^9.2.0"
+  },
+  "dependencies": {
+    "@nestjs/mapped-types": "*",
+    "class-transformer": "^0.5.1",
+    "class-validator": "^0.15.1"
+  }
+}

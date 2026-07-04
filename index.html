@@ -1,0 +1,619 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LactoStock — Prototipo</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg: #f5f1e7;
+    --panel: #ffffff;
+    --panel-2: #efe8d8;
+    --line: #ddd3ba;
+    --ink: #2c2618;
+    --ink-dim: #877c64;
+    --gold: #a9741e;
+    --gold-soft: #f1e2bd;
+    --green: #4a7455;
+    --green-soft: #e2ecdf;
+    --wax: #a3452f;
+    --wax-soft: #f3e0d9;
+    --mono: 'IBM Plex Mono', 'Courier New', monospace;
+    --serif: 'Fraunces', 'Georgia', serif;
+    --sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+  }
+  @import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,500;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html, body{ height:100%; }
+  body{
+    background: var(--bg);
+    color: var(--ink);
+    font-family: var(--sans);
+    height:100vh;
+    display:flex;
+    flex-direction:column;
+    overflow:hidden;
+  }
+
+  .topbar{
+    display:flex; align-items:center; justify-content:space-between;
+    padding: 16px 30px;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+    flex: 0 0 auto;
+  }
+  .brand{ display:flex; align-items:center; gap:14px; }
+  .brand-mark{
+    width:38px; height:38px; border-radius:50%;
+    background: var(--gold-soft);
+    border: 1.5px solid var(--gold);
+    display:flex; align-items:center; justify-content:center;
+    font-family:var(--serif); font-weight:700; font-size:15px; color: var(--gold);
+    flex-shrink:0;
+  }
+  .brand h1{ font-family:var(--serif); font-size:20px; font-weight:700; letter-spacing:0.2px; color:var(--ink); }
+  .brand span{ display:block; font-family:var(--mono); font-size:10px; color:var(--ink-dim); letter-spacing:1.4px; margin-top:2px;}
+  .topbar-right{ display:flex; align-items:center; gap:20px; font-family:var(--mono); font-size:12px; color:var(--ink-dim);}
+  .live-dot{ width:7px; height:7px; border-radius:50%; background:var(--green); display:inline-block; margin-right:6px; box-shadow:0 0 0 3px var(--green-soft); }
+
+  nav{
+    display:flex; gap:2px; padding: 0 30px; background: var(--panel);
+    border-bottom: 1px solid var(--line); overflow-x:auto;
+    flex: 0 0 auto;
+  }
+  nav button{
+    background:none; border:none; color: var(--ink-dim);
+    font-family: var(--sans); font-weight:600; font-size:13px; letter-spacing:0.2px;
+    padding: 13px 18px; cursor:pointer; position:relative;
+    white-space:nowrap;
+  }
+  nav button .idx{ color: var(--line); margin-right:7px; font-family:var(--mono); font-weight:500; }
+  nav button:hover{ color: var(--ink); }
+  nav button.active{ color: var(--ink); }
+  nav button.active::after{
+    content:''; position:absolute; left:18px; right:18px; bottom:-1px; height:2px; background:var(--gold);
+  }
+  nav button.active .idx{ color:var(--gold); }
+
+  main{
+    flex: 1 1 auto;
+    min-height:0;
+    overflow-y:auto;
+    padding: clamp(14px,2vw,26px);
+    max-width:1400px;
+    width:100%;
+    margin:0 auto;
+  }
+  .view{ display:none; animation: fade .25s ease; height:100%; }
+  .view.active{ display:block; }
+  @keyframes fade{ from{opacity:0; transform:translateY(4px);} to{opacity:1; transform:translateY(0);} }
+
+  .view-header{ margin-bottom:18px; }
+  .view-header h2{ font-family:var(--serif); font-size:24px; font-weight:700; letter-spacing:-0.2px; }
+  .view-header p{ color:var(--ink-dim); font-size:13px; margin-top:4px; }
+
+  .grid{ display:grid; gap:14px; }
+  .grid-4{ grid-template-columns: repeat(4, 1fr); }
+  .grid-2{ grid-template-columns: 2fr 1fr; }
+  .grid-3{ grid-template-columns: repeat(3, 1fr); }
+  @media(max-width:1000px){ .grid-4{grid-template-columns:repeat(2,1fr);} .grid-2{grid-template-columns:1fr;} .grid-3{grid-template-columns:1fr;} }
+  @media(max-width:560px){ .grid-4{grid-template-columns:1fr 1fr;} }
+
+  .card{
+    background: var(--panel);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 18px 20px;
+    box-shadow: 0 1px 2px rgba(44,38,24,0.04);
+    min-width:0;
+  }
+  .card-label{ font-family:var(--mono); font-size:10.5px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:1px; margin-bottom:9px; }
+  .card-value{ font-family:var(--serif); font-size:26px; font-weight:700; color:var(--ink); }
+  .card-delta{ font-family:var(--mono); font-size:11.5px; margin-top:7px; }
+  .up{ color: var(--green); } .down{ color: var(--wax); }
+
+  .panel-title{ font-family:var(--sans); font-weight:600; font-size:13px; color:var(--ink); margin-bottom:14px; display:flex; justify-content:space-between; align-items:center;}
+
+  table{ width:100%; border-collapse:collapse; font-size:13px; table-layout:fixed; }
+  th{ text-align:left; font-family:var(--mono); font-size:10.5px; color:var(--ink-dim); text-transform:uppercase; letter-spacing:0.7px; padding:9px 10px; border-bottom:1.5px solid var(--line); }
+  td{ padding:10px 10px; border-bottom:1px solid var(--line); color:var(--ink); overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  tr:last-child td{ border-bottom:none; }
+  tr:hover td{ background: var(--panel-2); }
+  .num{ font-family:var(--mono); text-align:right; font-variant-numeric: tabular-nums; }
+
+  .tag{ display:inline-block; padding:3px 9px; font-family:var(--mono); font-size:10.5px; letter-spacing:0.4px; text-transform:uppercase; border-radius:20px; border:1px solid; }
+  .tag-ok{ color:var(--green); border-color:var(--green); background: var(--green-soft); }
+  .tag-warn{ color:var(--gold); border-color:var(--gold); background: var(--gold-soft); }
+  .tag-danger{ color:var(--wax); border-color:var(--wax); background: var(--wax-soft); }
+  .tag-in{ color:var(--wax); border-color:var(--wax); background: var(--wax-soft); }
+  .tag-out{ color:var(--green); border-color:var(--green); background: var(--green-soft); }
+
+  /* stock cell: fixed-width bar + fixed-width number, always aligned */
+  .stock-cell{ display:flex; align-items:center; justify-content:flex-end; gap:9px; white-space:nowrap; }
+  .stockbar{ width:60px; min-width:60px; max-width:60px; height:5px; background: var(--line); border-radius:3px; position:relative; display:block; overflow:hidden; flex-shrink:0;}
+  .stockbar i{ position:absolute; left:0; top:0; bottom:0; display:block; }
+  .stock-num{ font-family:var(--mono); width:46px; min-width:46px; text-align:right; flex-shrink:0; font-variant-numeric: tabular-nums; }
+
+  .search-row{ display:flex; gap:10px; margin-bottom:14px; flex-wrap:wrap; }
+  .search-row input, .search-row select{
+    background: var(--panel); border:1px solid var(--line); color:var(--ink); border-radius:7px;
+    padding:10px 13px; font-family:var(--sans); font-size:13px;
+  }
+  .search-row input{ flex:1; min-width:160px; }
+  .search-row input:focus, .search-row select:focus{ outline:2px solid var(--gold); outline-offset:1px; }
+
+  .prod-card{ background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:16px; box-shadow: 0 1px 2px rgba(44,38,24,0.04); min-width:0;}
+  .prod-card-top{ display:flex; justify-content:space-between; align-items:start; margin-bottom:12px; gap:10px;}
+  .prod-name{ font-family:var(--serif); font-weight:700; font-size:15px; }
+  .prod-cat{ font-family:var(--mono); font-size:10px; color:var(--ink-dim); text-transform:uppercase; margin-top:3px;}
+  .prod-stock{ font-family:var(--serif); font-size:21px; font-weight:700; text-align:right; flex-shrink:0;}
+  .prod-stock small{ display:block; font-size:9.5px; color:var(--ink-dim); font-weight:400; font-family:var(--mono); text-transform:uppercase;}
+  .prod-stockbar{ width:100%; height:5px; background:var(--line); border-radius:3px; overflow:hidden; margin-top:10px; }
+  .prod-stockbar i{ display:block; height:100%; }
+  .prov-list{ margin-top:12px; padding-top:12px; border-top:1px solid var(--line); display:flex; flex-wrap:wrap; gap:6px; }
+  .prov-chip{ font-family:var(--mono); font-size:10.5px; color:var(--ink-dim); border:1px solid var(--line); border-radius:20px; padding:3px 9px; background:var(--panel-2);}
+
+  .chart-box{ position:relative; width:100%; height:230px; }
+  .chart-box canvas{ width:100% !important; height:100% !important; }
+
+  .prov-card{ background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:18px; box-shadow: 0 1px 2px rgba(44,38,24,0.04); display:flex; flex-direction:column; gap:10px; min-width:0;}
+  .prov-card-top{ display:flex; justify-content:space-between; align-items:start; gap:10px;}
+  .prov-name{ font-family:var(--serif); font-weight:700; font-size:16px; }
+  .prov-rubro{ font-family:var(--mono); font-size:10px; color:var(--ink-dim); text-transform:uppercase; margin-top:3px;}
+  .prov-contact{ font-family:var(--mono); font-size:12.5px; color:var(--ink); display:flex; flex-direction:column; gap:5px; padding-top:10px; border-top:1px solid var(--line);}
+  .prov-contact a{ color:var(--ink); text-decoration:none; }
+  .prov-contact a:hover{ color:var(--gold); }
+  .prov-contact span.ico{ color:var(--ink-dim); display:inline-block; width:16px; }
+  .prov-insumos{ display:flex; flex-wrap:wrap; gap:6px; }
+
+  ::-webkit-scrollbar{ height:6px; width:6px; }
+  ::-webkit-scrollbar-thumb{ background:var(--line); border-radius:4px;}
+
+  @media(max-width:640px){
+    .topbar{ padding:12px 16px; }
+    .brand h1{ font-size:17px; }
+    nav{ padding:0 10px; }
+    nav button{ padding:11px 12px; font-size:12px; }
+    main{ padding:12px; }
+    table{ table-layout:auto; }
+  }
+</style>
+</head>
+<body>
+
+<div class="topbar">
+  <div class="brand">
+    <div class="brand-mark">FL</div>
+    <div>
+      <h1>Fuente Lac</h1>
+      <span>GESTIÓN DE PRODUCCIÓN QUESERA</span>
+    </div>
+  </div>
+  <div class="topbar-right">
+    <span id="clock" style="font-size: 18px; font-family: var(--serif); word-spacing: 5px;"></span>
+  </div>
+</div>
+
+<nav>
+  <button class="active" data-view="dashboard"><span class="idx">01</span>Dashboard</button>
+  <button data-view="insumos"><span class="idx">02</span>Insumos</button>
+  <button data-view="productos"><span class="idx">03</span>Productos</button>
+  <button data-view="movimientos"><span class="idx">04</span>Movimientos</button>
+  <button data-view="proveedores"><span class="idx">05</span>Proveedores</button>
+</nav>
+
+<main>
+
+  <!-- ============ DASHBOARD ============ -->
+  <section class="view active" id="view-dashboard">
+    <div class="view-header">
+      <h2>Producción mensual</h2>
+      <p>Unidades producidas por producto y el gasto en insumos asociado — junio 2026</p>
+    </div>
+
+    <div class="grid grid-4" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="card-label">Producción total</div>
+        <div class="card-value">3.870 u</div>
+        <div class="card-delta up">▲ 6.4% vs. mayo</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Gasto en insumos</div>
+        <div class="card-value">$8,14M</div>
+        <div class="card-delta down">▲ 4.5% vs. mayo</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Costo prom. / unidad</div>
+        <div class="card-value">$2.103</div>
+        <div class="card-delta up">▼ 2.1% vs. mayo</div>
+      </div>
+      <div class="card">
+        <div class="card-label">Insumos bajo mínimo</div>
+        <div class="card-value" style="color:var(--wax)">4</div>
+        <div class="card-delta" style="color:var(--ink-dim)">de 12 insumos activos</div>
+      </div>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="panel-title">Producción por producto (u.) — últimos 6 meses</div>
+        <div class="chart-box"><canvas id="chartProduccion"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="panel-title">Gasto de insumos por producto (junio)</div>
+        <div class="chart-box"><canvas id="chartGastoPie"></canvas></div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="panel-title">Detalle producción vs. gasto — junio 2026</div>
+      <table>
+        <thead><tr><th>Producto</th><th class="num">Unid. producidas</th><th class="num">Gasto insumos</th><th class="num">Costo/unidad</th><th class="num">Margen est.</th></tr></thead>
+        <tbody id="tblProdGasto"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ INSUMOS ============ -->
+  <section class="view" id="view-insumos">
+    <div class="view-header">
+      <h2>Insumos</h2>
+      <p>Materia prima, fermentos y envases utilizados en la elaboración de quesos</p>
+    </div>
+    <div class="search-row">
+      <input type="text" placeholder="Buscar insumo…" id="searchInsumo">
+      <select id="filterInsumo">
+        <option value="">Todas las categorías</option>
+        <option>Materia prima</option>
+        <option>Fermentación</option>
+        <option>Envases</option>
+        <option>Ferretería</option>
+      </select>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>Insumo</th><th>Categoría</th><th>Proveedor</th>
+          <th class="num">Stock actual</th><th class="num">Stock mínimo</th>
+          <th class="num">Precio unit.</th><th>Estado</th>
+        </tr></thead>
+        <tbody id="tblInsumos"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ PRODUCTOS ============ -->
+  <section class="view" id="view-productos">
+    <div class="view-header">
+      <h2>Productos</h2>
+      <p>Stock restante por queso terminado y proveedores asociados a sus insumos</p>
+    </div>
+    <div class="grid grid-3" id="gridProductos"></div>
+  </section>
+
+  <!-- ============ MOVIMIENTOS ============ -->
+  <section class="view" id="view-movimientos">
+    <div class="view-header">
+      <h2>Movimientos</h2>
+      <p>Gasto de insumos (consumo) y ventas de quesos (salidas)</p>
+    </div>
+
+    <div class="grid grid-2" style="margin-bottom:14px;">
+      <div class="card">
+        <div class="panel-title">Gasto de insumos vs. ingresos por venta — últimos 6 meses</div>
+        <div class="chart-box"><canvas id="chartMovimientos"></canvas></div>
+      </div>
+      <div class="card">
+        <div class="card-label">Balance del mes</div>
+        <div class="card-value" style="color:var(--green)">+$4,17M</div>
+        <div class="card-delta" style="color:var(--ink-dim); margin-top:12px;">Ingresos por venta</div>
+        <div class="card-value" style="font-size:19px;">$12,31M</div>
+        <div class="card-delta" style="color:var(--ink-dim); margin-top:12px;">Gasto en insumos</div>
+        <div class="card-value" style="font-size:19px; color:var(--wax)">$8,14M</div>
+      </div>
+    </div>
+
+    <div class="search-row">
+      <input type="text" placeholder="Buscar por insumo, producto o proveedor…" id="searchMov">
+      <select id="filterMov">
+        <option value="">Todos los tipos</option>
+        <option value="in">Consumo de insumo</option>
+        <option value="out">Venta de producto</option>
+      </select>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr><th>Fecha</th><th>Tipo</th><th>Detalle</th><th>Referencia</th><th class="num">Cantidad</th><th class="num">Monto</th></tr></thead>
+        <tbody id="tblMovimientos"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ============ PROVEEDORES ============ -->
+  <section class="view" id="view-proveedores">
+    <div class="view-header">
+      <h2>Proveedores</h2>
+      <p>Contactos y rubros de los proveedores habituales de insumos</p>
+    </div>
+    <div class="search-row">
+      <input type="text" placeholder="Buscar proveedor o insumo…" id="searchProv">
+    </div>
+    <div class="grid grid-3" id="gridProveedores"></div>
+  </section>
+
+</main>
+
+<script>
+// ---------- reloj ----------
+function tick(){
+  document.getElementById('clock').textContent = new Date().toLocaleString('es-AR');
+}
+tick(); setInterval(tick, 1000);
+
+// ---------- nav ----------
+document.querySelectorAll('nav button').forEach(btn=>{
+  btn.addEventListener('click', ()=>{
+    document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
+    document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+    btn.classList.add('active');
+    document.getElementById('view-'+btn.dataset.view).classList.add('active');
+  });
+});
+
+// ---------- datos mock ----------
+const productos = [
+  {nombre:'Queso Cremoso x1kg', cat:'Pasta blanda', stock: 860, min: 250, insumos:['Leche cruda','Cuajo líquido','Sal fina'], proveedores:['Tambo San Isidro','QuimLac']},
+  {nombre:'Queso Sardo x1kg', cat:'Pasta dura', stock: 210, min: 150, insumos:['Leche cruda','Cultivo láctico','Cera para queso'], proveedores:['Tambo San Isidro','Envasur']},
+  {nombre:'Queso en Hebras 500g', cat:'Hilado fresco', stock: 70, min: 120, insumos:['Leche cruda','Cloruro de calcio','Envase al vacío'], proveedores:['Tambo San Isidro','EnvaTech']},
+  {nombre:'Provolone Ahumado x1kg', cat:'Ahumado', stock: 340, min: 100, insumos:['Leche cruda','Humo líquido','Cera para queso'], proveedores:['Lácteos del Centro','Envasur']},
+  {nombre:'Queso Port Salut x1kg', cat:'Pasta semidura', stock: 480, min: 180, insumos:['Leche cruda','Cultivo láctico','Envase al vacío'], proveedores:['Tambo San Isidro','EnvaTech']},
+  {nombre:'Ricotta 500g', cat:'Fresco', stock: 55, min: 130, insumos:['Leche cruda','Ácido cítrico','Envase al vacío'], proveedores:['Lácteos del Centro','EnvaTech']},
+];
+
+const insumos = [
+  {nombre:'Leche cruda', cat:'Materia prima', prov:'Tambo San Isidro', stock: 4200, min: 1000, precio: 320},
+  {nombre:'Cuajo líquido', cat:'Fermentación', prov:'QuimLac', stock: 45, min: 60, precio: 5400},
+  {nombre:'Cultivo láctico (fermento)', cat:'Fermentación', prov:'QuimLac', stock: 38, min: 50, precio: 6100},
+  {nombre:'Cloruro de calcio', cat:'Fermentación', prov:'QuimLac', stock: 90, min: 40, precio: 1800},
+  {nombre:'Ácido cítrico', cat:'Fermentación', prov:'QuimLac', stock: 60, min: 40, precio: 1450},
+  {nombre:'Sal fina', cat:'Materia prima', prov:'Lácteos del Centro', stock: 780, min: 200, precio: 190},
+  {nombre:'Humo líquido', cat:'Materia prima', prov:'Lácteos del Centro', stock: 22, min: 25, precio: 3900},
+  {nombre:'Cera para queso (roja)', cat:'Envases', prov:'Envasur', stock: 310, min: 150, precio: 980},
+  {nombre:'Envase al vacío', cat:'Envases', prov:'EnvaTech', stock: 2600, min: 800, precio: 65},
+  {nombre:'Etiqueta autoadhesiva', cat:'Envases', prov:'Envasur', stock: 5200, min: 1000, precio: 18},
+  {nombre:'Molde plástico p/queso', cat:'Ferretería', prov:'MetalQuesera', stock: 15, min: 20, precio: 3200},
+  {nombre:'Aceite lubricante prensa', cat:'Ferretería', prov:'MetalQuesera', stock: 28, min: 25, precio: 2600},
+];
+
+const proveedores = [
+  {nombre:'Tambo San Isidro', rubro:'Materia prima láctea', telefono:'+54 9 353 412-5588', email:'ventas@tambosanisidro.com.ar', insumos:['Leche cruda']},
+  {nombre:'QuimLac', rubro:'Fermentos y aditivos', telefono:'+54 9 351 664-2210', email:'pedidos@quimlac.com.ar', insumos:['Cuajo líquido','Cultivo láctico (fermento)','Cloruro de calcio','Ácido cítrico']},
+  {nombre:'Lácteos del Centro', rubro:'Materia prima e insumos varios', telefono:'+54 9 358 507-9931', email:'contacto@lacteosdelcentro.com.ar', insumos:['Sal fina','Humo líquido']},
+  {nombre:'Envasur', rubro:'Envases y rotulado', telefono:'+54 9 351 220-4467', email:'info@envasur.com.ar', insumos:['Cera para queso (roja)','Etiqueta autoadhesiva']},
+  {nombre:'EnvaTech', rubro:'Envases al vacío', telefono:'+54 9 341 615-3302', email:'ventas@envatech.com.ar', insumos:['Envase al vacío']},
+  {nombre:'MetalQuesera', rubro:'Ferretería y repuestos', telefono:'+54 9 351 809-7745', email:'taller@metalquesera.com.ar', insumos:['Molde plástico p/queso','Aceite lubricante prensa']},
+];
+
+function stockStatus(stock, min){
+  if(stock < min) return {tag:'tag-danger', label:'CRÍTICO', color:'var(--wax)'};
+  if(stock < min*1.3) return {tag:'tag-warn', label:'BAJO', color:'var(--gold)'};
+  return {tag:'tag-ok', label:'OK', color:'var(--green)'};
+}
+
+// ---------- tabla insumos ----------
+function renderInsumos(filterText='', cat=''){
+  const tbody = document.getElementById('tblInsumos');
+  tbody.innerHTML = '';
+  insumos
+    .filter(i => i.nombre.toLowerCase().includes(filterText.toLowerCase()))
+    .filter(i => !cat || i.cat === cat)
+    .forEach(i=>{
+      const st = stockStatus(i.stock, i.min);
+      const pct = Math.min(100, (i.stock/(i.min*2))*100);
+      const tr = document.createElement('tr');
+      tr.innerHTML = `
+        <td><strong>${i.nombre}</strong></td>
+        <td>${i.cat}</td>
+        <td>${i.prov}</td>
+        <td class="num">
+          <div class="stock-cell">
+            <span class="stockbar"><i style="width:${pct}%; background:${st.color}"></i></span>
+            <span class="stock-num">${i.stock.toLocaleString('es-AR')}</span>
+          </div>
+        </td>
+        <td class="num">${i.min.toLocaleString('es-AR')}</td>
+        <td class="num">$${i.precio.toLocaleString('es-AR')}</td>
+        <td><span class="tag ${st.tag}">${st.label}</span></td>
+      `;
+      tbody.appendChild(tr);
+    });
+}
+document.getElementById('searchInsumo').addEventListener('input', e=>renderInsumos(e.target.value, document.getElementById('filterInsumo').value));
+document.getElementById('filterInsumo').addEventListener('change', e=>renderInsumos(document.getElementById('searchInsumo').value, e.target.value));
+renderInsumos();
+
+// ---------- productos ----------
+function renderProductos(){
+  const grid = document.getElementById('gridProductos');
+  grid.innerHTML = '';
+  productos.forEach(p=>{
+    const st = stockStatus(p.stock, p.min);
+    const pct = Math.min(100, (p.stock/(p.min*2))*100);
+    const card = document.createElement('div');
+    card.className = 'prod-card';
+    card.innerHTML = `
+      <div class="prod-card-top">
+        <div>
+          <div class="prod-name">${p.nombre}</div>
+          <div class="prod-cat">${p.cat}</div>
+        </div>
+        <div class="prod-stock">${p.stock.toLocaleString('es-AR')}<small>unidades</small></div>
+      </div>
+      <span class="tag ${st.tag}">${st.label} · mín. ${p.min}</span>
+      <div class="prod-stockbar"><i style="width:${pct}%; background:${st.color}"></i></div>
+      <div class="prov-list">
+        ${p.proveedores.map(pr=>`<span class="prov-chip">${pr}</span>`).join('')}
+      </div>
+    `;
+    grid.appendChild(card);
+  });
+}
+renderProductos();
+
+// ---------- tabla dashboard producción/gasto ----------
+const prodGasto = [
+  {nombre:'Queso Cremoso x1kg', unidades: 980, gasto: 1620000},
+  {nombre:'Queso Port Salut x1kg', unidades: 720, gasto: 1780000},
+  {nombre:'Provolone Ahumado x1kg', unidades: 610, gasto: 2050000},
+  {nombre:'Queso Sardo x1kg', unidades: 540, gasto: 1310000},
+  {nombre:'Queso en Hebras 500g', unidades: 620, gasto: 890000},
+  {nombre:'Ricotta 500g', unidades: 400, gasto: 490000},
+];
+function renderTablaProdGasto(){
+  const tbody = document.getElementById('tblProdGasto');
+  tbody.innerHTML = '';
+  prodGasto.forEach(p=>{
+    const costoUnit = p.gasto/p.unidades;
+    const margen = costoUnit*0.38; // mock
+    tbody.innerHTML += `
+      <tr>
+        <td><strong>${p.nombre}</strong></td>
+        <td class="num">${p.unidades.toLocaleString('es-AR')}</td>
+        <td class="num">$${p.gasto.toLocaleString('es-AR')}</td>
+        <td class="num">$${costoUnit.toFixed(0)}</td>
+        <td class="num" style="color:var(--green)">+$${margen.toFixed(0)}</td>
+      </tr>`;
+  });
+}
+renderTablaProdGasto();
+
+// ---------- movimientos ----------
+const movimientos = [
+  {fecha:'01/06', tipo:'out', detalle:'Venta Queso Cremoso x1kg', ref:'Distribuidora Norte', cant:'260 u', monto: 910000},
+  {fecha:'03/06', tipo:'in', detalle:'Consumo Leche cruda', ref:'Tambo San Isidro', cant:'3.200 L', monto: 1024000},
+  {fecha:'05/06', tipo:'out', detalle:'Venta Queso Port Salut x1kg', ref:'Supermercado Vía', cant:'190 u', monto: 741000},
+  {fecha:'08/06', tipo:'in', detalle:'Consumo Cultivo láctico', ref:'QuimLac', cant:'12 kg', monto: 73200},
+  {fecha:'11/06', tipo:'in', detalle:'Consumo Cuajo líquido', ref:'QuimLac', cant:'8 L', monto: 43200},
+  {fecha:'14/06', tipo:'out', detalle:'Venta Provolone Ahumado x1kg', ref:'Kiosco Central', cant:'170 u', monto: 782000},
+  {fecha:'17/06', tipo:'in', detalle:'Consumo Cera para queso', ref:'Envasur', cant:'85 kg', monto: 83300},
+  {fecha:'20/06', tipo:'out', detalle:'Venta Queso Sardo x1kg', ref:'Distribuidora Cba', cant:'145 u', monto: 812000},
+  {fecha:'23/06', tipo:'in', detalle:'Consumo Envase al vacío', ref:'EnvaTech', cant:'4.100 u', monto: 266500},
+  {fecha:'27/06', tipo:'out', detalle:'Venta Ricotta 500g', ref:'Autoservicio Sur', cant:'160 u', monto: 384000},
+];
+function renderMovimientos(filterText='', tipo=''){
+  const tbody = document.getElementById('tblMovimientos');
+  tbody.innerHTML = '';
+  movimientos
+    .filter(m => m.detalle.toLowerCase().includes(filterText.toLowerCase()) || m.ref.toLowerCase().includes(filterText.toLowerCase()))
+    .filter(m => !tipo || m.tipo === tipo)
+    .forEach(m=>{
+      tbody.innerHTML += `
+        <tr>
+          <td>${m.fecha}</td>
+          <td><span class="tag ${m.tipo==='in'?'tag-in':'tag-out'}">${m.tipo==='in'?'Consumo':'Venta'}</span></td>
+          <td>${m.detalle}</td>
+          <td>${m.ref}</td>
+          <td class="num">${m.cant}</td>
+          <td class="num" style="color:${m.tipo==='in'?'var(--wax)':'var(--green)'}">${m.tipo==='in'?'-':'+'}$${m.monto.toLocaleString('es-AR')}</td>
+        </tr>`;
+    });
+}
+document.getElementById('searchMov').addEventListener('input', e=>renderMovimientos(e.target.value, document.getElementById('filterMov').value));
+document.getElementById('filterMov').addEventListener('change', e=>renderMovimientos(document.getElementById('searchMov').value, e.target.value));
+renderMovimientos();
+
+// ---------- proveedores ----------
+function renderProveedores(filterText=''){
+  const grid = document.getElementById('gridProveedores');
+  grid.innerHTML = '';
+  proveedores
+    .filter(p => p.nombre.toLowerCase().includes(filterText.toLowerCase()) || p.insumos.some(i=>i.toLowerCase().includes(filterText.toLowerCase())))
+    .forEach(p=>{
+      const card = document.createElement('div');
+      card.className = 'prov-card';
+      card.innerHTML = `
+        <div class="prov-card-top">
+          <div>
+            <div class="prov-name">${p.nombre}</div>
+            <div class="prov-rubro">${p.rubro}</div>
+          </div>
+        </div>
+        <div class="prov-insumos">
+          ${p.insumos.map(i=>`<span class="prov-chip">${i}</span>`).join('')}
+        </div>
+        <div class="prov-contact">
+          <span><span class="ico">☎</span><a href="tel:${p.telefono.replace(/\s|\+/g,'')}">${p.telefono}</a></span>
+          <span><span class="ico">✉</span><a href="mailto:${p.email}">${p.email}</a></span>
+        </div>
+      `;
+      grid.appendChild(card);
+    });
+}
+document.getElementById('searchProv').addEventListener('input', e=>renderProveedores(e.target.value));
+renderProveedores();
+
+// ---------- charts ----------
+Chart.defaults.color = '#877c64';
+Chart.defaults.font.family = "'Inter', sans-serif";
+Chart.defaults.font.size = 11;
+Chart.defaults.borderColor = '#ddd3ba';
+
+const meses = ['Ene','Feb','Mar','Abr','May','Jun'];
+
+new Chart(document.getElementById('chartProduccion'), {
+  type: 'line',
+  data: {
+    labels: meses,
+    datasets: [
+      {label:'Queso Cremoso', data:[720,780,840,900,940,980], borderColor:'#a9741e', backgroundColor:'transparent', tension:0.3, borderWidth:2.5},
+      {label:'Queso Port Salut', data:[480,520,570,620,680,720], borderColor:'#4a7455', backgroundColor:'transparent', tension:0.3, borderWidth:2.5},
+      {label:'Provolone Ahumado', data:[410,450,480,520,570,610], borderColor:'#a3452f', backgroundColor:'transparent', tension:0.3, borderWidth:2.5},
+    ]
+  },
+  options: {
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{ legend:{ position:'bottom', labels:{boxWidth:10, padding:14} } },
+    scales:{ y:{ grid:{color:'#ece4d0'} }, x:{ grid:{display:false} } }
+  }
+});
+
+new Chart(document.getElementById('chartGastoPie'), {
+  type: 'doughnut',
+  data: {
+    labels: prodGasto.map(p=>p.nombre),
+    datasets: [{
+      data: prodGasto.map(p=>p.gasto),
+      backgroundColor: ['#a9741e','#4a7455','#a3452f','#6f8fa8','#8a7245','#7ca389'],
+      borderColor: '#ffffff',
+      borderWidth: 2
+    }]
+  },
+  options: {
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{ legend:{ position:'bottom', labels:{boxWidth:10, padding:10, font:{size:9.5} } } }
+  }
+});
+
+new Chart(document.getElementById('chartMovimientos'), {
+  type: 'bar',
+  data: {
+    labels: meses,
+    datasets: [
+      {label:'Gasto insumos', data:[6.9,7.2,7.5,7.8,7.95,8.14], backgroundColor:'#a3452f', borderRadius:3},
+      {label:'Ingresos venta', data:[9.8,10.3,10.9,11.4,11.9,12.31], backgroundColor:'#4a7455', borderRadius:3},
+    ]
+  },
+  options: {
+    responsive:true,
+    maintainAspectRatio:false,
+    plugins:{ legend:{ position:'bottom', labels:{boxWidth:10, padding:14} } },
+    scales:{ y:{ grid:{color:'#ece4d0'}, title:{display:true, text:'Millones $'} }, x:{ grid:{display:false} } }
+  }
+});
+</script>
+</body>
+</html>
