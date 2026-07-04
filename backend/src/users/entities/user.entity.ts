@@ -4,7 +4,7 @@ import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class User {
   @PrimaryGeneratedColumn()
-  userId!: number;
+  id!: number;
 
   @Column()
   name!: string;
@@ -16,5 +16,5 @@ export class User {
   hashPassword!: string;
 
   @Column({ type: 'enum', enum: UserRole })
-  userRole!: UserRole;
+  role!: UserRole;
 }

@@ -11,10 +11,10 @@ import {
 @Entity()
 export class Order {
   @PrimaryGeneratedColumn()
-  orderId!: number;
+  id!: number;
 
   @Column()
-  orderDate!: Date;
+  date!: Date;
 
   @Column()
   total!: number;

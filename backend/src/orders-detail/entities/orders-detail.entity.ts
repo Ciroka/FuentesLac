@@ -5,7 +5,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class OrdersDetail {
   @PrimaryGeneratedColumn()
-  ordersDetailId!: number;
+  id!: number;
 
   @Column()
   quantity!: number;

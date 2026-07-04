@@ -5,7 +5,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class Adjustment {
   @PrimaryGeneratedColumn()
-  adjustId!: number;
+  id!: number;
 
   @Column()
   stockChange!: number;
@@ -14,7 +14,7 @@ export class Adjustment {
   adjustmentType!: AdjustmentType;
 
   @Column()
-  adjustmentDate!: Date;
+  date!: Date;
 
   @ManyToOne(() => Product, (product) => product.adjustments)
   product!: Product;

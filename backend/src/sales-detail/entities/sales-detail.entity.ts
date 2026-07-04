@@ -5,7 +5,7 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 @Entity()
 export class SalesDetail {
   @PrimaryGeneratedColumn()
-  salesDetailId!: number;
+  id!: number;
 
   @Column()
   quantity!: number;
@@ -13,7 +13,7 @@ export class SalesDetail {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   subtotal!: number;
 
-  @ManyToOne(() => Sale, (sale) => sale.salesDetails)
+  @ManyToOne(() => Sale, (sale) => sale.details)
   sale!: Sale;
 
   @ManyToOne(() => Product, (product) => product.salesDetails)

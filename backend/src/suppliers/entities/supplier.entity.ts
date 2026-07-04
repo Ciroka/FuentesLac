@@ -12,7 +12,7 @@ import {
 @Entity()
 export class Supplier {
   @PrimaryGeneratedColumn()
-  supplierId!: number;
+  id!: number;
 
   @Column()
   name!: string;

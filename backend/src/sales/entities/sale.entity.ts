@@ -12,10 +12,10 @@ import {
 @Entity()
 export class Sale {
   @PrimaryGeneratedColumn()
-  saleId!: number;
+  id!: number;
 
   @Column()
-  saleDate!: Date;
+  date!: Date;
 
   @Column()
   total!: number;
@@ -24,7 +24,7 @@ export class Sale {
   paymentMethod!: PaymentMethod;
 
   @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.sale)
-  salesDetails!: SalesDetail[];
+  details!: SalesDetail[];
 
   @ManyToOne(() => Client, (client) => client.sales, { nullable: true })
   client!: Client;
