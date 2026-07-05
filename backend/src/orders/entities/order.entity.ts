@@ -1,22 +1,27 @@
-import { OrdersDetail } from "src/orders-detail/entities/orders-detail.entity";
-import { Supplier } from "src/suppliers/entities/supplier.entity";
-import { Column, Entity, ManyToOne, OneToMany, PrimaryGeneratedColumn } from "typeorm";
+import { OrdersDetail } from 'src/orders-detail/entities/orders-detail.entity';
+import { Supplier } from 'src/suppliers/entities/supplier.entity';
+import {
+  Column,
+  Entity,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity()
 export class Order {
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @PrimaryGeneratedColumn()
-    orderId!: number
+  @Column()
+  date!: Date;
 
-    @Column()
-    orderDate!: Date
+  @Column()
+  total!: number;
 
-    @Column()
-    total!: number
+  @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.order)
+  ordersDetails!: OrdersDetail[];
 
-    @OneToMany(() => OrdersDetail, ordersDetails => ordersDetails.order)
-    ordersDetails!: OrdersDetail[]
-
-    @ManyToOne(() => Supplier, supplier => supplier.orders)
-    supplier!: Supplier
+  @ManyToOne(() => Supplier, (supplier) => supplier.orders)
+  supplier!: Supplier;
 }

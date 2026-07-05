@@ -1,4 +1,13 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete, Query } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+  Query,
+} from '@nestjs/common';
 import { ProductsService } from '../service/products.service';
 import { CreateProductDto } from '../dto/create-product.dto';
 import { UpdateProductDto } from '../dto/update-product.dto';
@@ -16,7 +25,9 @@ export class ProductsController {
   }
 
   @Get()
-  async findAll(@Query() params: QueryParamsProducts): Promise<PaginatedResult<ProductResponse>> {
+  async findAll(
+    @Query() params: QueryParamsProducts,
+  ): Promise<PaginatedResult<ProductResponse>> {
     return this.productsService.findAll(params);
   }
 
@@ -26,7 +37,10 @@ export class ProductsController {
   }
 
   @Patch(':id')
-  async update(@Param('id') id: string, @Body() updateProductDto: UpdateProductDto) {
+  async update(
+    @Param('id') id: string,
+    @Body() updateProductDto: UpdateProductDto,
+  ) {
     return await this.productsService.update(+id, updateProductDto);
   }
 

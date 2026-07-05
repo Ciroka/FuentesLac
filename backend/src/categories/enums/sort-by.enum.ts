@@ -1,4 +1,4 @@
 export enum SortByCategory {
-    ID = 'id',
-    NAME = 'name'
+  ID = 'id',
+  NAME = 'name',
 }

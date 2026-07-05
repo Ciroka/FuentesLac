@@ -7,14 +7,18 @@
     "preback": "docker compose -f back/docker-compose.yml up -d",
     "back": "npm run start:dev --prefix back",
     "start": "concurrently \"npm run front\" \"npm run back\"",
-    "stop": "docker compose -f back/docker-compose.yml down"
+    "stop": "docker compose -f back/docker-compose.yml down",
+    "prepare": "husky"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "devDependencies": {
-    "concurrently": "^9.2.0"
+    "@commitlint/cli": "^21.2.0",
+    "@commitlint/config-conventional": "^21.2.0",
+    "concurrently": "^9.2.0",
+    "husky": "^9.1.7"
   },
   "dependencies": {
     "@nestjs/mapped-types": "*",

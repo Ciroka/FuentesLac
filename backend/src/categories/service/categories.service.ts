@@ -3,33 +3,38 @@ import { CreateCategoryDto } from '../dto/create-category.dto';
 import { UpdateCategoryDto } from '../dto/update-category.dto';
 import { CATEGORIES_REPOSITORY } from '../repositories/category.repository';
 import type { ICategoryRepository } from '../repositories/category.repository';
-import { ProductEntity } from 'src/products/entities/product.entity';
+import { Product } from 'src/products/entities/product.entity';
 import { ProductsService } from 'src/products/service/products.service';
 import { QueryParamsCategories } from '../dto/params-categories.dto';
 import { QueryParamsProducts } from 'src/products/dto/params-products.dto';
 import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
-import { CategoryEntity } from '../entities/category.entity';
+import { Category } from '../entities/category.entity';
 
 @Injectable()
 export class CategoriesService {
   constructor(
     @Inject(CATEGORIES_REPOSITORY)
     private readonly categoriesRepository: ICategoryRepository,
-    private readonly productsService: ProductsService
-  ){}
+    private readonly productsService: ProductsService,
+  ) {}
 
-  async findAll(params: QueryParamsCategories): Promise<PaginatedResult<CategoryEntity>> {
-    const {page, limit, order, sortBy, name} = params;
+  async findAll(
+    params: QueryParamsCategories,
+  ): Promise<PaginatedResult<Category>> {
+    const { page, limit, order, sortBy, name } = params;
     return this.categoriesRepository.findAll(page, limit, order, sortBy, name);
   }
 
-  async findOneById(id: number): Promise<CategoryEntity>{
+  async findOneById(id: number): Promise<Category> {
     const category = await this.categoriesRepository.findOne(id);
     if (!category) throw new NotFoundException('Category no found');
     return category;
   }
 
-  async findAllProducts (id: number, params: QueryParamsProducts): Promise<PaginatedResult<ProductEntity>>{
+  async findAllProducts(
+    id: number,
+    params: QueryParamsProducts,
+  ): Promise<PaginatedResult<Product>> {
     await this.findOneById(id);
     return this.productsService.findAllByCategory(id, params);
   }
@@ -41,8 +46,10 @@ export class CategoriesService {
   async update(id: number, updateCategoryDto: UpdateCategoryDto) {
     const category = await this.findOneById(id);
 
-    if (updateCategoryDto.name !== undefined) category.name = updateCategoryDto.name;
-    if (updateCategoryDto.description !== undefined) category.description = updateCategoryDto.description;
+    if (updateCategoryDto.name !== undefined)
+      category.name = updateCategoryDto.name;
+    if (updateCategoryDto.description !== undefined)
+      category.description = updateCategoryDto.description;
 
     return this.categoriesRepository.update(category);
   }
