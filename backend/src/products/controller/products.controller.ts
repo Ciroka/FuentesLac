@@ -8,12 +8,15 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
+
+import { PaginatedResult } from '../../shared/pagination/pagination.type';
+import {
+  CreateProductDto,
+  UpdateProductDto,
+  QueryParamsProducts,
+  ProductResponse,
+} from '../dto';
 import { ProductsService } from '../service/products.service';
-import { CreateProductDto } from '../dto/create-product.dto';
-import { UpdateProductDto } from '../dto/update-product.dto';
-import { QueryParamsProducts } from '../dto/params-products.dto';
-import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
-import { ProductResponse } from '../dto/product-response.dto';
 
 @Controller('products')
 export class ProductsController {

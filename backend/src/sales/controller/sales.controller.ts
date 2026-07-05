@@ -7,9 +7,9 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
+
 import { SalesService } from '../service/sales.service';
-import { CreateSaleDto } from '../dto/create-sale.dto';
-import { UpdateSaleDto } from '../dto/update-sale.dto';
+import { CreateSaleDto, UpdateSaleDto } from '../dto';
 
 @Controller('sales')
 export class SalesController {

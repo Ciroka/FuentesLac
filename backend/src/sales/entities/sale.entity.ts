@@ -1,15 +1,17 @@
-import { Client } from 'src/clients/entities/client.entity';
-import { SalesDetail } from 'src/sales-detail/entities/sales-detail.entity';
-import { PaymentMethod } from 'src/shared/enums/paymentMethod..enum';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+import { PaymentMethod } from '../../shared/enums/paymentMethod..enum';
+import { Client } from '../../clients/entities/client.entity';
+import { SalesDetail } from '../../sales-detail/entities/sales-detail.entity';
+
+@Entity('sales')
 export class Sale {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -20,12 +22,13 @@ export class Sale {
   @Column()
   total!: number;
 
-  @Column({ type: 'enum', enum: PaymentMethod })
+  @Column({ type: 'enum', enum: PaymentMethod, name: 'payment_method' })
   paymentMethod!: PaymentMethod;
 
   @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.sale)
   details!: SalesDetail[];
 
   @ManyToOne(() => Client, (client) => client.sales, { nullable: true })
+  @JoinColumn({ name: 'client_id' })
   client!: Client;
 }

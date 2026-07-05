@@ -1,12 +1,13 @@
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Product } from '../entities/product.entity';
-import { Repository } from 'typeorm';
-import { ProductsRepository } from './product.repository';
-import { CreateProductDto } from '../dto/create-product.dto';
-import { OrderEnum } from 'src/shared/enums/order.enum';
+
+import { PaginatedResult } from '../../shared/pagination/pagination.type';
+import { OrderEnum } from '../../shared/enums/order.enum';
 import { SortByProduct } from '../enums/sort-by.enum';
-import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
+import { CreateProductDto } from '../dto';
+import { ProductsRepository } from './product.repository';
+import { Product } from '../entities/product.entity';
 
 @Injectable()
 export class TypeOrmProductRespository implements ProductsRepository {

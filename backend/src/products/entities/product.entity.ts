@@ -1,8 +1,3 @@
-import { Adjustment } from 'src/adjustments/entities/adjustment.entity';
-import { Category } from 'src/categories/entities/category.entity';
-import { OrdersDetail } from 'src/orders-detail/entities/orders-detail.entity';
-import { SalesDetail } from 'src/sales-detail/entities/sales-detail.entity';
-import { Supplier } from 'src/suppliers/entities/supplier.entity';
 import {
   Column,
   Entity,
@@ -13,7 +8,13 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+import { Adjustment } from '../../adjustments/entities/adjustment.entity';
+import { Category } from '../../categories/entities/category.entity';
+import { OrdersDetail } from '../../orders-detail/entities/orders-detail.entity';
+import { SalesDetail } from '../../sales-detail/entities/sales-detail.entity';
+import { Supplier } from '../../suppliers/entities/supplier.entity';
+
+@Entity('products')
 export class Product {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -21,19 +22,19 @@ export class Product {
   @Column()
   name!: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'sale_price' })
   salePrice!: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'cost_price' })
   costPrice!: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  @Column({ type: 'decimal', precision: 5, scale: 2, name: 'margin_percent' })
   marginPercent!: number;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, name: 'current_stock' })
   currentStock!: number;
 
-  @Column({ default: 0 })
+  @Column({ default: 0, name: 'min_stock' })
   minStock!: number;
 
   @Column({ name: 'category_id', nullable: true })

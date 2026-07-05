@@ -1,14 +1,15 @@
-import { OrdersDetail } from 'src/orders-detail/entities/orders-detail.entity';
-import { Supplier } from 'src/suppliers/entities/supplier.entity';
+import { OrdersDetail } from '../../orders-detail/entities/orders-detail.entity';
+import { Supplier } from '../../suppliers/entities/supplier.entity';
 import {
   Column,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+@Entity('orders')
 export class Order {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -23,5 +24,6 @@ export class Order {
   ordersDetails!: OrdersDetail[];
 
   @ManyToOne(() => Supplier, (supplier) => supplier.orders)
+  @JoinColumn({ name: 'supplier_id' })
   supplier!: Supplier;
 }

@@ -1,36 +1,37 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
-import { ProductsModule } from './products/products.module';
-import { CategoriesModule } from './categories/categories.module';
-import { SuppliersModule } from './suppliers/suppliers.module';
-import { SalesModule } from './sales/sales.module';
-import { OrdersModule } from './orders/orders.module';
-import { AdjustmentsModule } from './adjustments/adjustments.module';
-import { ClientsModule } from './clients/clients.module';
-import { UsersModule } from './users/users.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { SalesDetailModule } from './sales-detail/sales-detail.module';
-import { OrdersDetailModule } from './orders-detail/orders-detail.module';
-import { AuthModule } from './auth/auth.module';
-import { User } from './users/entities/user.entity';
-import { Supplier } from './suppliers/entities/supplier.entity';
-import { Sale } from './sales/entities/sale.entity';
-import { Product } from './products/entities/product.entity';
-import { SalesDetail } from './sales-detail/entities/sales-detail.entity';
-import { Order } from './orders/entities/order.entity';
-import { OrdersDetail } from './orders-detail/entities/orders-detail.entity';
-import { Client } from './clients/entities/client.entity';
-import { Category } from './categories/entities/category.entity';
-import { Adjustment } from './adjustments/entities/adjustment.entity';
+
+import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { ProductionModule, Production } from './production';
+import { ProductionDetailModule, ProductionDetail } from './production-detail';
+import { ProductsModule, Product } from './products';
+import { CategoriesModule, Category } from './categories';
+import { SuppliersModule, Supplier } from './suppliers';
+import { SuppliesModule, Supply } from './supplies';
+import { RecipeModule, Recipe } from './recipe';
+import { RecipeDetailModule, RecipeDetail } from './recipe-detail';
+import { SalesModule, Sale } from './sales';
+import { SalesDetailModule, SalesDetail } from './sales-detail';
+import { OrdersModule, Order } from './orders';
+import { OrdersDetailModule, OrdersDetail } from './orders-detail';
+import { AdjustmentsModule, Adjustment } from './adjustments';
+import { ClientsModule, Client } from './clients';
+import { UsersModule, User } from './users';
+import { AuthModule } from './auth';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     ProductsModule,
+    ProductionModule,
+    ProductionDetailModule,
+    RecipeModule,
+    RecipeDetailModule,
     CategoriesModule,
     SuppliersModule,
+    SuppliesModule,
     SalesModule,
     OrdersModule,
     AdjustmentsModule,
@@ -41,6 +42,7 @@ import { Adjustment } from './adjustments/entities/adjustment.entity';
     AuthModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
+      inject: [ConfigService],
       useFactory: (config: ConfigService) => ({
         type: 'postgres',
         host: config.getOrThrow('POSTGRES_HOST'),
@@ -52,17 +54,21 @@ import { Adjustment } from './adjustments/entities/adjustment.entity';
         entities: [
           User,
           Supplier,
+          Supply,
           Sale,
           Product,
+          Production,
+          ProductionDetail,
           SalesDetail,
           Order,
           OrdersDetail,
           Client,
           Category,
           Adjustment,
+          Recipe,
+          RecipeDetail,
         ],
       }),
-      inject: [ConfigService],
     }),
   ],
   controllers: [AppController],

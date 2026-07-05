@@ -1,13 +1,16 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateCategoryDto } from '../dto/create-category.dto';
-import { UpdateCategoryDto } from '../dto/update-category.dto';
+
+import {
+  CreateCategoryDto,
+  UpdateCategoryDto,
+  QueryParamsCategories,
+} from '../dto';
 import { CATEGORIES_REPOSITORY } from '../repositories/category.repository';
 import type { ICategoryRepository } from '../repositories/category.repository';
-import { Product } from 'src/products/entities/product.entity';
-import { ProductsService } from 'src/products/service/products.service';
-import { QueryParamsCategories } from '../dto/params-categories.dto';
-import { QueryParamsProducts } from 'src/products/dto/params-products.dto';
-import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
+import { Product } from '../../products/entities/product.entity';
+import { ProductsService } from '../../products/service/products.service';
+import { QueryParamsProducts } from '../../products/dto/request/params-products.dto';
+import { PaginatedResult } from '../../shared/pagination/pagination.type';
 import { Category } from '../entities/category.entity';
 
 @Injectable()
