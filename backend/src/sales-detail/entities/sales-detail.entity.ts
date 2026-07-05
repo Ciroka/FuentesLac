@@ -1,4 +1,4 @@
-import { Product } from "src/products/entities/product.entity";
+import { ProductEntity } from "src/products/entities/product.entity";
 import { Sale } from "src/sales/entities/sale.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -17,6 +17,6 @@ export class SalesDetail {
     @ManyToOne(() => Sale, sale => sale.salesDetails)
     sale!: Sale
 
-    @ManyToOne(() => Product, product => product.salesDetails)
-    product!: Product
+    @ManyToOne(() => ProductEntity, product => product.salesDetails)
+    product!: ProductEntity
 }

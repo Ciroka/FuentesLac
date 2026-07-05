@@ -17,13 +17,18 @@ import { AuthModule } from './auth/auth.module';
 import { User } from './users/entities/user.entity';
 import { Supplier } from './suppliers/entities/supplier.entity';
 import { Sale } from './sales/entities/sale.entity';
-import { Product } from './products/entities/product.entity';
+import { ProductEntity } from './products/entities/product.entity';
 import { SalesDetail } from './sales-detail/entities/sales-detail.entity';
 import { Order } from './orders/entities/order.entity';
 import { OrdersDetail } from './orders-detail/entities/orders-detail.entity';
 import { Client } from './clients/entities/client.entity';
-import { Category } from './categories/entities/category.entity';
+import { CategoryEntity } from './categories/entities/category.entity';
 import { Adjustment } from './adjustments/entities/adjustment.entity';
+import { SuppliesModule } from './supplies/supplies.module';
+import { ProductionModule } from './production/production.module';
+import { ProductionDetailModule } from './production-detail/production-detail.module';
+import { RecipeModule } from './recipe/recipe.module';
+import { RecipeDetailModule } from './recipe-detail/recipe-detail.module';
 
 @Module({
   imports: [
@@ -53,16 +58,21 @@ import { Adjustment } from './adjustments/entities/adjustment.entity';
           User, 
           Supplier, 
           Sale, 
-          Product, 
+          ProductEntity, 
           SalesDetail, 
           Order, 
           OrdersDetail,  
           Client, 
-          Category, 
+          CategoryEntity, 
           Adjustment]
       }),
       inject: [ConfigService],
-    })
+    }),
+    SuppliesModule,
+    ProductionModule,
+    ProductionDetailModule,
+    RecipeModule,
+    RecipeDetailModule
   ],
   controllers: [AppController],
   providers: [AppService],

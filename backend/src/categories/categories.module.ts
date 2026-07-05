@@ -6,9 +6,10 @@ import { CategoryEntity } from './entities/category.entity';
 import { ProductsService } from 'src/products/service/products.service';
 import { CATEGORIES_REPOSITORY } from './repositories/category.repository';
 import { TypeOrmCategoryRepository } from './repositories/TypeOrmCategories.repository';
+import { ProductsModule } from 'src/products/products.module';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([CategoryEntity]), ProductsService],
+  imports: [TypeOrmModule.forFeature([CategoryEntity]), ProductsModule],
   controllers: [CategoriesController],
   providers: [CategoriesService, {provide: CATEGORIES_REPOSITORY, useClass: TypeOrmCategoryRepository}],
   exports: []

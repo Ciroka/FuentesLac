@@ -1,4 +1,4 @@
-import { Product } from "src/products/entities/product.entity";
+import { ProductEntity } from "src/products/entities/product.entity";
 import { AdjustmentType } from "src/shared/enums/adjustmentType.enum";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
@@ -17,6 +17,6 @@ export class Adjustment {
     @Column()
     adjustmentDate!: Date
 
-    @ManyToOne(() => Product, product => product.adjustments)
-    product!: Product
+    @ManyToOne(() => ProductEntity, product => product.adjustments)
+    product!: ProductEntity
 }

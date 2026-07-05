@@ -1,5 +1,5 @@
 import { Order } from "src/orders/entities/order.entity";
-import { Product } from "src/products/entities/product.entity";
+import { ProductEntity } from "src/products/entities/product.entity";
 import { Column, Entity, JoinTable, ManyToMany, OneToMany, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
@@ -23,9 +23,9 @@ export class Supplier {
     @Column()
     cuit!: string
 
-    @ManyToMany(() => Product, products => products.suppliers)
+    @ManyToMany(() => ProductEntity, products => products.suppliers)
     @JoinTable()
-    products!: Product[]
+    products!: ProductEntity[]
 
     @OneToMany(() => Order, orders => orders.supplier)
     orders!: Order[]
