@@ -1,4 +1,4 @@
-import { CategoryResponse } from '../../categories/dto/category-response.dto';
+import { CategoryResponse } from '../../../categories/dto';
 
 export interface ProductResponse {
   id: number;

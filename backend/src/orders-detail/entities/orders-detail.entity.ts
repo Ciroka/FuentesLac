@@ -1,8 +1,14 @@
-import { Order } from 'src/orders/entities/order.entity';
-import { Product } from 'src/products/entities/product.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
+import { Order } from '../../orders/entities/order.entity';
+import { Product } from '../../products/entities/product.entity';
 
-@Entity()
+@Entity('orders_details')
 export class OrdersDetail {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -17,5 +23,6 @@ export class OrdersDetail {
   order!: Order;
 
   @ManyToOne(() => Product, (product) => product.ordersDetails)
+  @JoinColumn({ name: 'product_id' })
   product!: Product;
 }

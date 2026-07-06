@@ -1,9 +1,8 @@
-import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
-import { CreateCategoryDto } from '../dto/create-category.dto';
-import { UpdateCategoryDto } from '../dto/update-category.dto';
-import { Category } from '../entities/category.entity';
-import { OrderEnum } from 'src/shared/enums/order.enum';
+import { OrderEnum } from '../../shared/enums/order.enum';
 import { SortByCategory } from '../enums/sort-by.enum';
+import { PaginatedResult } from '../../shared/pagination/pagination.type';
+import { CreateCategoryDto, UpdateCategoryDto } from '../dto';
+import { Category } from '../entities/category.entity';
 
 export const CATEGORIES_REPOSITORY = 'CATEGORY_REPOSITORY';
 

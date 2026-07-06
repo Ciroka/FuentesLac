@@ -1,8 +1,15 @@
-import { Product } from 'src/products/entities/product.entity';
-import { Sale } from 'src/sales/entities/sale.entity';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
+import { Product } from '../../products/entities/product.entity';
+import { Sale } from '../../sales/entities/sale.entity';
+
+@Entity('sales_details')
 export class SalesDetail {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -17,5 +24,6 @@ export class SalesDetail {
   sale!: Sale;
 
   @ManyToOne(() => Product, (product) => product.salesDetails)
+  @JoinColumn({ name: 'product_id' })
   product!: Product;
 }

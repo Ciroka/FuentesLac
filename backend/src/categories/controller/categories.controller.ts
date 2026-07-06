@@ -8,14 +8,17 @@ import {
   Delete,
   Query,
 } from '@nestjs/common';
+
 import { CategoriesService } from '../service/categories.service';
-import { CreateCategoryDto } from '../dto/create-category.dto';
-import { UpdateCategoryDto } from '../dto/update-category.dto';
-import { QueryParamsProducts } from 'src/products/dto/params-products.dto';
-import { Product } from 'src/products/entities/product.entity';
-import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
-import { CategoryResponse } from '../dto/category-response.dto';
-import { QueryParamsCategories } from '../dto/params-categories.dto';
+import {
+  CreateCategoryDto,
+  UpdateCategoryDto,
+  QueryParamsCategories,
+  CategoryResponse,
+} from '../dto';
+import { QueryParamsProducts } from '../../products/dto/request/params-products.dto';
+import { PaginatedResult } from '../../shared/pagination/pagination.type';
+import { Product } from '../../products/entities/product.entity';
 
 @Controller('categories')
 export class CategoriesController {

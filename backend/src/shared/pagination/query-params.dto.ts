@@ -1,6 +1,7 @@
 import { IsEnum, IsInt, IsOptional, IsString, Max, Min } from 'class-validator';
-import { OrderEnum } from '../enums/order.enum';
 import { Type } from 'class-transformer';
+
+import { OrderEnum } from '../enums/order.enum';
 
 export class QueryParams {
   @IsString()
