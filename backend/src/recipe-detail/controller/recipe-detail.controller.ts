@@ -34,9 +34,7 @@ export class RecipeDetailController {
   update(
     @Param('id') id: string,
     @Body() updateRecipeDetailDto: UpdateRecipeDetailDto,
-  ) {
-    return this.recipeDetailService.update(+id, updateRecipeDetailDto);
-  }
+  ) {}
 
   @Delete(':id')
   remove(@Param('id') id: string) {

@@ -7,7 +7,6 @@ import {
   Param,
   Delete,
 } from '@nestjs/common';
-
 import { ProductionService } from '../service/production.service';
 import { CreateProductionDto, UpdateProductionDto } from '../dto';
 
