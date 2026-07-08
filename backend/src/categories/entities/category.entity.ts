@@ -18,6 +18,6 @@ export class Category {
   @OneToMany(() => Product, (products) => products.category)
   products!: Product[];
 
-  @OneToMany(() => Supply, supplies => supplies.category)
+  @OneToMany(() => Supply, (supplies) => supplies.category)
   supplies!: Supply[];
 }

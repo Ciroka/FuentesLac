@@ -3,12 +3,12 @@ import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('recipes')
 export class Recipe {
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column({ nullable: true })
-    description?: string;
+  @Column({ nullable: true })
+  description?: string;
 
-    @OneToMany(() => RecipeDetail, details => details.recipe)
-    details!: RecipeDetail[];
+  @OneToMany(() => RecipeDetail, (details) => details.recipe)
+  details!: RecipeDetail[];
 }

@@ -38,6 +38,6 @@ export class Supplier {
   @OneToMany(() => Order, (orders) => orders.supplier)
   orders!: Order[];
 
-  @OneToMany(() => Supply, supplies => supplies.supplier)
+  @OneToMany(() => Supply, (supplies) => supplies.supplier)
   supplies!: Supply[];
 }

@@ -4,15 +4,15 @@ import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
 
 @Entity('production_details')
 export class ProductionDetail {
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @Column()
-    quantity!: number;
+  @Column()
+  quantity!: number;
 
-    @ManyToOne(() => Production, production => production.details)
-    production!: Production;
+  @ManyToOne(() => Production, (production) => production.details)
+  production!: Production;
 
-    @ManyToOne(() => Product, product => product.productionDetails)
-    product!: Product;
+  @ManyToOne(() => Product, (product) => product.productionDetails)
+  product!: Product;
 }

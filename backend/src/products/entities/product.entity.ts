@@ -39,13 +39,15 @@ export class Product {
   @Column({ default: 0, name: 'min_stock' })
   minStock!: number;
 
-  @ManyToOne(() => Batch, batch => batch.products)
+  @ManyToOne(() => Batch, (batch) => batch.products)
   batch!: Batch;
 
   @Column({ name: 'category_id', nullable: true })
   categoryId?: number;
 
-  @ManyToOne(() => Category, category => category.products, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => Category, (category) => category.products, {
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'category_id' })
   category?: Category;
 
@@ -61,6 +63,9 @@ export class Product {
   @OneToMany(() => Adjustment, (adjustments) => adjustments.product)
   adjustments!: Adjustment[];
 
-  @OneToMany(() => ProductionDetail, productionDetails => productionDetails.product)
+  @OneToMany(
+    () => ProductionDetail,
+    (productionDetails) => productionDetails.product,
+  )
   productionDetails!: ProductionDetail[];
 }

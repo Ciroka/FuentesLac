@@ -1,14 +1,20 @@
 import { ProductionDetail } from 'src/production-detail';
-import { Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('production')
 export class Production {
-    @PrimaryGeneratedColumn()
-    id!: number;
+  @PrimaryGeneratedColumn()
+  id!: number;
 
-    @CreateDateColumn({type: 'timestamptz'})
-    productionDate!: Date;
+  @CreateDateColumn({ type: 'timestamptz' })
+  productionDate!: Date;
 
-    @OneToMany(() => ProductionDetail, details => details.production)
-    details!: ProductionDetail[];
-} 
+  @OneToMany(() => ProductionDetail, (details) => details.production)
+  details!: ProductionDetail[];
+}

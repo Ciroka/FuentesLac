@@ -68,7 +68,7 @@ import { Batch } from './batch/entities/batch.entity';
           Adjustment,
           Recipe,
           RecipeDetail,
-          Batch
+          Batch,
         ],
       }),
     }),
