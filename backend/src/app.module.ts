@@ -19,6 +19,8 @@ import { AdjustmentsModule, Adjustment } from './adjustments';
 import { ClientsModule, Client } from './clients';
 import { UsersModule, User } from './users';
 import { AuthModule } from './auth';
+import { BatchModule } from './batch/batch.module';
+import { Batch } from './batch/entities/batch.entity';
 
 @Module({
   imports: [
@@ -66,9 +68,11 @@ import { AuthModule } from './auth';
           Adjustment,
           Recipe,
           RecipeDetail,
+          Batch
         ],
       }),
     }),
+    BatchModule,
   ],
   controllers: [AppController],
   providers: [AppService],

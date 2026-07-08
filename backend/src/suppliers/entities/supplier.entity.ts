@@ -9,6 +9,7 @@ import {
 
 import { Order } from '../../orders/entities/order.entity';
 import { Product } from '../../products/entities/product.entity';
+import { Supply } from 'src/supplies';
 
 @Entity('suppliers')
 export class Supplier {
@@ -36,4 +37,7 @@ export class Supplier {
 
   @OneToMany(() => Order, (orders) => orders.supplier)
   orders!: Order[];
+
+  @OneToMany(() => Supply, supplies => supplies.supplier)
+  supplies!: Supply[];
 }

@@ -33,6 +33,10 @@ export class CreateProductDto {
   minStock!: number;
 
   @IsNumber()
+  @IsOptional()
+  lote?: number;
+
+  @IsNumber()
   @IsPositive()
   @IsOptional()
   categoryId?: number;

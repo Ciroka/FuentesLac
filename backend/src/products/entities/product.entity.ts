@@ -13,6 +13,8 @@ import { Category } from '../../categories/entities/category.entity';
 import { OrdersDetail } from '../../orders-detail/entities/orders-detail.entity';
 import { SalesDetail } from '../../sales-detail/entities/sales-detail.entity';
 import { Supplier } from '../../suppliers/entities/supplier.entity';
+import { ProductionDetail } from 'src/production-detail';
+import { Batch } from 'src/batch/entities/batch.entity';
 
 @Entity('products')
 export class Product {
@@ -37,10 +39,13 @@ export class Product {
   @Column({ default: 0, name: 'min_stock' })
   minStock!: number;
 
+  @ManyToOne(() => Batch, batch => batch.products)
+  batch!: Batch;
+
   @Column({ name: 'category_id', nullable: true })
   categoryId?: number;
 
-  @ManyToOne(() => Category, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => Category, category => category.products, { onDelete: 'RESTRICT' })
   @JoinColumn({ name: 'category_id' })
   category?: Category;
 
@@ -55,4 +60,7 @@ export class Product {
 
   @OneToMany(() => Adjustment, (adjustments) => adjustments.product)
   adjustments!: Adjustment[];
+
+  @OneToMany(() => ProductionDetail, productionDetails => productionDetails.product)
+  productionDetails!: ProductionDetail[];
 }

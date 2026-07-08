@@ -20,7 +20,7 @@ export class SalesDetail {
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   subtotal!: number;
 
-  @ManyToOne(() => Sale, (sale) => sale.details)
+  @ManyToOne(() => Sale, (sale) => sale.details, { onDelete: 'RESTRICT' })
   sale!: Sale;
 
   @ManyToOne(() => Product, (product) => product.salesDetails)
