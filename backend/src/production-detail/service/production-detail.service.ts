@@ -22,26 +22,32 @@ export class ProductionDetailService {
     if (!detail) throw new NotFoundException('Production detail not found');
     return detail;
   }
-  
-  async findByProduction(productionId: number, manager?: EntityManager): Promise<ProductionDetail[]> {
+
+  async findByProduction(
+    productionId: number,
+    manager?: EntityManager,
+  ): Promise<ProductionDetail[]> {
     return this.detailRepository.findByProduction(productionId);
   }
-  
+
   async create(
     createProductionDetailDto: Partial<ProductionDetail>,
-    manager?: EntityManager
+    manager?: EntityManager,
   ): Promise<ProductionDetail> {
     return this.detailRepository.create(createProductionDetailDto, manager);
   }
 
   async update(
     detail: ProductionDetail,
-    manager?: EntityManager
+    manager?: EntityManager,
   ): Promise<ProductionDetail> {
     return this.detailRepository.update(detail, manager);
   }
 
-  async remove(detail: ProductionDetail, manager?: EntityManager): Promise<ProductionDetail> {
+  async remove(
+    detail: ProductionDetail,
+    manager?: EntityManager,
+  ): Promise<ProductionDetail> {
     return this.detailRepository.remove(detail, manager);
   }
 }

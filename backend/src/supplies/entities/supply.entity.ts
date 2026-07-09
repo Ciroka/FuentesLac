@@ -44,7 +44,10 @@ export class Supply {
   @JoinColumn({ name: 'category_id' })
   category?: Category;
 
-  @OneToMany(() => SuppliesXproductionDetail, (supplyXDetail) => supplyXDetail.supply)
+  @OneToMany(
+    () => SuppliesXproductionDetail,
+    (supplyXDetail) => supplyXDetail.supply,
+  )
   supplyXDetail!: SuppliesXproductionDetail[];
 
   @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.supply)

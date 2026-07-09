@@ -6,7 +6,10 @@ export const SUPPLIES_XPRODUCTION_DETAIL_REPOSITORY =
 
 export interface ISuppliesXproductionDetailRepository {
   findAll(): Promise<SuppliesXproductionDetail[]>;
-  finById(id: number, manager?: EntityManager): Promise<SuppliesXproductionDetail | null>;
+  finById(
+    id: number,
+    manager?: EntityManager,
+  ): Promise<SuppliesXproductionDetail | null>;
   create(
     input: Partial<SuppliesXproductionDetail>,
     manager?: EntityManager,

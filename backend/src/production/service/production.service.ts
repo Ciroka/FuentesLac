@@ -1,8 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import {
-  CreateProductionDto,
-  QueryParamsProduction,
-} from '../dto';
+import { CreateProductionDto, QueryParamsProduction } from '../dto';
 import { PRODUCTION_REPOSITORY } from '../repository/production.repository.interface';
 import type { ProductionRepository } from '../repository/production.repository.interface';
 import { Production } from '../entities/production.entity';
@@ -23,7 +20,9 @@ export class ProductionService {
     private readonly dataSource: DataSource,
   ) {}
 
-  async findAll(params: QueryParamsProduction): Promise<PaginatedResult<Production>> {
+  async findAll(
+    params: QueryParamsProduction,
+  ): Promise<PaginatedResult<Production>> {
     const { page, limit, order } = params;
     return this.productionRepository.findAll(page, limit, order);
   }
@@ -44,7 +43,10 @@ export class ProductionService {
       }[] = [];
 
       for (const item of createProductionDto.details) {
-        const product = await this.productService.findOne(item.productId, manager);
+        const product = await this.productService.findOne(
+          item.productId,
+          manager,
+        );
 
         const supplies: { supply: Supply; quantity: number }[] = [];
         for (const s of item.details) {
@@ -52,7 +54,11 @@ export class ProductionService {
           await this.supplyService.decreaseStock(supply, s.quantity, manager);
           supplies.push({ supply, quantity: s.quantity });
         }
-        await this.productService.increaseStock(product, item.quantity, manager);
+        await this.productService.increaseStock(
+          product,
+          item.quantity,
+          manager,
+        );
         items.push({ product, quantity: item.quantity, supplies });
       }
 
@@ -72,7 +78,7 @@ export class ProductionService {
   }
 
   // async update(id: number, updateProductionDto: UpdateProductionDto): Promise<Production> {
-    
+
   // }
 
   async remove(id: number): Promise<Production> {

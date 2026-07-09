@@ -1,4 +1,9 @@
-import { BadRequestException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { CreateSupplyDto, UpdateSupplyDto, QueryParamsSupplies } from '../dto';
 import { SUPPLIES_REPOSITORY } from '../repository/supplies.repository.interface';
@@ -35,7 +40,11 @@ export class SuppliesService {
     return this.suppliesRepository.create(createSupplyDto);
   }
 
-  async update(id: number, updateSupplyDto: UpdateSupplyDto, manager?: EntityManager): Promise<Supply> {
+  async update(
+    id: number,
+    updateSupplyDto: UpdateSupplyDto,
+    manager?: EntityManager,
+  ): Promise<Supply> {
     const supply = await this.findOne(id);
 
     if (updateSupplyDto.name !== undefined) supply.name = updateSupplyDto.name;
@@ -53,14 +62,22 @@ export class SuppliesService {
     return this.suppliesRepository.update(supply, manager);
   }
 
-  async decreaseStock(supply: Supply, stock: number, manager?: EntityManager): Promise<Supply> {
+  async decreaseStock(
+    supply: Supply,
+    stock: number,
+    manager?: EntityManager,
+  ): Promise<Supply> {
     if (stock > supply.currentStock)
       throw new BadRequestException('Insufficient stock');
     supply.currentStock -= stock;
     return this.suppliesRepository.update(supply, manager);
   }
 
-  async increaseStock(supply: Supply, stock: number, manager?: EntityManager): Promise<Supply> {
+  async increaseStock(
+    supply: Supply,
+    stock: number,
+    manager?: EntityManager,
+  ): Promise<Supply> {
     supply.currentStock += stock;
     return this.suppliesRepository.update(supply, manager);
   }

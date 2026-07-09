@@ -101,7 +101,11 @@ export class ProductsService {
     return this.productsRepository.update(product, manager);
   }
 
-  async increaseStock(product: Product, stock: number, manager?: EntityManager): Promise<Product> {
+  async increaseStock(
+    product: Product,
+    stock: number,
+    manager?: EntityManager,
+  ): Promise<Product> {
     product.currentStock += stock;
     return this.productsRepository.update(product, manager);
   }

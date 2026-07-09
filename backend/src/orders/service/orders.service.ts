@@ -87,18 +87,28 @@ export class OrdersService {
         throw new BadRequestException('Missing updates');
       }
       for (const updateDtoDetail of updateOrderDto.details) {
-        const detail = order.ordersDetails.find((d) => d.supply.id === updateDtoDetail.supplyId);
+        const detail = order.ordersDetails.find(
+          (d) => d.supply.id === updateDtoDetail.supplyId,
+        );
         if (!detail) throw new BadRequestException('No se q poner');
         detail.arrivalQuantity += updateDtoDetail.quantity;
-        await this.supplyService.increaseStock(detail.supply, updateDtoDetail.quantity, manager);
+        await this.supplyService.increaseStock(
+          detail.supply,
+          updateDtoDetail.quantity,
+          manager,
+        );
       }
-      order.arrival_total = order.ordersDetails.reduce((total, d) => total + Number(d.supply.costPrice) * Number(d.arrivalQuantity), 0);
+      order.arrival_total = order.ordersDetails.reduce(
+        (total, d) =>
+          total + Number(d.supply.costPrice) * Number(d.arrivalQuantity),
+        0,
+      );
 
       return orderRepo.save(order);
     });
   }
 
-  async remove(id: number): Promise<Order>{
+  async remove(id: number): Promise<Order> {
     const order = await this.findOne(id);
     return this.ordersRepository.remove(order);
   }

@@ -1,5 +1,11 @@
 import { Type } from 'class-transformer';
-import { ArrayMinSize, IsArray, IsInt, IsPositive, ValidateNested } from 'class-validator';
+import {
+  ArrayMinSize,
+  IsArray,
+  IsInt,
+  IsPositive,
+  ValidateNested,
+} from 'class-validator';
 import { CreateSuppliesXproductionDetailDto } from 'src/supplies-xproduction-detail/dto';
 
 export class CreateProductionDetailDto {

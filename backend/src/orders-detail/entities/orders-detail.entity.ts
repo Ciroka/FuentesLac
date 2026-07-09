@@ -19,10 +19,22 @@ export class OrdersDetail {
   @Column({ name: 'arrival_quantity', default: 0 })
   arrivalQuantity: number = 0;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'ordered_subtotal', default: 0})
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    name: 'ordered_subtotal',
+    default: 0,
+  })
   orderedSubtotal: number = 0;
-  
-  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'arrival_subtotal', default: 0})
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    name: 'arrival_subtotal',
+    default: 0,
+  })
   arrivalSubtotal: number = 0;
 
   @ManyToOne(() => Order, (order) => order.ordersDetails, {

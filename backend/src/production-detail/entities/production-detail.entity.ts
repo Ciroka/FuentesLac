@@ -1,7 +1,14 @@
 import { Production } from 'src/production/entities/production.entity';
 import { Product } from 'src/products';
 import { SuppliesXproductionDetail } from 'src/supplies-xproduction-detail/entities/supplies-xproduction-detail.entity';
-import { Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('production_details')
 export class ProductionDetail {
@@ -15,10 +22,16 @@ export class ProductionDetail {
   @JoinColumn({ name: 'production_id' })
   production!: Production;
 
-  @ManyToOne(() => Product, (product) => product.productionDetails, { onDelete: 'CASCADE'})
+  @ManyToOne(() => Product, (product) => product.productionDetails, {
+    onDelete: 'CASCADE',
+  })
   @JoinColumn({ name: 'product_id' })
   product!: Product;
 
-  @OneToMany(() => SuppliesXproductionDetail, supplyXDetail => supplyXDetail.productionDetail, { cascade: true })
+  @OneToMany(
+    () => SuppliesXproductionDetail,
+    (supplyXDetail) => supplyXDetail.productionDetail,
+    { cascade: true },
+  )
   supplyXDetail!: SuppliesXproductionDetail[];
 }

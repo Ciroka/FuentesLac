@@ -44,7 +44,9 @@ export class SuppliesRepository implements ISuppliesRepository {
   }
 
   async findById(id: number, manager?: EntityManager): Promise<Supply | null> {
-    const repo = manager ? manager.getRepository(Supply) : this.supplyRepository;
+    const repo = manager
+      ? manager.getRepository(Supply)
+      : this.supplyRepository;
     return repo.findOneBy({ id });
   }
 
@@ -53,7 +55,9 @@ export class SuppliesRepository implements ISuppliesRepository {
   }
 
   async update(supply: Supply, manager?: EntityManager): Promise<Supply> {
-    const repo= manager ? manager.getRepository(Supply) : this.supplyRepository;
+    const repo = manager
+      ? manager.getRepository(Supply)
+      : this.supplyRepository;
     return repo.save(supply);
   }
 

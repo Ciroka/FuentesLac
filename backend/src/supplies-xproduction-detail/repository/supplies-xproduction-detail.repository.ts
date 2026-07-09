@@ -6,9 +6,7 @@ import { ISuppliesXproductionDetailRepository } from './supplies-xproduction-det
 import { SuppliesXproductionDetail } from '../entities/supplies-xproduction-detail.entity';
 
 @Injectable()
-export class SuppliesXproductionDetailRepository
-  implements ISuppliesXproductionDetailRepository
-{
+export class SuppliesXproductionDetailRepository implements ISuppliesXproductionDetailRepository {
   constructor(
     @InjectRepository(SuppliesXproductionDetail)
     private readonly detailRepository: Repository<SuppliesXproductionDetail>,
@@ -53,7 +51,9 @@ export class SuppliesXproductionDetailRepository
     return repo.save(detail);
   }
 
-  async remove(detail: SuppliesXproductionDetail): Promise<SuppliesXproductionDetail> {
+  async remove(
+    detail: SuppliesXproductionDetail,
+  ): Promise<SuppliesXproductionDetail> {
     return this.detailRepository.remove(detail);
   }
 }

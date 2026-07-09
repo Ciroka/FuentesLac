@@ -21,7 +21,7 @@ export class ProductionDetailRepositoryImpl implements ProductionDetailRepositor
 
   async findByProduction(productionId: number): Promise<ProductionDetail[]> {
     return this.detailRepository.find({
-      where: { production: { id: productionId }},
+      where: { production: { id: productionId } },
       relations: { product: true },
     });
   }
@@ -33,18 +33,33 @@ export class ProductionDetailRepositoryImpl implements ProductionDetailRepositor
     });
   }
 
-  async create(input: Partial<ProductionDetail>, manager?: EntityManager): Promise<ProductionDetail> {
-    const repo = manager ? manager.getRepository(ProductionDetail) : this.detailRepository;
+  async create(
+    input: Partial<ProductionDetail>,
+    manager?: EntityManager,
+  ): Promise<ProductionDetail> {
+    const repo = manager
+      ? manager.getRepository(ProductionDetail)
+      : this.detailRepository;
     return repo.save(input);
   }
 
-  async update(detail: ProductionDetail, manager?: EntityManager): Promise<ProductionDetail> {
-    const repo = manager ? manager.getRepository(ProductionDetail) : this.detailRepository;
+  async update(
+    detail: ProductionDetail,
+    manager?: EntityManager,
+  ): Promise<ProductionDetail> {
+    const repo = manager
+      ? manager.getRepository(ProductionDetail)
+      : this.detailRepository;
     return repo.save(detail);
   }
 
-  async remove(detail: ProductionDetail,  manager?: EntityManager): Promise<ProductionDetail> {
-    const repo = manager ? manager.getRepository(ProductionDetail) : this.detailRepository;
+  async remove(
+    detail: ProductionDetail,
+    manager?: EntityManager,
+  ): Promise<ProductionDetail> {
+    const repo = manager
+      ? manager.getRepository(ProductionDetail)
+      : this.detailRepository;
     return repo.remove(detail);
   }
 }

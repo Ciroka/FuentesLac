@@ -34,7 +34,9 @@ export class SuppliesXproductionDetailService {
     return this.detailRepository.create({
       quantity: createDto.quantity,
       supply: { id: createDto.supplyId } as Supply,
-      productionDetail: { id: createDto.productionDetailId } as ProductionDetail,
+      productionDetail: {
+        id: createDto.productionDetailId,
+      } as ProductionDetail,
     });
   }
 
@@ -47,7 +49,9 @@ export class SuppliesXproductionDetailService {
     if (updateDto.supplyId !== undefined)
       detail.supply = { id: updateDto.supplyId } as Supply;
     if (updateDto.productionDetailId !== undefined)
-      detail.productionDetail = { id: updateDto.productionDetailId } as ProductionDetail;
+      detail.productionDetail = {
+        id: updateDto.productionDetailId,
+      } as ProductionDetail;
     return this.detailRepository.update(detail);
   }
 
