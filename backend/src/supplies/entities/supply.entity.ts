@@ -47,6 +47,6 @@ export class Supply {
   @OneToMany(() => RecipeDetail, (recipeDetails) => recipeDetails.supply)
   recipeDetails!: RecipeDetail[];
 
-  @OneToMany(() => OrdersDetail, ordersDetails => ordersDetails.supply)
+  @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.supply)
   ordersDetails!: OrdersDetail[];
 }
