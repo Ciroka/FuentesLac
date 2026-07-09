@@ -67,7 +67,7 @@ export class AdjustmentsService {
   async remove(id: number): Promise<Adjustment> {
     const adjustment = await this.findOne(id);
     await this.productsService.increaseStock(
-      adjustment.product.id,
+      adjustment.product,
       adjustment.stockChange,
     );
     return this.adjustmentsRepository.remove(adjustment);

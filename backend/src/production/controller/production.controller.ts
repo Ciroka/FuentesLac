@@ -34,13 +34,13 @@ export class ProductionController {
     return this.productionService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateProductionDto: UpdateProductionDto,
-  ) {
-    return this.productionService.update(+id, updateProductionDto);
-  }
+  // @Patch(':id')
+  // update(
+  //   @Param('id') id: string,
+  //   @Body() updateProductionDto: UpdateProductionDto,
+  // ) {
+  //   return this.productionService.update(+id, updateProductionDto);
+  // }
 
   @Delete(':id')
   remove(@Param('id') id: string) {

@@ -41,7 +41,8 @@ export class ProductionDetailController {
   // }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productionDetailService.remove(+id);
+  async remove(@Param('id') id: string) {
+    const detail = await this.productionDetailService.findOne(+id);
+    return this.productionDetailService.remove(detail);
   }
 }

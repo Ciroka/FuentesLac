@@ -2,7 +2,8 @@ export interface OrdersDetailResponse {
   id: number;
   orderedQuantity: number;
   arrivalQuantity: number;
-  subtotal: number;
+  orderedSubtotal: number;
+  arrivalSubtotal: number;
   orderId?: number;
   supplyId?: number;
 }
