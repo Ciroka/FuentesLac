@@ -57,19 +57,16 @@ export class OrdersRepository implements IOrdersRepository {
   async create(
     supplierId: number,
     total: number,
-    manager?: EntityManager,
   ): Promise<Order> {
-    const repo = manager ? manager.getRepository(Order) : this.orderRepository;
-    const order = repo.create({
+    const order = this.orderRepository.create({
       total,
       supplier: { id: supplierId } as Supplier,
     });
-    return repo.save(order);
+    return this.orderRepository.save(order);
   }
 
-  async update(order: Order, manager?: EntityManager): Promise<Order> {
-    const repo = manager ? manager.getRepository(Order) : this.orderRepository;
-    return repo.save(order);
+  async update(order: Order): Promise<Order> {
+    return this.orderRepository.save(order);
   }
 
   async remove(order: Order): Promise<Order> {

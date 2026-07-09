@@ -15,9 +15,8 @@ export interface IOrdersRepository {
   finById(id: number): Promise<Order | null>;
   create(
     supplierId: number,
-    total: number,
-    manager?: EntityManager,
+    total: number
   ): Promise<Order>;
-  update(order: Order, manager?: EntityManager): Promise<Order>;
+  update(order: Order): Promise<Order>;
   remove(order: Order): Promise<Order>;
 }

@@ -14,10 +14,10 @@ export class OrdersDetail {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ name: 'ordered_quantity' })
+  @Column({ name: 'ordered_quantity', default: 0})
   orderedQuantity!: number;
 
-  @Column({ name: 'arrival_quantity' })
+  @Column({ name: 'arrival_quantity', default: 0 })
   arrivalQuantity!: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })

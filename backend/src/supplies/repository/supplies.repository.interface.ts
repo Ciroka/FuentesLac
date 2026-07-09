@@ -1,3 +1,4 @@
+import { EntityManager } from 'typeorm';
 import { OrderEnum } from '../../shared/enums/order.enum';
 import { PaginatedResult } from '../../shared/pagination/pagination.type';
 import { CreateSupplyDto } from '../dto';
@@ -13,7 +14,7 @@ export interface ISuppliesRepository {
     name?: string,
     categoryId?: number,
   ): Promise<PaginatedResult<Supply>>;
-  finById(id: number): Promise<Supply | null>;
+  finById(id: number, manager?: EntityManager): Promise<Supply | null>;
   create(input: CreateSupplyDto): Promise<Supply>;
   update(supply: Supply): Promise<Supply>;
   remove(supply: Supply): Promise<Supply>;

@@ -54,14 +54,14 @@ export class AdjustmentsRepository implements IAdjustmentsRepository {
     });
   }
 
-  async create(input: CreateAdjustmentDto): Promise<Adjustment> {
-    const adjustment = this.adjustmentRepository.create({
-      stockChange: input.stockChange,
-      adjustmentType: input.adjustmentType,
-      product: { id: input.productId } as Product,
-    });
-    return this.adjustmentRepository.save(adjustment);
-  }
+  // async create(input: CreateAdjustmentDto): Promise<Adjustment> {
+  //   const adjustment = this.adjustmentRepository.create({
+  //     stockChange: input.stockChange,
+  //     adjustmentType: input.adjustmentType,
+  //     product: { id: input.productId } as Product,
+  //   });
+  //   return this.adjustmentRepository.save(adjustment);
+  // }
 
   // async update(adjustment: Adjustment): Promise<Adjustment> {
   //   return this.adjustmentRepository.save(adjustment);

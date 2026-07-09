@@ -16,21 +16,21 @@ export class OrdersDetailRepository implements IOrdersDetailRepository {
 
   async findAll(): Promise<OrdersDetail[]> {
     return this.detailRepository.find({
-      relations: { order: true, product: true },
+      relations: { order: true, supply: true },
     });
   }
 
   async findByOrder(orderId: number): Promise<OrdersDetail[]> {
     return this.detailRepository.find({
       where: { order: { id: orderId } as any },
-      relations: { product: true },
+      relations: { supply: true },
     });
   }
 
   async finById(id: number): Promise<OrdersDetail | null> {
     return this.detailRepository.findOne({
       where: { id },
-      relations: { order: true, product: true },
+      relations: { order: true, supply: true },
     });
   }
 
@@ -43,8 +43,8 @@ export class OrdersDetailRepository implements IOrdersDetailRepository {
       : this.detailRepository;
     return repo.save({
       order: { id: input.orderId } as Order,
-      product: input.product,
-      quantity: input.orderedQuantity,
+      supply: input.supply,
+      orderedQuantity: input.orderedQuantity,
       subtotal: input.subtotal,
     });
   }

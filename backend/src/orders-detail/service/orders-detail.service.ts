@@ -1,10 +1,8 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
-import { CreateOrdersDetailDto, UpdateOrdersDetailDto } from '../dto';
 import { ORDERS_DETAIL_REPOSITORY } from '../repository/orders-detail.repository.interface';
 import type { IOrdersDetailRepository } from '../repository/orders-detail.repository.interface';
 import { OrdersDetail } from '../entities/orders-detail.entity';
-import { ProductsService } from '../../products/service/products.service';
 import { EntityManager } from 'typeorm';
 import { CreateOrderDetailData } from '../dto/create-order-detail-data.dto';
 
@@ -13,7 +11,6 @@ export class OrdersDetailService {
   constructor(
     @Inject(ORDERS_DETAIL_REPOSITORY)
     private readonly detailRepository: IOrdersDetailRepository,
-    private readonly productsService: ProductsService,
   ) {}
 
   async findAll(): Promise<OrdersDetail[]> {
@@ -42,7 +39,7 @@ export class OrdersDetailService {
     manager?: EntityManager,
   ): Promise<OrdersDetail> {
     const detail = await this.findOne(orderDetail.id);
-    //detail.subtotal = detail.orderedQuantity * Number(detail.product.costPrice);
+    //detail.subtotal = detail.orderedQuantity * Number(detail.supply.costPrice);
     return this.detailRepository.update(orderDetail, manager);
   }
 

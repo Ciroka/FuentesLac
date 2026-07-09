@@ -13,7 +13,7 @@ export interface IAdjustmentsRepository {
     productId?: number,
   ): Promise<PaginatedResult<Adjustment>>;
   finById(id: number): Promise<Adjustment | null>;
-  create(input: CreateAdjustmentDto): Promise<Adjustment>;
+  // create(input: CreateAdjustmentDto): Promise<Adjustment>;
   // update(adjustment: Adjustment): Promise<Adjustment>;
   remove(adjustment: Adjustment): Promise<Adjustment>;
 }

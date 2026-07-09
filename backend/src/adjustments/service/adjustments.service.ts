@@ -1,9 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 import {
   CreateAdjustmentDto,
-  UpdateAdjustmentDto,
   QueryParamsAdjustments,
-  AdjustmentResponse,
 } from '../dto';
 import { ADJUSTMENTS_REPOSITORY } from '../repository/adjustments.repository.interface';
 import type { IAdjustmentsRepository } from '../repository/adjustments.repository.interface';

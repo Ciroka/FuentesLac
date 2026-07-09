@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -43,8 +43,9 @@ export class SuppliesRepository implements ISuppliesRepository {
     return { items: supplies, total, page, limit };
   }
 
-  async finById(id: number): Promise<Supply | null> {
-    return this.supplyRepository.findOneBy({ id });
+  async finById(id: number, manager?: EntityManager): Promise<Supply | null> {
+    const repo = manager ? manager.getRepository(Supply) : this.supplyRepository;
+    return repo.findOneBy({ id });
   }
 
   async create(input: CreateSupplyDto): Promise<Supply> {

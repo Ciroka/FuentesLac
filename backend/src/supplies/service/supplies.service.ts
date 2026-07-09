@@ -5,6 +5,7 @@ import { SUPPLIES_REPOSITORY } from '../repository/supplies.repository.interface
 import type { ISuppliesRepository } from '../repository/supplies.repository.interface';
 import { Supply } from '../entities/supply.entity';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class SuppliesService {
@@ -24,8 +25,8 @@ export class SuppliesService {
     );
   }
 
-  async findOne(id: number): Promise<Supply> {
-    const supply = await this.suppliesRepository.finById(id);
+  async findOne(id: number, manager?: EntityManager): Promise<Supply> {
+    const supply = await this.suppliesRepository.finById(id, manager);
     if (!supply) throw new NotFoundException('Supply not found');
     return supply;
   }
