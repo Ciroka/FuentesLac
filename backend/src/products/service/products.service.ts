@@ -31,7 +31,13 @@ export class ProductsService {
   }
 
   async findOne(id: number, manager?: EntityManager): Promise<Product> {
-    const product = await this.productsRepository.finById(id, manager);
+    const product = await this.productsRepository.findById(id, manager);
+    if (!product) throw new NotFoundException('Product not Found');
+    return product;
+  }
+
+  async findOneByName(name: string, manager?: EntityManager): Promise<Product> {
+    const product = await this.productsRepository.findByName(name, manager);
     if (!product) throw new NotFoundException('Product not Found');
     return product;
   }
@@ -95,10 +101,9 @@ export class ProductsService {
     return this.productsRepository.update(product, manager);
   }
 
-  async increaseStock(id: number, stock: number): Promise<Product> {
-    const product = await this.findOne(id);
+  async increaseStock(product: Product, stock: number, manager?: EntityManager): Promise<Product> {
     product.currentStock += stock;
-    return this.productsRepository.update(product);
+    return this.productsRepository.update(product, manager);
   }
 
   async remove(id: number): Promise<Product> {

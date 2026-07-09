@@ -3,6 +3,8 @@ import { CreateProductionDetailDto, UpdateProductionDetailDto } from '../dto';
 import { PRODUCTION_DETAIL_REPOSITORY } from '../repository/production-detail.repository.interface';
 import type { ProductionDetailRepository } from '../repository/production-detail.repository.interface';
 import { ProductionDetail } from '../entities/production-detail.entity';
+import { Production } from 'src/production/entities/production.entity';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class ProductionDetailService {
@@ -11,13 +13,7 @@ export class ProductionDetailService {
     private readonly detailRepository: ProductionDetailRepository,
   ) {}
 
-  async create(
-    createProductionDetailDto: CreateProductionDetailDto,
-  ): Promise<ProductionDetail> {
-    return this.detailRepository.create(createProductionDetailDto);
-  }
-
-  async findAll() {
+  async findAll(): Promise<ProductionDetail[]> {
     return this.detailRepository.findAll();
   }
 
@@ -26,23 +22,26 @@ export class ProductionDetailService {
     if (!detail) throw new NotFoundException('Production detail not found');
     return detail;
   }
-
-  async findByProduction(productionId: number) {
+  
+  async findByProduction(productionId: number, manager?: EntityManager): Promise<ProductionDetail[]> {
     return this.detailRepository.findByProduction(productionId);
+  }
+  
+  async create(
+    createProductionDetailDto: Partial<ProductionDetail>,
+    manager?: EntityManager
+  ): Promise<ProductionDetail> {
+    return this.detailRepository.create(createProductionDetailDto, manager);
   }
 
   async update(
-    id: number,
-    updateProductionDetailDto: UpdateProductionDetailDto,
-  ) {
-    const detail = await this.findOne(id);
-    if (updateProductionDetailDto.quantity !== undefined)
-      detail.quantity = updateProductionDetailDto.quantity;
-    return this.detailRepository.update(detail);
+    detail: ProductionDetail,
+    manager?: EntityManager
+  ): Promise<ProductionDetail> {
+    return this.detailRepository.update(detail, manager);
   }
 
-  async remove(id: number) {
-    const detail = await this.findOne(id);
-    return this.detailRepository.remove(detail);
+  async remove(detail: ProductionDetail, manager?: EntityManager): Promise<ProductionDetail> {
+    return this.detailRepository.remove(detail, manager);
   }
 }

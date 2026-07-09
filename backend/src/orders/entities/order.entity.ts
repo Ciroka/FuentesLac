@@ -18,10 +18,13 @@ export class Order {
   @CreateDateColumn()
   date!: Date;
 
-  @Column({ default: 0 })
-  total!: number;
+  @Column({ default: 0, type: 'decimal', precision: 10, scale: 2, name: 'ordered_total' })
+  orderedTotal: number = 0;
+  
+  @Column({ default: 0, type: 'decimal', precision: 10, scale: 2, name: 'arrival_total' })
+  arrival_total: number = 0;
 
-  @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.order)
+  @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.order, { cascade: true })
   ordersDetails!: OrdersDetail[];
 
   @ManyToOne(() => Supplier, (supplier) => supplier.orders)

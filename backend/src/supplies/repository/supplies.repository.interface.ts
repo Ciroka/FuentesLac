@@ -14,8 +14,8 @@ export interface ISuppliesRepository {
     name?: string,
     categoryId?: number,
   ): Promise<PaginatedResult<Supply>>;
-  finById(id: number, manager?: EntityManager): Promise<Supply | null>;
+  findById(id: number, manager?: EntityManager): Promise<Supply | null>;
   create(input: CreateSupplyDto): Promise<Supply>;
-  update(supply: Supply): Promise<Supply>;
+  update(supply: Supply, manager?: EntityManager): Promise<Supply>;
   remove(supply: Supply): Promise<Supply>;
 }

@@ -42,11 +42,18 @@ export class ProductRespository implements ProductsRepository {
     return PaginatedResult;
   }
 
-  async finById(id: number, manager?: EntityManager): Promise<Product | null> {
+  async findById(id: number, manager?: EntityManager): Promise<Product | null> {
     const repo = manager
       ? manager.getRepository(Product)
       : this.productRepository;
     return repo.findOneBy({ id });
+  }
+
+  async findByName(name: string, manager?: EntityManager): Promise<Product | null> {
+    const repo = manager
+      ? manager.getRepository(Product)
+      : this.productRepository;
+    return repo.findOneBy({ name });
   }
 
   async create(input: CreateProductDto): Promise<Product> {

@@ -1,15 +1,15 @@
 import { IsInt, IsPositive } from 'class-validator';
 
-export class CreateRecipeDetailDto {
+export class CreateSuppliesXproductionDetailDto {
   @IsInt()
   @IsPositive()
   quantity!: number;
 
   @IsInt()
   @IsPositive()
-  recipeId!: number;
+  supplyId!: number;
 
   @IsInt()
   @IsPositive()
-  supplyId!: number;
+  productionDetailId!: number;
 }

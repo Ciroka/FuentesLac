@@ -1,0 +1,60 @@
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Patch,
+  Param,
+  Delete,
+} from '@nestjs/common';
+
+import { SuppliesXproductionDetailService } from '../service/supplies-xproduction-detail.service';
+import {
+  CreateSuppliesXproductionDetailDto,
+  UpdateSuppliesXproductionDetailDto,
+} from '../dto';
+import { SuppliesXproductionDetail } from '../entities/supplies-xproduction-detail.entity';
+
+@Controller('supplies-xproduction-detail')
+export class SuppliesXproductionDetailController {
+  constructor(
+    private readonly suppliesXproductionDetailService: SuppliesXproductionDetailService,
+  ) {}
+
+  @Get()
+  findAll(): Promise<SuppliesXproductionDetail[]> {
+    return this.suppliesXproductionDetailService.findAll();
+  }
+
+  @Get(':id')
+  findOne(@Param('id') id: string): Promise<SuppliesXproductionDetail> {
+    return this.suppliesXproductionDetailService.findOne(+id);
+  }
+
+  @Post()
+  create(
+    @Body()
+    createSuppliesXproductionDetailDto: CreateSuppliesXproductionDetailDto,
+  ): Promise<SuppliesXproductionDetail> {
+    return this.suppliesXproductionDetailService.create(
+      createSuppliesXproductionDetailDto,
+    );
+  }
+
+  @Patch(':id')
+  update(
+    @Param('id') id: string,
+    @Body()
+    updateSuppliesXproductionDetailDto: UpdateSuppliesXproductionDetailDto,
+  ): Promise<SuppliesXproductionDetail> {
+    return this.suppliesXproductionDetailService.update(
+      +id,
+      updateSuppliesXproductionDetailDto,
+    );
+  }
+
+  @Delete(':id')
+  remove(@Param('id') id: string): Promise<SuppliesXproductionDetail> {
+    return this.suppliesXproductionDetailService.remove(+id);
+  }
+}

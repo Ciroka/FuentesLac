@@ -4,5 +4,5 @@ export interface OrdersDetailResponse {
   arrivalQuantity: number;
   subtotal: number;
   orderId?: number;
-  productId?: number;
+  supplyId?: number;
 }

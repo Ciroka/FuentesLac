@@ -1,7 +1,7 @@
 import { Category } from 'src/categories';
 import { OrdersDetail } from 'src/orders-detail';
-import { RecipeDetail } from 'src/recipe-detail';
 import { Supplier } from 'src/suppliers';
+import { SuppliesXproductionDetail } from 'src/supplies-xproduction-detail/entities/supplies-xproduction-detail.entity';
 import {
   Column,
   Entity,
@@ -16,10 +16,10 @@ export class Supply {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ unique: true })
   name!: string;
 
-  @Column({ type: 'decimal', scale: 10, precision: 2, name: 'cost_price' })
+  @Column({ type: 'decimal', scale: 2, precision: 10, name: 'cost_price' })
   costPrice!: number;
 
   @Column({ default: 0, name: 'current_stock' })
@@ -44,8 +44,8 @@ export class Supply {
   @JoinColumn({ name: 'category_id' })
   category?: Category;
 
-  @OneToMany(() => RecipeDetail, (recipeDetails) => recipeDetails.supply)
-  recipeDetails!: RecipeDetail[];
+  @OneToMany(() => SuppliesXproductionDetail, (supplyXDetail) => supplyXDetail.supply)
+  supplyXDetail!: SuppliesXproductionDetail[];
 
   @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.supply)
   ordersDetails!: OrdersDetail[];

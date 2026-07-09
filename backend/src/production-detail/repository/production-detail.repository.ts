@@ -1,9 +1,10 @@
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { ProductionDetailRepository } from './production-detail.repository.interface';
 import { ProductionDetail } from '../entities/production-detail.entity';
+import { CreateProductionDetailDto } from '../dto';
 
 @Injectable()
 export class ProductionDetailRepositoryImpl implements ProductionDetailRepository {
@@ -20,7 +21,7 @@ export class ProductionDetailRepositoryImpl implements ProductionDetailRepositor
 
   async findByProduction(productionId: number): Promise<ProductionDetail[]> {
     return this.detailRepository.find({
-      where: { production: { id: productionId } as any },
+      where: { production: { id: productionId }},
       relations: { product: true },
     });
   }
@@ -32,15 +33,18 @@ export class ProductionDetailRepositoryImpl implements ProductionDetailRepositor
     });
   }
 
-  async create(input: Partial<ProductionDetail>): Promise<ProductionDetail> {
-    return this.detailRepository.save(input);
+  async create(input: Partial<ProductionDetail>, manager?: EntityManager): Promise<ProductionDetail> {
+    const repo = manager ? manager.getRepository(ProductionDetail) : this.detailRepository;
+    return repo.save(input);
   }
 
-  async update(detail: ProductionDetail): Promise<ProductionDetail> {
-    return this.detailRepository.save(detail);
+  async update(detail: ProductionDetail, manager?: EntityManager): Promise<ProductionDetail> {
+    const repo = manager ? manager.getRepository(ProductionDetail) : this.detailRepository;
+    return repo.save(detail);
   }
 
-  async remove(detail: ProductionDetail): Promise<ProductionDetail> {
-    return this.detailRepository.remove(detail);
+  async remove(detail: ProductionDetail,  manager?: EntityManager): Promise<ProductionDetail> {
+    const repo = manager ? manager.getRepository(ProductionDetail) : this.detailRepository;
+    return repo.remove(detail);
   }
 }

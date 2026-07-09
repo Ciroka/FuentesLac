@@ -9,8 +9,6 @@ import { ProductsModule, Product } from './products';
 import { CategoriesModule, Category } from './categories';
 import { SuppliersModule, Supplier } from './suppliers';
 import { SuppliesModule, Supply } from './supplies';
-import { RecipeModule, Recipe } from './recipe';
-import { RecipeDetailModule, RecipeDetail } from './recipe-detail';
 import { SalesModule, Sale } from './sales';
 import { SalesDetailModule, SalesDetail } from './sales-detail';
 import { OrdersModule, Order } from './orders';
@@ -21,6 +19,10 @@ import { UsersModule, User } from './users';
 import { AuthModule } from './auth';
 import { BatchModule } from './batch/batch.module';
 import { Batch } from './batch/entities/batch.entity';
+import {
+  SuppliesXproductionDetailModule,
+  SuppliesXproductionDetail,
+} from './supplies-xproduction-detail';
 
 @Module({
   imports: [
@@ -28,8 +30,6 @@ import { Batch } from './batch/entities/batch.entity';
     ProductsModule,
     ProductionModule,
     ProductionDetailModule,
-    RecipeModule,
-    RecipeDetailModule,
     CategoriesModule,
     SuppliersModule,
     SuppliesModule,
@@ -66,13 +66,13 @@ import { Batch } from './batch/entities/batch.entity';
           Client,
           Category,
           Adjustment,
-          Recipe,
-          RecipeDetail,
           Batch,
+          SuppliesXproductionDetail,
         ],
       }),
     }),
     BatchModule,
+    SuppliesXproductionDetailModule,
   ],
   controllers: [AppController],
   providers: [AppService],

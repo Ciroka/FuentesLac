@@ -43,10 +43,8 @@ export class SuppliesRepository implements ISuppliesRepository {
     return { items: supplies, total, page, limit };
   }
 
-  async finById(id: number, manager?: EntityManager): Promise<Supply | null> {
-    const repo = manager
-      ? manager.getRepository(Supply)
-      : this.supplyRepository;
+  async findById(id: number, manager?: EntityManager): Promise<Supply | null> {
+    const repo = manager ? manager.getRepository(Supply) : this.supplyRepository;
     return repo.findOneBy({ id });
   }
 
@@ -54,8 +52,9 @@ export class SuppliesRepository implements ISuppliesRepository {
     return this.supplyRepository.save(input);
   }
 
-  async update(supply: Supply): Promise<Supply> {
-    return this.supplyRepository.save(supply);
+  async update(supply: Supply, manager?: EntityManager): Promise<Supply> {
+    const repo= manager ? manager.getRepository(Supply) : this.supplyRepository;
+    return repo.save(supply);
   }
 
   async remove(supply: Supply): Promise<Supply> {

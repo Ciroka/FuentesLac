@@ -15,6 +15,6 @@ export class Production {
   @CreateDateColumn({ type: 'timestamptz' })
   productionDate!: Date;
 
-  @OneToMany(() => ProductionDetail, (details) => details.production)
+  @OneToMany(() => ProductionDetail, (details) => details.production, { cascade: true })
   details!: ProductionDetail[];
 }

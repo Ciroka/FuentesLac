@@ -11,7 +11,6 @@ import type { IOrdersRepository } from '../repository/orders.repository.interfac
 import { Order } from '../entities/order.entity';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 import { DataSource } from 'typeorm';
-import { OrdersDetailService } from 'src/orders-detail/service/orders-detail.service';
 import { SuppliesService } from 'src/supplies/service/supplies.service';
 import { Supply } from 'src/supplies';
 import { Supplier } from 'src/suppliers';
@@ -23,7 +22,6 @@ export class OrdersService {
     private readonly ordersRepository: IOrdersRepository,
     private readonly dataSource: DataSource,
     private readonly supplyService: SuppliesService,
-    private readonly ordersDetailService: OrdersDetailService,
   ) {}
 
   async findAll(params: QueryParamsOrders): Promise<PaginatedResult<Order>> {
@@ -41,6 +39,7 @@ export class OrdersService {
     return this.dataSource.transaction(async (manager) => {
       const orderRepo = manager.getRepository(Order);
       let total = 0;
+
       const items: {
         supply: Supply;
         orderedQuantity: number;
@@ -58,48 +57,48 @@ export class OrdersService {
         });
       }
 
-      const order = await orderRepo.save(
-        orderRepo.create({
-          supplier: { id: createOrderDto.supplierId } as Supplier,
-          total,
-        }),
-      );
+      const order = orderRepo.create({
+        supplier: { id: createOrderDto.supplierId } as Supplier,
+        orderedTotal: total,
+        ordersDetails: items.map((item) => ({
+          supply: item.supply,
+          orderedQuantity: item.orderedQuantity,
+          orderedSubtotal: item.subtotal,
+        })),
+      });
 
-      for (const item of items) {
-        await this.ordersDetailService.create(
-          { ...item, orderId: order.id },
-          manager,
-        );
-      }
-      return order;
+      return orderRepo.save(order);
     });
   }
 
   async update(id: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
-    const order = await this.findOne(id);
     return this.dataSource.transaction(async (manager) => {
       const orderRepo = manager.getRepository(Order);
-      const details = await this.ordersDetailService.findByOrder(id);
-      if (
-        !updateOrderDto.details ||
-        updateOrderDto.details.length !== details.length
-      )
+      const order = await orderRepo.findOne({
+        where: { id },
+        relations: {
+          ordersDetails: {
+            supply: true,
+          },
+        },
+      });
+
+      if (!order || !updateOrderDto.details) {
         throw new BadRequestException('Missing updates');
-      for (let i = 0; i < details.length; i++) {
-        const detail = details[i];
-        const updateDtoDetail = updateOrderDto.details[i];
-        if (detail.supply.id !== updateDtoDetail.supplyId)
-          throw new BadRequestException('No se q poner');
-        detail.arrivalQuantity = updateDtoDetail.quantity;
-        await this.ordersDetailService.update(detail, manager);
       }
-      order.ordersDetails = details;
-      await orderRepo.save(order);
-      return order;
+      for (const updateDtoDetail of updateOrderDto.details) {
+        const detail = order.ordersDetails.find((d) => d.supply.id === updateDtoDetail.supplyId);
+        if (!detail) throw new BadRequestException('No se q poner');
+        detail.arrivalQuantity += updateDtoDetail.quantity;
+        await this.supplyService.increaseStock(detail.supply, updateDtoDetail.quantity, manager);
+      }
+      order.arrival_total = order.ordersDetails.reduce((total, d) => total + Number(d.supply.costPrice) * Number(d.arrivalQuantity), 0);
+
+      return orderRepo.save(order);
     });
   }
 
-  async remove(id: number): Promise<Order> {
+  async remove(id: number): Promise<Order>{
     const order = await this.findOne(id);
     return this.ordersRepository.remove(order);
   }
