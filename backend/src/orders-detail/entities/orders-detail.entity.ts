@@ -7,14 +7,18 @@ import {
 } from 'typeorm';
 import { Order } from '../../orders/entities/order.entity';
 import { Product } from '../../products/entities/product.entity';
+import { Supply } from 'src/supplies';
 
 @Entity('orders_details')
 export class OrdersDetail {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
-  quantity!: number;
+  @Column({ name: 'ordered_quantity' })
+  orderedQuantity!: number;
+
+  @Column({ name: 'arrival_quantity' })
+  arrivalQuantity!: number;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   subtotal!: number;
@@ -24,7 +28,7 @@ export class OrdersDetail {
   })
   order!: Order;
 
-  @ManyToOne(() => Product, (product) => product.ordersDetails)
-  @JoinColumn({ name: 'product_id' })
-  product!: Product;
+  @ManyToOne(() => Supply, (supply) => supply.ordersDetails)
+  @JoinColumn({ name: 'supply_id' })
+  supply!: Supply;
 }

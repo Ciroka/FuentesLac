@@ -2,6 +2,7 @@ import { OrdersDetail } from '../../orders-detail/entities/orders-detail.entity'
 import { Supplier } from '../../suppliers/entities/supplier.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -14,10 +15,10 @@ export class Order {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @CreateDateColumn()
   date!: Date;
 
-  @Column()
+  @Column({ default: 0 })
   total!: number;
 
   @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.order)

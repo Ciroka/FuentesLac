@@ -8,6 +8,8 @@ import { SalesService } from './service/sales.service';
 import { SalesDetail } from '../sales-detail/entities/sales-detail.entity';
 import { Sale } from './entities/sale.entity';
 import { Client } from '../clients/entities/client.entity';
+import { SALES_REPOSITORY } from './repository/sales.repository.interface';
+import { SalesRepositoryImpl } from './repository/sales.repository';
 
 @Module({
   imports: [
@@ -16,7 +18,13 @@ import { Client } from '../clients/entities/client.entity';
     TypeOrmModule.forFeature([Sale, SalesDetail, Client]),
   ],
   controllers: [SalesController],
-  providers: [SalesService],
+  providers: [
+    SalesService,
+    {
+      provide: SALES_REPOSITORY,
+      useClass: SalesRepositoryImpl,
+    },
+  ],
   exports: [TypeOrmModule],
 })
 export class SalesModule {}

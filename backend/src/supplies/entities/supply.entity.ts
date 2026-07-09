@@ -1,4 +1,5 @@
 import { Category } from 'src/categories';
+import { OrdersDetail } from 'src/orders-detail';
 import { RecipeDetail } from 'src/recipe-detail';
 import { Supplier } from 'src/suppliers';
 import {
@@ -45,4 +46,7 @@ export class Supply {
 
   @OneToMany(() => RecipeDetail, (recipeDetails) => recipeDetails.supply)
   recipeDetails!: RecipeDetail[];
+
+  @OneToMany(() => OrdersDetail, ordersDetails => ordersDetails.supply)
+  ordersDetails!: OrdersDetail[];
 }

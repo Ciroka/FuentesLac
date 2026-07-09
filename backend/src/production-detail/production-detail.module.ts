@@ -8,6 +8,8 @@ import { ProductionDetailService } from './service/production-detail.service';
 import { ProductionDetail } from './entities/production-detail.entity';
 import { Production } from '../production/entities/production.entity';
 import { Product } from '../products/entities/product.entity';
+import { PRODUCTION_DETAIL_REPOSITORY } from './repository/production-detail.repository.interface';
+import { ProductionDetailRepositoryImpl } from './repository/production-detail.repository';
 
 @Module({
   imports: [
@@ -16,7 +18,13 @@ import { Product } from '../products/entities/product.entity';
     TypeOrmModule.forFeature([ProductionDetail, Production, Product]),
   ],
   controllers: [ProductionDetailController],
-  providers: [ProductionDetailService],
+  providers: [
+    ProductionDetailService,
+    {
+      provide: PRODUCTION_DETAIL_REPOSITORY,
+      useClass: ProductionDetailRepositoryImpl,
+    },
+  ],
   exports: [TypeOrmModule],
 })
 export class ProductionDetailModule {}

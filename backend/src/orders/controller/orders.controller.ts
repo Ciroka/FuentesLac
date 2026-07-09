@@ -6,37 +6,49 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { OrdersService } from '../service/orders.service';
-import { CreateOrderDto, UpdateOrderDto } from '../dto';
+import {
+  CreateOrderDto,
+  UpdateOrderDto,
+  QueryParamsOrders,
+  OrderResponse,
+} from '../dto';
+import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
-  }
-
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(
+    @Query() params: QueryParamsOrders,
+  ): Promise<PaginatedResult<OrderResponse>> {
+    return this.ordersService.findAll(params);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<OrderResponse> {
     return this.ordersService.findOne(+id);
   }
 
+  @Post()
+  create(@Body() createOrderDto: CreateOrderDto): Promise<OrderResponse> {
+    return this.ordersService.create(createOrderDto);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateOrderDto: UpdateOrderDto,
+  ): Promise<OrderResponse> {
     return this.ordersService.update(+id, updateOrderDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string): Promise<OrderResponse> {
     return this.ordersService.remove(+id);
   }
 }

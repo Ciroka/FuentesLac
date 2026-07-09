@@ -6,6 +6,8 @@ import { ProductionController } from './controller/production.controller';
 import { ProductionService } from './service/production.service';
 import { Production } from './entities/production.entity';
 import { ProductionDetail } from '../production-detail/entities/production-detail.entity';
+import { PRODUCTION_REPOSITORY } from './repository/production.repository.interface';
+import { ProductionRepositoryImpl } from './repository/production.repository';
 
 @Module({
   imports: [
@@ -13,7 +15,13 @@ import { ProductionDetail } from '../production-detail/entities/production-detai
     TypeOrmModule.forFeature([Production, ProductionDetail]),
   ],
   controllers: [ProductionController],
-  providers: [ProductionService],
+  providers: [
+    ProductionService,
+    {
+      provide: PRODUCTION_REPOSITORY,
+      useClass: ProductionRepositoryImpl,
+    },
+  ],
   exports: [TypeOrmModule],
 })
 export class ProductionModule {}

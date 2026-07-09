@@ -8,6 +8,8 @@ import { RecipeDetailService } from './service/recipe-detail.service';
 import { RecipeDetail } from './entities/recipe-detail.entity';
 import { Recipe } from '../recipe/entities/recipe.entity';
 import { Supplier } from '../suppliers/entities/supplier.entity';
+import { RECIPE_DETAIL_REPOSITORY } from './repository/recipe-detail.repository.interface';
+import { RecipeDetailRepositoryImpl } from './repository/recipe-detail.repository';
 
 @Module({
   imports: [
@@ -16,7 +18,13 @@ import { Supplier } from '../suppliers/entities/supplier.entity';
     TypeOrmModule.forFeature([RecipeDetail, Recipe, Supplier]),
   ],
   controllers: [RecipeDetailController],
-  providers: [RecipeDetailService],
+  providers: [
+    RecipeDetailService,
+    {
+      provide: RECIPE_DETAIL_REPOSITORY,
+      useClass: RecipeDetailRepositoryImpl,
+    },
+  ],
   exports: [TypeOrmModule],
 })
 export class RecipeDetailModule {}

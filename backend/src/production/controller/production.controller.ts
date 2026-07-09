@@ -6,9 +6,14 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ProductionService } from '../service/production.service';
-import { CreateProductionDto, UpdateProductionDto } from '../dto';
+import {
+  CreateProductionDto,
+  UpdateProductionDto,
+  QueryParamsProduction,
+} from '../dto';
 
 @Controller('production')
 export class ProductionController {
@@ -20,8 +25,8 @@ export class ProductionController {
   }
 
   @Get()
-  findAll() {
-    return this.productionService.findAll();
+  findAll(@Query() params: QueryParamsProduction) {
+    return this.productionService.findAll(params);
   }
 
   @Get(':id')

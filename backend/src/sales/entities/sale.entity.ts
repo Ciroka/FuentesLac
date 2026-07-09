@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -16,10 +17,10 @@ export class Sale {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @CreateDateColumn()
   date!: Date;
 
-  @Column()
+  @Column({ default: 0 })
   total!: number;
 
   @Column({ type: 'enum', enum: PaymentMethod, name: 'payment_method' })

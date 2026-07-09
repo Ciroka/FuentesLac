@@ -6,10 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { SalesService } from '../service/sales.service';
-import { CreateSaleDto, UpdateSaleDto } from '../dto';
+import { CreateSaleDto, UpdateSaleDto, QueryParamsSales } from '../dto';
 
 @Controller('sales')
 export class SalesController {
@@ -21,8 +22,8 @@ export class SalesController {
   }
 
   @Get()
-  findAll() {
-    return this.salesService.findAll();
+  findAll(@Query() params: QueryParamsSales) {
+    return this.salesService.findAll(params);
   }
 
   @Get(':id')

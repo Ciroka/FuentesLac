@@ -6,10 +6,11 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 
 import { RecipeService } from '../service/recipe.service';
-import { CreateRecipeDto, UpdateRecipeDto } from '../dto';
+import { CreateRecipeDto, UpdateRecipeDto, QueryParamsRecipe } from '../dto';
 
 @Controller('recipe')
 export class RecipeController {
@@ -21,8 +22,8 @@ export class RecipeController {
   }
 
   @Get()
-  findAll() {
-    return this.recipeService.findAll();
+  findAll(@Query() params: QueryParamsRecipe) {
+    return this.recipeService.findAll(params);
   }
 
   @Get(':id')

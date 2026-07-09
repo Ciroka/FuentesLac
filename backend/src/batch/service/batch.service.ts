@@ -1,26 +1,41 @@
-import { Injectable } from '@nestjs/common';
-import { CreateBatchDto } from '../dto/create-batch.dto';
-import { UpdateBatchDto } from '../dto/update-batch.dto';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateBatchDto } from '../dto';
+import { BATCH_REPOSITORY } from '../repository/batch.repository.interface';
+import type { IBatchRepository } from '../repository/batch.repository.interface';
+import { Batch } from '../entities/batch.entity';
 
 @Injectable()
 export class BatchService {
-  create(createBatchDto: CreateBatchDto) {
-    return 'This action adds a new batch';
+  constructor(
+    @Inject(BATCH_REPOSITORY)
+    private readonly batchRepository: IBatchRepository,
+  ) {}
+
+  async findAll() {
+    return this.batchRepository.findAll();
   }
 
-  findAll() {
-    return `This action returns all batch`;
+  async findOne(id: number): Promise<Batch> {
+    const batch = await this.batchRepository.finById(id);
+    if (!batch) throw new NotFoundException('Batch not found');
+    return batch;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} batch`;
+  async create(createBatchDto: CreateBatchDto): Promise<Batch> {
+    return this.batchRepository.create(createBatchDto);
   }
 
-  update(id: number, updateBatchDto: UpdateBatchDto) {
-    return `This action updates a #${id} batch`;
-  }
+  // async update(id: number, updateBatchDto: UpdateBatchDto) {
+  //   const batch = await this.findOne(id);
 
-  remove(id: number) {
-    return `This action removes a #${id} batch`;
+  //   if (updateBatchDto.yield !== undefined) batch.yield = updateBatchDto.yield;
+  //   if (updateBatchDto.description !== undefined) batch.description = updateBatchDto.description;
+
+  //   return this.batchRepository.update(batch);
+  // } no creo que se tenga que actualizar un lote, si es que se hace todo de una si no si
+
+  async remove(id: number): Promise<Batch> {
+    const batch = await this.findOne(id);
+    return this.batchRepository.remove(batch);
   }
 }

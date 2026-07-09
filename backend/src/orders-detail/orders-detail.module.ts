@@ -8,6 +8,8 @@ import { OrdersDetailService } from './service/orders-detail.service';
 import { Order } from '../orders/entities/order.entity';
 import { Product } from '../products/entities/product.entity';
 import { OrdersDetail } from './entities/orders-detail.entity';
+import { ORDERS_DETAIL_REPOSITORY } from './repository/orders-detail.repository.interface';
+import { OrdersDetailRepository } from './repository/orders-detail.repository';
 
 @Module({
   imports: [
@@ -16,7 +18,13 @@ import { OrdersDetail } from './entities/orders-detail.entity';
     TypeOrmModule.forFeature([Order, Product, OrdersDetail]),
   ],
   controllers: [OrdersDetailController],
-  providers: [OrdersDetailService],
+  providers: [
+    OrdersDetailService,
+    {
+      provide: ORDERS_DETAIL_REPOSITORY,
+      useClass: OrdersDetailRepository,
+    },
+  ],
   exports: [TypeOrmModule],
 })
 export class OrdersDetailModule {}

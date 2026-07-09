@@ -10,6 +10,8 @@ import { Supply } from './entities/supply.entity';
 import { Supplier } from '../suppliers/entities/supplier.entity';
 import { Category } from '../categories/entities/category.entity';
 import { Recipe } from '../recipe/entities/recipe.entity';
+import { SUPPLIES_REPOSITORY } from './repository/supplies.repository.interface';
+import { SuppliesRepository } from './repository/supplies.repository';
 
 @Module({
   imports: [
@@ -19,7 +21,13 @@ import { Recipe } from '../recipe/entities/recipe.entity';
     TypeOrmModule.forFeature([Supply, Supplier, Category, Recipe]),
   ],
   controllers: [SuppliesController],
-  providers: [SuppliesService],
+  providers: [
+    SuppliesService,
+    {
+      provide: SUPPLIES_REPOSITORY,
+      useClass: SuppliesRepository,
+    },
+  ],
   exports: [TypeOrmModule],
 })
 export class SuppliesModule {}

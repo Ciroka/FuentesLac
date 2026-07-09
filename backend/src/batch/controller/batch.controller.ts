@@ -8,35 +8,35 @@ import {
   Delete,
 } from '@nestjs/common';
 import { BatchService } from '../service/batch.service';
-import { CreateBatchDto } from '../dto/create-batch.dto';
-import { UpdateBatchDto } from '../dto/update-batch.dto';
+import { BatchResponse, CreateBatchDto, UpdateBatchDto } from '../dto';
 
 @Controller('batch')
 export class BatchController {
   constructor(private readonly batchService: BatchService) {}
 
-  @Post()
-  create(@Body() createBatchDto: CreateBatchDto) {
-    return this.batchService.create(createBatchDto);
-  }
-
-  @Get()
-  findAll() {
+  @Get() //ver si paginamos tambien los lotes por si llos quieren consultar
+  findAll(): Promise<BatchResponse[]> {
     return this.batchService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<BatchResponse> {
     return this.batchService.findOne(+id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateBatchDto: UpdateBatchDto) {
-    return this.batchService.update(+id, updateBatchDto);
+  @Post()
+  create(@Body() createBatchDto: CreateBatchDto): Promise<BatchResponse> {
+    return this.batchService.create(createBatchDto);
   }
 
+  // @Patch(':id')
+  // update(@Param('id') id: string, @Body() updateBatchDto: UpdateBatchDto): Promise<BatchResponse> {
+  //   return this.batchService.update(+id, updateBatchDto);
+  // } ver comentario servicio
+
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  //ver tema de permisos
+  remove(@Param('id') id: string): Promise<BatchResponse> {
     return this.batchService.remove(+id);
   }
 }

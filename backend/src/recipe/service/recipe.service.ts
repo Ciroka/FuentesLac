@@ -1,25 +1,42 @@
-import { Injectable } from '@nestjs/common';
-import { CreateRecipeDto, UpdateRecipeDto } from '../dto';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import { CreateRecipeDto, UpdateRecipeDto, QueryParamsRecipe } from '../dto';
+import { RECIPE_REPOSITORY } from '../repository/recipe.repository.interface';
+import type { RecipeRepository } from '../repository/recipe.repository.interface';
+import { Recipe } from '../entities/recipe.entity';
 
 @Injectable()
 export class RecipeService {
-  create(createRecipeDto: CreateRecipeDto) {
-    return 'This action adds a new recipe';
+  constructor(
+    @Inject(RECIPE_REPOSITORY)
+    private readonly recipeRepository: RecipeRepository,
+  ) {}
+
+  async create(createRecipeDto: CreateRecipeDto): Promise<Recipe> {
+    return this.recipeRepository.create(createRecipeDto);
   }
 
-  findAll() {
-    return `This action returns all recipe`;
+  async findAll(params: QueryParamsRecipe) {
+    const { page, limit, order, description } = params;
+    return this.recipeRepository.findAll(page, limit, order, description);
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} recipe`;
+  async findOne(id: number): Promise<Recipe> {
+    const recipe = await this.recipeRepository.finById(id);
+    if (!recipe) throw new NotFoundException('Recipe not found');
+    return recipe;
   }
 
-  update(id: number, updateRecipeDto: UpdateRecipeDto) {
-    return `This action updates a #${id} recipe`;
+  async update(id: number, updateRecipeDto: UpdateRecipeDto) {
+    const recipe = await this.findOne(id);
+
+    if (updateRecipeDto.description !== undefined)
+      recipe.description = updateRecipeDto.description;
+
+    return this.recipeRepository.update(recipe);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} recipe`;
+  async remove(id: number) {
+    const recipe = await this.findOne(id);
+    return this.recipeRepository.remove(recipe);
   }
 }

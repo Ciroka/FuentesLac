@@ -7,8 +7,8 @@ import { SalesDetailModule } from '../sales-detail/sales-detail.module';
 import { OrdersDetailModule } from '../orders-detail/orders-detail.module';
 import { AdjustmentsModule } from '../adjustments/adjustments.module';
 import { ProductsController } from './controller/products.controller';
-import { PRODUCTS_REPOSITORY } from './repository/product.repository';
-import { TypeOrmProductRespository } from './repository/TypeOrmProducts.repository';
+import { PRODUCTS_REPOSITORY } from './repository/products.repository.interface';
+import { ProductRespository } from './repository/products.repository';
 import { ProductsService } from './service/products.service';
 import { Product } from './entities/product.entity';
 import { Category } from '../categories/entities/category.entity';
@@ -22,7 +22,7 @@ import { Supplier } from '../suppliers/entities/supplier.entity';
     CategoriesModule,
     SuppliersModule,
     SalesDetailModule,
-    OrdersDetailModule,
+    OrdersDetailModule, //y esto pq esta?
     AdjustmentsModule,
     TypeOrmModule.forFeature([
       Product,
@@ -38,7 +38,7 @@ import { Supplier } from '../suppliers/entities/supplier.entity';
     ProductsService,
     {
       provide: PRODUCTS_REPOSITORY,
-      useClass: TypeOrmProductRespository,
+      useClass: ProductRespository,
     },
   ],
   exports: [TypeOrmModule, ProductsService],

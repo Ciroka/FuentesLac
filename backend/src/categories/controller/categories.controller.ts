@@ -24,11 +24,6 @@ import { Product } from '../../products/entities/product.entity';
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
 
-  @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
-  }
-
   @Get()
   findAll(
     @Query() params: QueryParamsCategories,
@@ -39,6 +34,13 @@ export class CategoriesController {
   @Get(':id')
   findOne(@Param('id') id: string): Promise<CategoryResponse> {
     return this.categoriesService.findOneById(+id);
+  }
+
+  @Post()
+  create(
+    @Body() createCategoryDto: CreateCategoryDto,
+  ): Promise<CategoryResponse> {
+    return this.categoriesService.create(createCategoryDto);
   }
 
   @Get(':id/products')

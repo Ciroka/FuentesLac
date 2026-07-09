@@ -22,11 +22,6 @@ import { ProductsService } from '../service/products.service';
 export class ProductsController {
   constructor(private readonly productsService: ProductsService) {}
 
-  @Post()
-  async create(@Body() createProductDto: CreateProductDto) {
-    return await this.productsService.create(createProductDto);
-  }
-
   @Get()
   async findAll(
     @Query() params: QueryParamsProducts,
@@ -35,20 +30,27 @@ export class ProductsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id') id: string): Promise<ProductResponse> {
     return await this.productsService.findOne(+id);
+  }
+
+  @Post()
+  async create(
+    @Body() createProductDto: CreateProductDto,
+  ): Promise<ProductResponse> {
+    return await this.productsService.create(createProductDto);
   }
 
   @Patch(':id')
   async update(
     @Param('id') id: string,
     @Body() updateProductDto: UpdateProductDto,
-  ) {
+  ): Promise<ProductResponse> {
     return await this.productsService.update(+id, updateProductDto);
   }
 
   @Delete(':id')
-  async remove(@Param('id') id: string) {
+  async remove(@Param('id') id: string): Promise<ProductResponse> {
     return await this.productsService.remove(+id);
   }
 }

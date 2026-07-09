@@ -1,26 +1,53 @@
-import { Injectable } from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import { CreateOrdersDetailDto, UpdateOrdersDetailDto } from '../dto';
+import { ORDERS_DETAIL_REPOSITORY } from '../repository/orders-detail.repository.interface';
+import type { IOrdersDetailRepository } from '../repository/orders-detail.repository.interface';
+import { OrdersDetail } from '../entities/orders-detail.entity';
+import { ProductsService } from '../../products/service/products.service';
+import { EntityManager } from 'typeorm';
+import { CreateOrderDetailData } from '../dto/create-order-detail-data.dto';
 
 @Injectable()
 export class OrdersDetailService {
-  create(createOrdersDetailDto: CreateOrdersDetailDto) {
-    return 'This action adds a new ordersDetail';
+  constructor(
+    @Inject(ORDERS_DETAIL_REPOSITORY)
+    private readonly detailRepository: IOrdersDetailRepository,
+    private readonly productsService: ProductsService,
+  ) {}
+
+  async findAll(): Promise<OrdersDetail[]> {
+    return this.detailRepository.findAll();
   }
 
-  findAll() {
-    return `This action returns all ordersDetail`;
+  async findOne(id: number): Promise<OrdersDetail> {
+    const detail = await this.detailRepository.finById(id);
+    if (!detail) throw new NotFoundException('Orders detail not found');
+    return detail;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} ordersDetail`;
+  async findByOrder(orderId: number): Promise<OrdersDetail[]> {
+    return this.detailRepository.findByOrder(orderId);
   }
 
-  update(id: number, updateOrdersDetailDto: UpdateOrdersDetailDto) {
-    return `This action updates a #${id} ordersDetail`;
+  async create(
+    createOrdersDetailDto: CreateOrderDetailData,
+    manager?: EntityManager,
+  ): Promise<OrdersDetail> {
+    return this.detailRepository.create(createOrdersDetailDto, manager);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} ordersDetail`;
+  async update(
+    orderDetail: OrdersDetail,
+    manager?: EntityManager,
+  ): Promise<OrdersDetail> {
+    const detail = await this.findOne(orderDetail.id);
+    //detail.subtotal = detail.orderedQuantity * Number(detail.product.costPrice);
+    return this.detailRepository.update(orderDetail, manager);
+  }
+
+  async remove(id: number): Promise<OrdersDetail> {
+    const detail = await this.findOne(id);
+    return this.detailRepository.remove(detail);
   }
 }

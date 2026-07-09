@@ -6,37 +6,48 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
 } from '@nestjs/common';
 import { ClientsService } from '../service/clients.service';
-import { CreateClientDto } from '../dto/create-client.dto';
-import { UpdateClientDto } from '../dto/update-client.dto';
+import {
+  CreateClientDto,
+  UpdateClientDto,
+  QueryParamsClients,
+  ClientResponse,
+} from '../dto';
+import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 
 @Controller('clients')
 export class ClientsController {
   constructor(private readonly clientsService: ClientsService) {}
 
-  @Post()
-  create(@Body() createClientDto: CreateClientDto) {
-    return this.clientsService.create(createClientDto);
-  }
-
   @Get()
-  findAll() {
-    return this.clientsService.findAll();
+  findAll(
+    @Query() params: QueryParamsClients,
+  ): Promise<PaginatedResult<ClientResponse>> {
+    return this.clientsService.findAll(params);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id') id: string): Promise<ClientResponse> {
     return this.clientsService.findOne(+id);
   }
 
+  @Post()
+  create(@Body() createClientDto: CreateClientDto): Promise<ClientResponse> {
+    return this.clientsService.create(createClientDto);
+  }
+
   @Patch(':id')
-  update(@Param('id') id: string, @Body() updateClientDto: UpdateClientDto) {
+  update(
+    @Param('id') id: string,
+    @Body() updateClientDto: UpdateClientDto,
+  ): Promise<ClientResponse> {
     return this.clientsService.update(+id, updateClientDto);
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id') id: string): Promise<ClientResponse> {
     return this.clientsService.remove(+id);
   }
 }

@@ -57,9 +57,6 @@ export class Product {
   @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.product)
   salesDetails!: SalesDetail[];
 
-  @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.product)
-  ordersDetails!: OrdersDetail[];
-
   @OneToMany(() => Adjustment, (adjustments) => adjustments.product)
   adjustments!: Adjustment[];
 

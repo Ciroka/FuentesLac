@@ -11,9 +11,10 @@ import {
   QueryParamsProducts,
 } from '../dto';
 import { PaginatedResult } from '../../shared/pagination/pagination.type';
-import { PRODUCTS_REPOSITORY } from '../repository/product.repository';
-import type { ProductsRepository } from '../repository/product.repository';
+import { PRODUCTS_REPOSITORY } from '../repository/products.repository.interface';
+import type { ProductsRepository } from '../repository/products.repository.interface';
 import { Product } from '../entities/product.entity';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class ProductsService {
@@ -29,8 +30,8 @@ export class ProductsService {
     return this.productsRepository.findAll(page, limit, order, sortBy, name);
   }
 
-  async findOne(id: number): Promise<Product> {
-    const product = await this.productsRepository.finById(id);
+  async findOne(id: number, manager?: EntityManager): Promise<Product> {
+    const product = await this.productsRepository.finById(id, manager);
     if (!product) throw new NotFoundException('Product not Found');
     return product;
   }
@@ -43,7 +44,10 @@ export class ProductsService {
     return this.productsRepository.create(createProductDto);
   }
 
-  async findAllByCategory(categoryId: number, params: QueryParamsProducts) {
+  async findAllByCategory(
+    categoryId: number,
+    params: QueryParamsProducts,
+  ): Promise<PaginatedResult<Product>> {
     const { page, limit, order, sortBy, name } = params;
     return this.productsRepository.findAll(
       page,
@@ -55,7 +59,10 @@ export class ProductsService {
     );
   }
 
-  async update(id: number, updateProductDto: UpdateProductDto) {
+  async update(
+    id: number,
+    updateProductDto: UpdateProductDto,
+  ): Promise<Product> {
     const product = await this.findOne(id);
 
     if (updateProductDto.name !== undefined)
@@ -76,21 +83,25 @@ export class ProductsService {
     return this.productsRepository.update(product);
   }
 
-  async decreaseStock(id: number, stock: number) {
-    const product = await this.findOne(id);
+  async decreaseStock(
+    id: number,
+    stock: number,
+    manager?: EntityManager,
+  ): Promise<Product> {
+    const product = await this.findOne(id, manager);
     if (stock > product.currentStock)
       throw new BadRequestException('Insufficient current stock');
     product.currentStock -= stock;
-    return this.productsRepository.update(product);
+    return this.productsRepository.update(product, manager);
   }
 
-  async increaseStock(id: number, stock: number) {
+  async increaseStock(id: number, stock: number): Promise<Product> {
     const product = await this.findOne(id);
     product.currentStock += stock;
     return this.productsRepository.update(product);
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<Product> {
     const product = await this.findOne(id);
     return await this.productsRepository.remove(product);
   }

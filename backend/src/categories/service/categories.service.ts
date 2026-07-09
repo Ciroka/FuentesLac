@@ -5,8 +5,8 @@ import {
   UpdateCategoryDto,
   QueryParamsCategories,
 } from '../dto';
-import { CATEGORIES_REPOSITORY } from '../repositories/category.repository';
-import type { ICategoryRepository } from '../repositories/category.repository';
+import { CATEGORIES_REPOSITORY } from '../repositories/categories.repository.interface';
+import type { ICategoryRepository } from '../repositories/categories.repository.interface';
 import { Product } from '../../products/entities/product.entity';
 import { ProductsService } from '../../products/service/products.service';
 import { QueryParamsProducts } from '../../products/dto/request/params-products.dto';
@@ -42,11 +42,14 @@ export class CategoriesService {
     return this.productsService.findAllByCategory(id, params);
   }
 
-  async create(createCategoryDto: CreateCategoryDto) {
+  async create(createCategoryDto: CreateCategoryDto): Promise<Category> {
     return this.categoriesRepository.create(createCategoryDto);
   }
 
-  async update(id: number, updateCategoryDto: UpdateCategoryDto) {
+  async update(
+    id: number,
+    updateCategoryDto: UpdateCategoryDto,
+  ): Promise<Category> {
     const category = await this.findOneById(id);
 
     if (updateCategoryDto.name !== undefined)
@@ -57,7 +60,7 @@ export class CategoriesService {
     return this.categoriesRepository.update(category);
   }
 
-  async remove(id: number) {
+  async remove(id: number): Promise<Category> {
     const category = await this.findOneById(id);
     return this.categoriesRepository.remove(category);
   }

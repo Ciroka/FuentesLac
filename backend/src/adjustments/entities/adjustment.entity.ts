@@ -1,5 +1,6 @@
 import {
   Column,
+  CreateDateColumn,
   Entity,
   JoinColumn,
   ManyToOne,
@@ -20,7 +21,7 @@ export class Adjustment {
   @Column({ type: 'enum', enum: AdjustmentType, name: 'adjustment_type' })
   adjustmentType!: AdjustmentType;
 
-  @Column()
+  @CreateDateColumn()
   date!: Date;
 
   @ManyToOne(() => Product, (product) => product.adjustments)

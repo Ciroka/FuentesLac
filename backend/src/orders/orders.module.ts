@@ -8,6 +8,8 @@ import { OrdersService } from './service/orders.service';
 import { OrdersDetail } from '../orders-detail/entities/orders-detail.entity';
 import { Supplier } from '../suppliers/entities/supplier.entity';
 import { Order } from './entities/order.entity';
+import { ORDERS_REPOSITORY } from './repository/orders.repository.interface';
+import { OrdersRepository } from './repository/orders.repository';
 
 @Module({
   imports: [
@@ -16,7 +18,13 @@ import { Order } from './entities/order.entity';
     TypeOrmModule.forFeature([Order, OrdersDetail, Supplier]),
   ],
   controllers: [OrdersController],
-  providers: [OrdersService],
+  providers: [
+    OrdersService,
+    {
+      provide: ORDERS_REPOSITORY,
+      useClass: OrdersRepository,
+    },
+  ],
   exports: [TypeOrmModule],
 })
 export class OrdersModule {}

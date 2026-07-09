@@ -1,25 +1,59 @@
-import { Injectable } from '@nestjs/common';
-import { CreateSupplyDto, UpdateSupplyDto } from '../dto';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+
+import { CreateSupplyDto, UpdateSupplyDto, QueryParamsSupplies } from '../dto';
+import { SUPPLIES_REPOSITORY } from '../repository/supplies.repository.interface';
+import type { ISuppliesRepository } from '../repository/supplies.repository.interface';
+import { Supply } from '../entities/supply.entity';
+import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 
 @Injectable()
 export class SuppliesService {
-  create(createSupplyDto: CreateSupplyDto) {
-    return 'This action adds a new supply';
+  constructor(
+    @Inject(SUPPLIES_REPOSITORY)
+    private readonly suppliesRepository: ISuppliesRepository,
+  ) {}
+
+  async findAll(params: QueryParamsSupplies): Promise<PaginatedResult<Supply>> {
+    const { page, limit, order, name, categoryId } = params;
+    return this.suppliesRepository.findAll(
+      page,
+      limit,
+      order,
+      name,
+      categoryId,
+    );
   }
 
-  findAll() {
-    return `This action returns all supplies`;
+  async findOne(id: number): Promise<Supply> {
+    const supply = await this.suppliesRepository.finById(id);
+    if (!supply) throw new NotFoundException('Supply not found');
+    return supply;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} supply`;
+  async create(createSupplyDto: CreateSupplyDto): Promise<Supply> {
+    return this.suppliesRepository.create(createSupplyDto);
   }
 
-  update(id: number, updateSupplyDto: UpdateSupplyDto) {
-    return `This action updates a #${id} supply`;
+  async update(id: number, updateSupplyDto: UpdateSupplyDto): Promise<Supply> {
+    const supply = await this.findOne(id);
+
+    if (updateSupplyDto.name !== undefined) supply.name = updateSupplyDto.name;
+    if (updateSupplyDto.costPrice !== undefined)
+      supply.costPrice = updateSupplyDto.costPrice;
+    if (updateSupplyDto.currentStock !== undefined)
+      supply.currentStock = updateSupplyDto.currentStock;
+    if (updateSupplyDto.minStock !== undefined)
+      supply.minStock = updateSupplyDto.minStock;
+    if (updateSupplyDto.supplierId !== undefined)
+      supply.supplierId = updateSupplyDto.supplierId;
+    if (updateSupplyDto.categoryId !== undefined)
+      supply.categoryId = updateSupplyDto.categoryId;
+
+    return this.suppliesRepository.update(supply);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} supply`;
+  async remove(id: number): Promise<Supply> {
+    const supply = await this.findOne(id);
+    return this.suppliesRepository.remove(supply);
   }
 }
