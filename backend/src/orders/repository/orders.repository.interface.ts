@@ -13,10 +13,7 @@ export interface IOrdersRepository {
     supplierId?: number,
   ): Promise<PaginatedResult<Order>>;
   finById(id: number): Promise<Order | null>;
-  create(
-    supplierId: number,
-    total: number
-  ): Promise<Order>;
+  create(supplierId: number, total: number): Promise<Order>;
   update(order: Order): Promise<Order>;
   remove(order: Order): Promise<Order>;
 }

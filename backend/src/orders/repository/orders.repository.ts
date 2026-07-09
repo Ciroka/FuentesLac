@@ -54,10 +54,7 @@ export class OrdersRepository implements IOrdersRepository {
     });
   }
 
-  async create(
-    supplierId: number,
-    total: number,
-  ): Promise<Order> {
+  async create(supplierId: number, total: number): Promise<Order> {
     const order = this.orderRepository.create({
       total,
       supplier: { id: supplierId } as Supplier,

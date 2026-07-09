@@ -1,8 +1,5 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import {
-  CreateAdjustmentDto,
-  QueryParamsAdjustments,
-} from '../dto';
+import { CreateAdjustmentDto, QueryParamsAdjustments } from '../dto';
 import { ADJUSTMENTS_REPOSITORY } from '../repository/adjustments.repository.interface';
 import type { IAdjustmentsRepository } from '../repository/adjustments.repository.interface';
 import { Adjustment } from '../entities/adjustment.entity';

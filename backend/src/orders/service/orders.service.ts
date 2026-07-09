@@ -48,10 +48,7 @@ export class OrdersService {
       }[] = [];
 
       for (const item of createOrderDto.details) {
-        const supply = await this.supplyService.findOne(
-          item.supplyId,
-          manager,
-        );
+        const supply = await this.supplyService.findOne(item.supplyId, manager);
         const subtotal = supply.costPrice * item.quantity;
         total += subtotal;
         items.push({
@@ -63,9 +60,9 @@ export class OrdersService {
 
       const order = await orderRepo.save(
         orderRepo.create({
-          supplier: {id: createOrderDto.supplierId} as Supplier,
+          supplier: { id: createOrderDto.supplierId } as Supplier,
           total,
-        })
+        }),
       );
 
       for (const item of items) {

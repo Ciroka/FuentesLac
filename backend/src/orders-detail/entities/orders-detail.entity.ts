@@ -14,7 +14,7 @@ export class OrdersDetail {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ name: 'ordered_quantity', default: 0})
+  @Column({ name: 'ordered_quantity', default: 0 })
   orderedQuantity!: number;
 
   @Column({ name: 'arrival_quantity', default: 0 })

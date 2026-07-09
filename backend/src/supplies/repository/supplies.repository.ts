@@ -44,7 +44,9 @@ export class SuppliesRepository implements ISuppliesRepository {
   }
 
   async finById(id: number, manager?: EntityManager): Promise<Supply | null> {
-    const repo = manager ? manager.getRepository(Supply) : this.supplyRepository;
+    const repo = manager
+      ? manager.getRepository(Supply)
+      : this.supplyRepository;
     return repo.findOneBy({ id });
   }
 
