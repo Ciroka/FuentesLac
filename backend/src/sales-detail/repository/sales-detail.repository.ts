@@ -4,6 +4,7 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { SalesDetailRepository } from './sales-detail.repository.interface';
 import { SalesDetail } from '../entities/sales-detail.entity';
+import { Sale } from 'src/sales/entities/sale.entity';
 
 @Injectable()
 export class SalesDetailRepositoryImpl implements SalesDetailRepository {
@@ -20,7 +21,7 @@ export class SalesDetailRepositoryImpl implements SalesDetailRepository {
 
   async findBySale(saleId: number): Promise<SalesDetail[]> {
     return this.detailRepository.find({
-      where: { sale: { id: saleId } as any },
+      where: { sale: { id: saleId } as Sale },
       relations: { product: true },
     });
   }

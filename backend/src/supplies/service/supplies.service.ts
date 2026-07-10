@@ -63,23 +63,37 @@ export class SuppliesService {
   }
 
   async decreaseStock(
-    supply: Supply,
+    id: number,
     stock: number,
     manager?: EntityManager,
   ): Promise<Supply> {
-    if (stock > supply.currentStock)
-      throw new BadRequestException('Insufficient stock');
-    supply.currentStock -= stock;
-    return this.suppliesRepository.update(supply, manager);
+    const supply = await this.findOne(id, manager);
+    const updated = await this.suppliesRepository.decreaseStockAtomic(
+      id,
+      stock,
+      manager,
+    );
+    if (!updated || updated.currentStock > supply.currentStock) {
+      throw new BadRequestException('Insufficient current stock');
+    }
+    return updated;
   }
 
   async increaseStock(
-    supply: Supply,
+    id: number,
     stock: number,
     manager?: EntityManager,
   ): Promise<Supply> {
-    supply.currentStock += stock;
-    return this.suppliesRepository.update(supply, manager);
+    const supply = await this.findOne(id, manager);
+    const updated = await this.suppliesRepository.increaseStockAtomic(
+      id,
+      stock,
+      manager,
+    );
+    if (!updated || updated.currentStock < supply.currentStock) {
+      throw new BadRequestException('Stock could not update');
+    }
+    return updated;
   }
 
   async remove(id: number): Promise<Supply> {

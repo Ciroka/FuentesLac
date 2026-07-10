@@ -6,6 +6,6 @@ export interface IBatchRepository {
   findAll(): Promise<Batch[]>;
   findOneById(id: number): Promise<Batch | null>;
   create(input: Partial<Batch>): Promise<Batch>;
-  update(batch: Batch): Promise<Batch>;
+  update(batch: Partial<Batch>): Promise<Batch>;
   remove(batch: Batch): Promise<Batch>;
 }

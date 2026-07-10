@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { IBatchRepository } from './batch.repository.interface';
 import { Batch } from '../entities/batch.entity';
-import { CreateBatchDto, UpdateBatchDto } from '../dto';
 
 @Injectable()
 export class BatchRepository implements IBatchRepository {
@@ -21,11 +20,11 @@ export class BatchRepository implements IBatchRepository {
     return this.batchRepository.findOneBy({ id });
   }
 
-  async create(input: CreateBatchDto): Promise<Batch> {
+  async create(input: Partial<Batch>): Promise<Batch> {
     return this.batchRepository.save(input);
   }
 
-  async update(batch: UpdateBatchDto): Promise<Batch> {
+  async update(batch: Partial<Batch>): Promise<Batch> {
     return this.batchRepository.save(batch);
   }
 

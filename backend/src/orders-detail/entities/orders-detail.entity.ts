@@ -26,6 +26,15 @@ export class OrdersDetail {
     name: 'ordered_subtotal',
     default: 0,
   })
+  unitPrice: number = 0;
+
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    name: 'ordered_subtotal',
+    default: 0,
+  })
   orderedSubtotal: number = 0;
 
   @Column({

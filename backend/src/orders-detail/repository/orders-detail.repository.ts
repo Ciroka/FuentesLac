@@ -22,7 +22,7 @@ export class OrdersDetailRepository implements IOrdersDetailRepository {
 
   async findByOrder(orderId: number): Promise<OrdersDetail[]> {
     return this.detailRepository.find({
-      where: { order: { id: orderId } as any },
+      where: { order: { id: orderId } as Order },
       relations: { supply: true },
     });
   }

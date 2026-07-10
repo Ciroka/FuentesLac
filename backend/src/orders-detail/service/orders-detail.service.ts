@@ -38,7 +38,7 @@ export class OrdersDetailService {
     orderDetail: OrdersDetail,
     manager?: EntityManager,
   ): Promise<OrdersDetail> {
-    const detail = await this.findOne(orderDetail.id);
+    //const detail = await this.findOne(orderDetail.id);
     //detail.subtotal = detail.orderedQuantity * Number(detail.supply.costPrice);
     return this.detailRepository.update(orderDetail, manager);
   }

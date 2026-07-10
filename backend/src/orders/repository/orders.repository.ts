@@ -1,11 +1,10 @@
-import { Repository, DeepPartial, EntityManager } from 'typeorm';
+import { Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginatedResult } from '../../shared/pagination/pagination.type';
 import { OrderEnum } from '../../shared/enums/order.enum';
 import { IOrdersRepository } from './orders.repository.interface';
 import { Order } from '../entities/order.entity';
-import { Supplier } from 'src/suppliers';
 
 @Injectable()
 export class OrdersRepository implements IOrdersRepository {
@@ -54,17 +53,17 @@ export class OrdersRepository implements IOrdersRepository {
     });
   }
 
-  async create(supplierId: number, total: number): Promise<Order> {
-    const order = this.orderRepository.create({
-      orderedTotal: total,
-      supplier: { id: supplierId } as Supplier,
-    });
-    return this.orderRepository.save(order);
-  }
+  // async create(supplierId: number, total: number): Promise<Order> {
+  //   const order = this.orderRepository.create({
+  //     orderedTotal: total,
+  //     supplier: { id: supplierId } as Supplier,
+  //   });
+  //   return this.orderRepository.save(order);
+  // }
 
-  async update(order: Order): Promise<Order> {
-    return this.orderRepository.save(order);
-  }
+  // async update(order: Order): Promise<Order> {
+  //   return this.orderRepository.save(order);
+  // }
 
   async remove(order: Order): Promise<Order> {
     return this.orderRepository.remove(order);

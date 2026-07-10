@@ -6,8 +6,6 @@ import { OrdersModule } from '../orders/orders.module';
 import { SuppliersController } from './controller/suppliers.controller';
 import { SuppliersService } from './service/suppliers.service';
 import { Supplier } from './entities/supplier.entity';
-import { Supply } from '../supplies/entities/supply.entity';
-import { Order } from '../orders/entities/order.entity';
 import { SUPPLIERS_REPOSITORY } from './repository/suppliers.repository.interface';
 import { SuppliersRepository } from './repository/suppliers.repository';
 
@@ -15,7 +13,7 @@ import { SuppliersRepository } from './repository/suppliers.repository';
   imports: [
     SuppliesModule,
     OrdersModule,
-    TypeOrmModule.forFeature([Supplier, Supply, Order]),
+    TypeOrmModule.forFeature([Supplier]),
   ],
   controllers: [SuppliersController],
   providers: [

@@ -73,35 +73,6 @@ export class ProductRepository implements ProductsRepository {
     return repo.save(product);
   }
 
-  async remove(product: Product): Promise<Product> {
-    return this.productRepository.remove(product);
-  }
-
-  private queryBuilder(
-    sortBy?: SortByProduct,
-    name?: string,
-    categoryId?: number,
-    order: OrderEnum = OrderEnum.ASC,
-  ) {
-    const query = this.productRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category');
-
-    if (name) {
-      query.where('product.name ILIKE :name', { name: `%${name}%` });
-    }
-
-    if (sortBy) {
-      query.orderBy(`product.${sortBy}`, order);
-    }
-
-    if (categoryId) {
-      query.andWhere('product.categoryId = :categoryId', { categoryId });
-    }
-
-    return query;
-  }
-
   async decreaseStockAtomic(
     id: number,
     amount: number,
@@ -138,5 +109,34 @@ export class ProductRepository implements ProductsRepository {
       .execute();
 
     return repo.findOneBy({ id });
+  }
+
+  async remove(product: Product): Promise<Product> {
+    return this.productRepository.remove(product);
+  }
+
+  private queryBuilder(
+    sortBy?: SortByProduct,
+    name?: string,
+    categoryId?: number,
+    order: OrderEnum = OrderEnum.ASC,
+  ) {
+    const query = this.productRepository
+      .createQueryBuilder('product')
+      .leftJoinAndSelect('product.category', 'category');
+
+    if (name) {
+      query.where('product.name ILIKE :name', { name: `%${name}%` });
+    }
+
+    if (sortBy) {
+      query.orderBy(`product.${sortBy}`, order);
+    }
+
+    if (categoryId) {
+      query.andWhere('product.categoryId = :categoryId', { categoryId });
+    }
+
+    return query;
   }
 }

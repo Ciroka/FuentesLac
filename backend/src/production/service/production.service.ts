@@ -51,7 +51,7 @@ export class ProductionService {
         const supplies: { supply: Supply; quantity: number }[] = [];
         for (const s of item.details) {
           const supply = await this.supplyService.findOne(s.supplyId, manager);
-          await this.supplyService.decreaseStock(supply, s.quantity, manager);
+          await this.supplyService.decreaseStock(supply.id, s.quantity, manager);
           supplies.push({ supply, quantity: s.quantity });
         }
         await this.productService.increaseStock(
@@ -81,8 +81,8 @@ export class ProductionService {
 
   // }
 
-  async remove(id: number): Promise<Production> {
-    const production = await this.findOne(id);
-    return this.productionRepository.remove(production);
-  }
+  // async remove(id: number): Promise<Production> {
+  //   const production = await this.findOne(id);
+  //   return this.productionRepository.remove(production);
+  // } creo que no se va a usar
 }

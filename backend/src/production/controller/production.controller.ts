@@ -42,8 +42,8 @@ export class ProductionController {
   //   return this.productionService.update(+id, updateProductionDto);
   // }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.productionService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string) {
+  //   return this.productionService.remove(+id);
+  // }
 }

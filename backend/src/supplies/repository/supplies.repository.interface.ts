@@ -16,6 +16,16 @@ export interface ISuppliesRepository {
   ): Promise<PaginatedResult<Supply>>;
   findOneById(id: number, manager?: EntityManager): Promise<Supply | null>;
   create(input: CreateSupplyDto): Promise<Supply>;
+  decreaseStockAtomic(
+    id: number,
+    amount: number,
+    manager?: EntityManager,
+  ): Promise<Supply | null>;
+  increaseStockAtomic(
+    id: number,
+    amount: number,
+    manager?: EntityManager,
+  ): Promise<Supply | null>;
   update(supply: Supply, manager?: EntityManager): Promise<Supply>;
   remove(supply: Supply): Promise<Supply>;
 }

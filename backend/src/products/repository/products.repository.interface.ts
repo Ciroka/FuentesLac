@@ -20,7 +20,6 @@ export interface ProductsRepository {
   findByName(name: string, manager?: EntityManager): Promise<Product | null>;
   create(input: CreateProductDto): Promise<Product>;
   update(product: Product, manager?: EntityManager): Promise<Product>;
-  remove(product: Product): Promise<Product>;
   decreaseStockAtomic(
     id: number,
     amount: number,
@@ -31,4 +30,5 @@ export interface ProductsRepository {
     amount: number,
     manager?: EntityManager,
   ): Promise<Product | null>;
+  remove(product: Product): Promise<Product>;
 }

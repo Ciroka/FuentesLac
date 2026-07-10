@@ -42,6 +42,7 @@ export class OrdersService {
 
       const items: {
         supply: Supply;
+        unitPrice: number;
         orderedQuantity: number;
         subtotal: number;
       }[] = [];
@@ -52,6 +53,7 @@ export class OrdersService {
         total += subtotal;
         items.push({
           supply,
+          unitPrice: supply.costPrice,
           orderedQuantity: item.quantity,
           subtotal,
         });
@@ -62,6 +64,7 @@ export class OrdersService {
         orderedTotal: total,
         ordersDetails: items.map((item) => ({
           supply: item.supply,
+          unitPrice: item.unitPrice,
           orderedQuantity: item.orderedQuantity,
           orderedSubtotal: item.subtotal,
         })),
@@ -83,9 +86,8 @@ export class OrdersService {
         },
       });
 
-      if (!order || !updateOrderDto.details) {
-        throw new BadRequestException('Missing updates');
-      }
+      if (!order) throw new NotFoundException('Order not found');
+      if (!updateOrderDto.details) throw new BadRequestException('Missing details in request body');
       for (const updateDtoDetail of updateOrderDto.details) {
         const detail = order.ordersDetails.find(
           (d) => d.supply.id === updateDtoDetail.supplyId,
@@ -93,23 +95,20 @@ export class OrdersService {
         if (!detail) throw new NotFoundException('Detail not found');
         detail.arrivalQuantity += updateDtoDetail.quantity;
         await this.supplyService.increaseStock(
-          detail.supply,
+          detail.supply.id,
           updateDtoDetail.quantity,
           manager,
         );
+        detail.arrivalSubtotal = detail.arrivalQuantity * Number(detail.unitPrice);
+        order.arrivalTotal += detail.arrivalSubtotal; 
       }
-      order.arrivalTotal = order.ordersDetails.reduce(
-        (total, d) =>
-          total + Number(d.supply.costPrice) * Number(d.arrivalQuantity),
-        0,
-      );
 
       return orderRepo.save(order);
     });
   }
 
-  async remove(id: number): Promise<Order> {
-    const order = await this.findOne(id);
-    return this.ordersRepository.remove(order);
-  }
+  // async remove(id: number): Promise<Order> {
+  //   const order = await this.findOne(id);
+  //   return this.ordersRepository.remove(order);
+  // } creo que no se va a usar
 }

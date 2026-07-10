@@ -42,6 +42,11 @@ export class AdjustmentsService {
         createAdjustmentDto.stockChange,
         manager,
       );
+//    if (createAdjustmentDto.adjustmentType === AdjustmentType.LOST) {
+    //   await this.productsService.decreaseStock(productId, createAdjustmentDto.stockChange, manager);
+    // } else {
+    //   await this.productsService.increaseStock(productId, createAdjustmentDto.stockChange, manager);
+    // }
 
       const adjustment = await adjustmentRepo.save(
         adjustmentRepo.create({
@@ -65,11 +70,14 @@ export class AdjustmentsService {
 */
 
   async remove(id: number): Promise<Adjustment> {
+  return this.dataSource.transaction(async (manager) => {
     const adjustment = await this.findOneById(id);
-    await this.productsService.increaseStock(
-      adjustment.productId!,
-      adjustment.stockChange,
-    );
+    //if (adjustment.adjustmentType === AdjustmentType.LOST) {
+      await this.productsService.increaseStock(adjustment.productId!, adjustment.stockChange, manager);
+    //} else {
+      //await this.productsService.decreaseStock(adjustment.productId!, adjustment.stockChange, manager);
+    //}
     return this.adjustmentsRepository.remove(adjustment);
-  }
+  });
+}
 }

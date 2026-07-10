@@ -47,8 +47,8 @@ export class OrdersController {
     return this.ordersService.update(+id, updateOrderDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string): Promise<OrderResponse> {
-    return this.ordersService.remove(+id);
-  }
+  // @Delete(':id')
+  // remove(@Param('id') id: string): Promise<OrderResponse> {
+  //   return this.ordersService.remove(+id);
+  // }
 }
