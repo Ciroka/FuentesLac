@@ -8,9 +8,7 @@ import { ORDERS_DETAIL_REPOSITORY } from './repository/orders-detail.repository.
 import { OrdersDetailRepository } from './repository/orders-detail.repository';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([OrdersDetail]),
-  ],
+  imports: [TypeOrmModule.forFeature([OrdersDetail])],
   controllers: [OrdersDetailController],
   providers: [
     OrdersDetailService,

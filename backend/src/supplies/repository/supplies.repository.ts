@@ -43,7 +43,10 @@ export class SuppliesRepository implements ISuppliesRepository {
     return { items: supplies, total, page, limit };
   }
 
-  async findOneById(id: number, manager?: EntityManager): Promise<Supply | null> {
+  async findOneById(
+    id: number,
+    manager?: EntityManager,
+  ): Promise<Supply | null> {
     const repo = manager
       ? manager.getRepository(Supply)
       : this.supplyRepository;

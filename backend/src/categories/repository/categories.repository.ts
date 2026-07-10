@@ -58,8 +58,7 @@ export class CategoriesRepository implements ICategoryRepository {
     name?: string,
     order: OrderEnum = OrderEnum.ASC,
   ) {
-    const query = this.categoriesRepository
-      .createQueryBuilder('category')
+    const query = this.categoriesRepository.createQueryBuilder('category');
 
     if (name) {
       query.where('category.name ILIKE :name', { name: `%${name}%` });

@@ -8,9 +8,7 @@ import { SUPPLIES_REPOSITORY } from './repository/supplies.repository.interface'
 import { SuppliesRepository } from './repository/supplies.repository';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Supply]),
-  ],
+  imports: [TypeOrmModule.forFeature([Supply])],
   controllers: [SuppliesController],
   providers: [
     SuppliesService,

@@ -9,10 +9,7 @@ import { SALES_DETAIL_REPOSITORY } from './repository/sales-detail.repository.in
 import { SalesDetailRepositoryImpl } from './repository/sales-detail.repository';
 
 @Module({
-  imports: [
-    ProductsModule,
-    TypeOrmModule.forFeature([SalesDetail]),
-  ],
+  imports: [ProductsModule, TypeOrmModule.forFeature([SalesDetail])],
   controllers: [SalesDetailController],
   providers: [
     SalesDetailService,

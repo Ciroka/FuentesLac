@@ -1,4 +1,4 @@
-import { PaymentMethod } from "src/shared/enums";
+import { PaymentMethod } from 'src/shared/enums';
 
 export interface SaleResponse {
   id: number;

@@ -8,9 +8,7 @@ import { PRODUCTION_DETAIL_REPOSITORY } from './repository/production-detail.rep
 import { ProductionDetailRepositoryImpl } from './repository/production-detail.repository';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([ProductionDetail]),
-  ],
+  imports: [TypeOrmModule.forFeature([ProductionDetail])],
   controllers: [ProductionDetailController],
   providers: [
     ProductionDetailService,

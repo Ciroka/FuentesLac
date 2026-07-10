@@ -17,13 +17,13 @@ export class SalesDetailService {
   async findAll() {
     return this.detailRepository.findAll();
   }
-  
+
   async findOne(id: number): Promise<SalesDetail> {
     const detail = await this.detailRepository.findOneById(id);
     if (!detail) throw new NotFoundException('Sales detail not found');
     return detail;
   }
-  
+
   async findBySale(saleId: number) {
     return this.detailRepository.findBySale(saleId);
   }
@@ -37,7 +37,7 @@ export class SalesDetailService {
     const subtotal = createSalesDetailDto.quantity * Number(product.salePrice);
     return this.detailRepository.create({ ...createSalesDetailDto, subtotal });
   }
-  
+
   async update(id: number, updateSalesDetailDto: UpdateSalesDetailDto) {
     const detail = await this.findOne(id);
     if (updateSalesDetailDto.quantity !== undefined) {

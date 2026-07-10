@@ -9,10 +9,7 @@ import { OrdersRepository } from './repository/orders.repository';
 import { SuppliesModule } from 'src/supplies';
 
 @Module({
-  imports: [
-    SuppliesModule,
-    TypeOrmModule.forFeature([Order]),
-  ],
+  imports: [SuppliesModule, TypeOrmModule.forFeature([Order])],
   controllers: [OrdersController],
   providers: [
     OrdersService,

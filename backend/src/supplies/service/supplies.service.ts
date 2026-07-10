@@ -51,7 +51,7 @@ export class SuppliesService {
     if (updateSupplyDto.costPrice !== undefined)
       supply.costPrice = updateSupplyDto.costPrice;
     //if (updateSupplyDto.currentStock !== undefined)
-      //supply.currentStock = updateSupplyDto.currentStock;
+    //supply.currentStock = updateSupplyDto.currentStock;
     if (updateSupplyDto.minStock !== undefined)
       supply.minStock = updateSupplyDto.minStock;
     if (updateSupplyDto.supplierId !== undefined)

@@ -1,4 +1,4 @@
-import { AdjustmentType } from "src/shared/enums";
+import { AdjustmentType } from 'src/shared/enums';
 
 export interface AdjustmentResponse {
   id: number;

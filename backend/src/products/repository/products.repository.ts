@@ -42,7 +42,10 @@ export class ProductRepository implements ProductsRepository {
     return PaginatedResult;
   }
 
-  async findOneById(id: number, manager?: EntityManager): Promise<Product | null> {
+  async findOneById(
+    id: number,
+    manager?: EntityManager,
+  ): Promise<Product | null> {
     const repo = manager
       ? manager.getRepository(Product)
       : this.productRepository;
@@ -100,41 +103,40 @@ export class ProductRepository implements ProductsRepository {
   }
 
   async decreaseStockAtomic(
-  id: number,
-  amount: number,
-  manager?: EntityManager,
+    id: number,
+    amount: number,
+    manager?: EntityManager,
   ): Promise<Product | null> {
-  const repo = manager
-    ? manager.getRepository(Product)
-    : this.productRepository;
+    const repo = manager
+      ? manager.getRepository(Product)
+      : this.productRepository;
 
-  await repo
-    .createQueryBuilder()
-    .update(Product)
-    .set({ currentStock: () => `current_stock - :amount` })
-    .where('id = :id AND current_stock >= :amount', { id, amount })
-    .execute();
+    await repo
+      .createQueryBuilder()
+      .update(Product)
+      .set({ currentStock: () => `current_stock - :amount` })
+      .where('id = :id AND current_stock >= :amount', { id, amount })
+      .execute();
 
-  return repo.findOneBy({ id });
+    return repo.findOneBy({ id });
   }
 
   async increaseStockAtomic(
-  id: number,
-  amount: number,
-  manager?: EntityManager,
+    id: number,
+    amount: number,
+    manager?: EntityManager,
   ): Promise<Product | null> {
-  const repo = manager
-    ? manager.getRepository(Product)
-    : this.productRepository;
+    const repo = manager
+      ? manager.getRepository(Product)
+      : this.productRepository;
 
-  await repo
-    .createQueryBuilder()
-    .update(Product)
-    .set({ currentStock: () => `current_stock + :amount` })
-    .where('id = :id', { id, amount })
-    .execute();
+    await repo
+      .createQueryBuilder()
+      .update(Product)
+      .set({ currentStock: () => `current_stock + :amount` })
+      .where('id = :id', { id, amount })
+      .execute();
 
-  return repo.findOneBy({ id });
+    return repo.findOneBy({ id });
   }
-
 }
