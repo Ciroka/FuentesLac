@@ -45,7 +45,7 @@ export class ClientsRepository implements IClientsRepository {
     return paginatedResult;
   }
 
-  async finById(id: number): Promise<Client | null> {
+  async findOneById(id: number): Promise<Client | null> {
     return this.clientRepository.findOneBy({ id });
   }
 

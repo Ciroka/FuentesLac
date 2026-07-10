@@ -18,7 +18,7 @@ export class OrdersDetailService {
   }
 
   async findOne(id: number): Promise<OrdersDetail> {
-    const detail = await this.detailRepository.finById(id);
+    const detail = await this.detailRepository.findOneById(id);
     if (!detail) throw new NotFoundException('Orders detail not found');
     return detail;
   }

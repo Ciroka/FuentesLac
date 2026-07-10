@@ -12,7 +12,7 @@ export interface ISuppliersRepository {
     order: OrderEnum,
     name?: string,
   ): Promise<PaginatedResult<Supplier>>;
-  finById(id: number): Promise<Supplier | null>;
+  findOneById(id: number): Promise<Supplier | null>;
   create(input: CreateSupplierDto): Promise<Supplier>;
   update(supplier: Supplier): Promise<Supplier>;
   remove(supplier: Supplier): Promise<Supplier>;

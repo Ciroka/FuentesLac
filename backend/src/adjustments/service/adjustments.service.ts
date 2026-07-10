@@ -24,8 +24,8 @@ export class AdjustmentsService {
     return this.adjustmentsRepository.findAll(page, limit, order, productId);
   }
 
-  async findOne(id: number): Promise<Adjustment> {
-    const adjustment = await this.adjustmentsRepository.finById(id);
+  async findOneById(id: number): Promise<Adjustment> {
+    const adjustment = await this.adjustmentsRepository.findOneById(id);
     if (!adjustment) throw new NotFoundException('Adjustment not found');
     return adjustment;
   }
@@ -65,9 +65,9 @@ export class AdjustmentsService {
 */
 
   async remove(id: number): Promise<Adjustment> {
-    const adjustment = await this.findOne(id);
+    const adjustment = await this.findOneById(id);
     await this.productsService.increaseStock(
-      adjustment.product,
+      adjustment.productId!,
       adjustment.stockChange,
     );
     return this.adjustmentsRepository.remove(adjustment);

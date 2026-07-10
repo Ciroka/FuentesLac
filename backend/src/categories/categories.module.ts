@@ -3,13 +3,12 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { ProductsModule } from '../products/products.module';
 import { CategoriesController } from './controller/categories.controller';
 import { CategoriesService } from './service/categories.service';
-import { CategoriesRepository } from './repositories/categories.repository';
-import { CATEGORIES_REPOSITORY } from './repositories/categories.repository.interface';
+import { CategoriesRepository } from './repository/categories.repository';
+import { CATEGORIES_REPOSITORY } from './repository/categories.repository.interface';
 import { Category } from './entities/category.entity';
-import { Product } from '../products/entities/product.entity';
 
 @Module({
-  imports: [ProductsModule, TypeOrmModule.forFeature([Category, Product])],
+  imports: [ProductsModule, TypeOrmModule.forFeature([Category])],
   controllers: [CategoriesController],
   providers: [
     CategoriesService,

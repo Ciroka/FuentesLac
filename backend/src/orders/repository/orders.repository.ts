@@ -47,7 +47,7 @@ export class OrdersRepository implements IOrdersRepository {
     return paginatedResult;
   }
 
-  async finById(id: number): Promise<Order | null> {
+  async findOneById(id: number): Promise<Order | null> {
     return this.orderRepository.findOne({
       where: { id },
       relations: { ordersDetails: true, supplier: true },

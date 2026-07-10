@@ -4,7 +4,6 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { ProductionDetailRepository } from './production-detail.repository.interface';
 import { ProductionDetail } from '../entities/production-detail.entity';
-import { CreateProductionDetailDto } from '../dto';
 
 @Injectable()
 export class ProductionDetailRepositoryImpl implements ProductionDetailRepository {
@@ -26,7 +25,7 @@ export class ProductionDetailRepositoryImpl implements ProductionDetailRepositor
     });
   }
 
-  async finById(id: number): Promise<ProductionDetail | null> {
+  async findOneById(id: number): Promise<ProductionDetail | null> {
     return this.detailRepository.findOne({
       where: { id },
       relations: { production: true, product: true },

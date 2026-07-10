@@ -1,5 +1,4 @@
 import {
-  IsDecimal,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -11,30 +10,30 @@ export class CreateProductDto {
   name!: string;
 
   @IsPositive()
-  @IsDecimal()
+  @IsNumber()
   @IsOptional()
   salePrice?: number;
 
   @IsPositive()
-  @IsDecimal()
+  @IsNumber()
   costPrice!: number;
 
   @IsPositive()
-  @IsDecimal()
+  @IsNumber()
   marginPercent: number = 0.3;
 
   @IsPositive()
-  @IsDecimal()
+  @IsNumber()
   @IsOptional()
   currentStock: number = 0;
 
   @IsPositive()
-  @IsDecimal()
+  @IsNumber()
   minStock!: number;
 
   @IsNumber()
   @IsOptional()
-  lote?: number;
+  batchId?: number;
 
   @IsNumber()
   @IsPositive()

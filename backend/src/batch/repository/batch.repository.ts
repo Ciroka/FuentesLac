@@ -17,7 +17,7 @@ export class BatchRepository implements IBatchRepository {
     return this.batchRepository.find();
   }
 
-  async finById(id: number): Promise<Batch | null> {
+  async findOneById(id: number): Promise<Batch | null> {
     return this.batchRepository.findOneBy({ id });
   }
 

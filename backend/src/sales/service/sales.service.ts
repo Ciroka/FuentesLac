@@ -22,7 +22,7 @@ export class SalesService {
   }
 
   async findOne(id: number): Promise<Sale> {
-    const sale = await this.salesRepository.finById(id);
+    const sale = await this.salesRepository.findOneById(id);
     if (!sale) throw new NotFoundException('Sale not found');
     return sale;
   }

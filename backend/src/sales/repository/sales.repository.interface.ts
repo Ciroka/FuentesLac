@@ -12,7 +12,7 @@ export interface SalesRepository {
     order: OrderEnum,
     clientId?: number,
   ): Promise<PaginatedResult<Sale>>;
-  finById(id: number): Promise<Sale | null>;
+  findOneById(id: number): Promise<Sale | null>;
   create(input: CreateSaleDto): Promise<Sale>;
   update(sale: Sale): Promise<Sale>;
   remove(sale: Sale): Promise<Sale>;

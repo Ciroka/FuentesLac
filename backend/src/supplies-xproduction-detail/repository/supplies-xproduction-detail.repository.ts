@@ -18,7 +18,7 @@ export class SuppliesXproductionDetailRepository implements ISuppliesXproduction
     });
   }
 
-  async finById(
+  async findOneById(
     id: number,
     manager?: EntityManager,
   ): Promise<SuppliesXproductionDetail | null> {

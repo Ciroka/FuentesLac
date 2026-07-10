@@ -10,7 +10,7 @@ export interface ProductionRepository {
     limit: number,
     order: OrderEnum,
   ): Promise<PaginatedResult<Production>>;
-  finById(id: number): Promise<Production | null>;
+  findOneById(id: number): Promise<Production | null>;
   create(input: Partial<Production>): Promise<Production>;
   update(production: Production): Promise<Production>;
   remove(production: Production): Promise<Production>;

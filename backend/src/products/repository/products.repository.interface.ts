@@ -16,9 +16,11 @@ export interface ProductsRepository {
     name?: string,
     categoryId?: number,
   ): Promise<PaginatedResult<Product>>;
-  findById(id: number, manager?: EntityManager): Promise<Product | null>;
+  findOneById(id: number, manager?: EntityManager): Promise<Product | null>;
   findByName(name: string, manager?: EntityManager): Promise<Product | null>;
   create(input: CreateProductDto): Promise<Product>;
   update(product: Product, manager?: EntityManager): Promise<Product>;
   remove(product: Product): Promise<Product>;
+  decreaseStockAtomic(id: number,amount: number,manager?: EntityManager,): Promise<Product | null>;
+  increaseStockAtomic(id: number,amount: number,manager?: EntityManager,): Promise<Product | null>;
 }

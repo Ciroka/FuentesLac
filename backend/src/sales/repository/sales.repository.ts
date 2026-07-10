@@ -41,7 +41,7 @@ export class SalesRepositoryImpl implements SalesRepository {
     return { items, total, page, limit };
   }
 
-  async finById(id: number): Promise<Sale | null> {
+  async findOneById(id: number): Promise<Sale | null> {
     return this.saleRepository.findOne({
       where: { id },
       relations: { details: true, client: true },

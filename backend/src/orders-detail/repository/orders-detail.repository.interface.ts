@@ -7,7 +7,7 @@ export const ORDERS_DETAIL_REPOSITORY = 'ORDERS_DETAIL_REPOSITORY';
 export interface IOrdersDetailRepository {
   findAll(): Promise<OrdersDetail[]>;
   findByOrder(orderId: number): Promise<OrdersDetail[]>;
-  finById(id: number): Promise<OrdersDetail | null>;
+  findOneById(id: number): Promise<OrdersDetail | null>;
   create(
     input: CreateOrderDetailData,
     manager?: EntityManager,

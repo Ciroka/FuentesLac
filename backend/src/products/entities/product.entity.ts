@@ -10,7 +10,6 @@ import {
 
 import { Adjustment } from '../../adjustments/entities/adjustment.entity';
 import { Category } from '../../categories/entities/category.entity';
-import { OrdersDetail } from '../../orders-detail/entities/orders-detail.entity';
 import { SalesDetail } from '../../sales-detail/entities/sales-detail.entity';
 import { Supplier } from '../../suppliers/entities/supplier.entity';
 import { ProductionDetail } from 'src/production-detail';
@@ -40,6 +39,7 @@ export class Product {
   minStock!: number;
 
   @ManyToOne(() => Batch, (batch) => batch.products)
+  @JoinColumn({ name: 'batch_id' })
   batch!: Batch;
 
   @Column({ name: 'category_id', nullable: true })

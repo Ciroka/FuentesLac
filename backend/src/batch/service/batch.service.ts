@@ -16,7 +16,7 @@ export class BatchService {
   }
 
   async findOne(id: number): Promise<Batch> {
-    const batch = await this.batchRepository.finById(id);
+    const batch = await this.batchRepository.findOneById(id);
     if (!batch) throw new NotFoundException('Batch not found');
     return batch;
   }

@@ -5,17 +5,14 @@ import { SalesDetailModule } from '../sales-detail/sales-detail.module';
 import { ClientsModule } from '../clients/clients.module';
 import { SalesController } from './controller/sales.controller';
 import { SalesService } from './service/sales.service';
-import { SalesDetail } from '../sales-detail/entities/sales-detail.entity';
 import { Sale } from './entities/sale.entity';
-import { Client } from '../clients/entities/client.entity';
 import { SALES_REPOSITORY } from './repository/sales.repository.interface';
 import { SalesRepositoryImpl } from './repository/sales.repository';
 
 @Module({
   imports: [
     SalesDetailModule,
-    ClientsModule,
-    TypeOrmModule.forFeature([Sale, SalesDetail, Client]),
+    TypeOrmModule.forFeature([Sale]),
   ],
   controllers: [SalesController],
   providers: [

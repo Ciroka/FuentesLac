@@ -12,7 +12,7 @@ export interface IUsersRepository {
     order: OrderEnum,
     name?: string,
   ): Promise<PaginatedResult<User>>;
-  finById(id: number): Promise<User | null>;
+  findOneById(id: number): Promise<User | null>;
   create(input: CreateUserDto): Promise<User>;
   update(user: User): Promise<User>;
   remove(user: User): Promise<User>;

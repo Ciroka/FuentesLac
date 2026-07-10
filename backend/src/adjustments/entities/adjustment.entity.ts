@@ -24,7 +24,10 @@ export class Adjustment {
   @CreateDateColumn()
   date!: Date;
 
+  @Column({ name: 'product_id', nullable: true })
+  productId?: number;
+
   @ManyToOne(() => Product, (product) => product.adjustments)
   @JoinColumn({ name: 'product_id' })
-  product!: Product;
+  product?: Product;
 }

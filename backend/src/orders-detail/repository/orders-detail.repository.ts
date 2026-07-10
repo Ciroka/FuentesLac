@@ -27,7 +27,7 @@ export class OrdersDetailRepository implements IOrdersDetailRepository {
     });
   }
 
-  async finById(id: number): Promise<OrdersDetail | null> {
+  async findOneById(id: number): Promise<OrdersDetail | null> {
     return this.detailRepository.findOne({
       where: { id },
       relations: { order: true, supply: true },
@@ -45,7 +45,7 @@ export class OrdersDetailRepository implements IOrdersDetailRepository {
       order: { id: input.orderId } as Order,
       supply: input.supply,
       orderedQuantity: input.orderedQuantity,
-      subtotal: input.subtotal,
+      orderedSubtotal: input.subtotal,
     });
   }
 

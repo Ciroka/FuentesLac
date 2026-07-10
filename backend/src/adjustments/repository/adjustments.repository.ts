@@ -4,10 +4,8 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { PaginatedResult } from '../../shared/pagination/pagination.type';
 import { OrderEnum } from '../../shared/enums/order.enum';
-import { CreateAdjustmentDto } from '../dto';
 import { IAdjustmentsRepository } from './adjustments.repository.interface';
 import { Adjustment } from '../entities/adjustment.entity';
-import { Product } from 'src/products';
 
 @Injectable()
 export class AdjustmentsRepository implements IAdjustmentsRepository {
@@ -47,7 +45,7 @@ export class AdjustmentsRepository implements IAdjustmentsRepository {
     return paginatedResult;
   }
 
-  async finById(id: number): Promise<Adjustment | null> {
+  async findOneById(id: number): Promise<Adjustment | null> {
     return this.adjustmentRepository.findOne({
       where: { id },
       relations: { product: true },

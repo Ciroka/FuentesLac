@@ -8,7 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { PaymentMethod } from '../../shared/enums/paymentMethod..enum';
+import { PaymentMethod } from '../../shared/enums/paymentMethod.enum';
 import { Client } from '../../clients/entities/client.entity';
 import { SalesDetail } from '../../sales-detail/entities/sales-detail.entity';
 
@@ -29,7 +29,10 @@ export class Sale {
   @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.sale)
   details!: SalesDetail[];
 
+  @Column({ name: 'client_id', nullable: true })
+  clientId?: number;
+
   @ManyToOne(() => Client, (client) => client.sales, { nullable: true })
   @JoinColumn({ name: 'client_id' })
-  client!: Client;
+  client?: Client;
 }

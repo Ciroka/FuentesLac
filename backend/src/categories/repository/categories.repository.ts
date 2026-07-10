@@ -40,7 +40,7 @@ export class CategoriesRepository implements ICategoryRepository {
 
     return PaginatedResult;
   }
-  async findOne(id: number): Promise<Category | null> {
+  async findOneById(id: number): Promise<Category | null> {
     return this.categoriesRepository.findOneBy({ id });
   }
   async create(input: CreateCategoryDto): Promise<Category> {
@@ -59,15 +59,14 @@ export class CategoriesRepository implements ICategoryRepository {
     order: OrderEnum = OrderEnum.ASC,
   ) {
     const query = this.categoriesRepository
-      .createQueryBuilder('product')
-      .leftJoinAndSelect('product.category', 'category');
+      .createQueryBuilder('category')
 
     if (name) {
-      query.where('product.name ILIKE name', { name: `%${name}%` });
+      query.where('category.name ILIKE :name', { name: `%${name}%` });
     }
 
     if (sortBy) {
-      query.orderBy(`product.${sortBy}`, order);
+      query.orderBy(`category.${sortBy}`, order);
     }
     return query;
   }

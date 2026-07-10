@@ -5,8 +5,8 @@ import {
   UpdateCategoryDto,
   QueryParamsCategories,
 } from '../dto';
-import { CATEGORIES_REPOSITORY } from '../repositories/categories.repository.interface';
-import type { ICategoryRepository } from '../repositories/categories.repository.interface';
+import { CATEGORIES_REPOSITORY } from '../repository/categories.repository.interface';
+import type { ICategoryRepository } from '../repository/categories.repository.interface';
 import { Product } from '../../products/entities/product.entity';
 import { ProductsService } from '../../products/service/products.service';
 import { QueryParamsProducts } from '../../products/dto/request/params-products.dto';
@@ -29,8 +29,8 @@ export class CategoriesService {
   }
 
   async findOneById(id: number): Promise<Category> {
-    const category = await this.categoriesRepository.findOne(id);
-    if (!category) throw new NotFoundException('Category no found');
+    const category = await this.categoriesRepository.findOneById(id);
+    if (!category) throw new NotFoundException('Category not found');
     return category;
   }
 

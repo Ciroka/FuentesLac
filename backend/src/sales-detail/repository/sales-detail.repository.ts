@@ -25,7 +25,7 @@ export class SalesDetailRepositoryImpl implements SalesDetailRepository {
     });
   }
 
-  async finById(id: number): Promise<SalesDetail | null> {
+  async findOneById(id: number): Promise<SalesDetail | null> {
     return this.detailRepository.findOne({
       where: { id },
       relations: { sale: true, product: true },

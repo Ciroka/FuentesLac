@@ -1,9 +1,7 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
-import { CreateProductionDetailDto, UpdateProductionDetailDto } from '../dto';
 import { PRODUCTION_DETAIL_REPOSITORY } from '../repository/production-detail.repository.interface';
 import type { ProductionDetailRepository } from '../repository/production-detail.repository.interface';
 import { ProductionDetail } from '../entities/production-detail.entity';
-import { Production } from 'src/production/entities/production.entity';
 import { EntityManager } from 'typeorm';
 
 @Injectable()
@@ -18,7 +16,7 @@ export class ProductionDetailService {
   }
 
   async findOne(id: number): Promise<ProductionDetail> {
-    const detail = await this.detailRepository.finById(id);
+    const detail = await this.detailRepository.findOneById(id);
     if (!detail) throw new NotFoundException('Production detail not found');
     return detail;
   }

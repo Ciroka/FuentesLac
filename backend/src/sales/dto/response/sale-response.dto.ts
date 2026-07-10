@@ -1,7 +1,9 @@
+import { PaymentMethod } from "src/shared/enums";
+
 export interface SaleResponse {
   id: number;
   date: Date;
   total: number;
-  paymentMethod: string;
+  paymentMethod: PaymentMethod;
   clientId?: number;
 }

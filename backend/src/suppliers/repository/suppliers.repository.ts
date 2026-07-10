@@ -45,7 +45,7 @@ export class SuppliersRepository implements ISuppliersRepository {
     return paginatedResult;
   }
 
-  async finById(id: number): Promise<Supplier | null> {
+  async findOneById(id: number): Promise<Supplier | null> {
     return this.supplierRepository.findOneBy({ id });
   }
 

@@ -31,7 +31,7 @@ export class SuppliesService {
   }
 
   async findOne(id: number, manager?: EntityManager): Promise<Supply> {
-    const supply = await this.suppliesRepository.findById(id, manager);
+    const supply = await this.suppliesRepository.findOneById(id, manager);
     if (!supply) throw new NotFoundException('Supply not found');
     return supply;
   }
@@ -50,8 +50,8 @@ export class SuppliesService {
     if (updateSupplyDto.name !== undefined) supply.name = updateSupplyDto.name;
     if (updateSupplyDto.costPrice !== undefined)
       supply.costPrice = updateSupplyDto.costPrice;
-    if (updateSupplyDto.currentStock !== undefined)
-      supply.currentStock = updateSupplyDto.currentStock;
+    //if (updateSupplyDto.currentStock !== undefined)
+      //supply.currentStock = updateSupplyDto.currentStock;
     if (updateSupplyDto.minStock !== undefined)
       supply.minStock = updateSupplyDto.minStock;
     if (updateSupplyDto.supplierId !== undefined)

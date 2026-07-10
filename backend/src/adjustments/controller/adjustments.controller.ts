@@ -38,7 +38,7 @@ export class AdjustmentsController {
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<AdjustmentResponse> {
-    return this.adjustmentsService.findOne(+id);
+    return this.adjustmentsService.findOneById(+id);
   }
 
   /*  @Patch(':id')

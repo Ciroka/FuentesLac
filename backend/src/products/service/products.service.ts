@@ -31,7 +31,7 @@ export class ProductsService {
   }
 
   async findOne(id: number, manager?: EntityManager): Promise<Product> {
-    const product = await this.productsRepository.findById(id, manager);
+    const product = await this.productsRepository.findOneById(id, manager);
     if (!product) throw new NotFoundException('Product not Found');
     return product;
   }
@@ -79,8 +79,8 @@ export class ProductsService {
       product.costPrice = updateProductDto.costPrice;
     if (updateProductDto.marginPercent !== undefined)
       product.marginPercent = updateProductDto.marginPercent;
-    if (updateProductDto.currentStock !== undefined)
-      product.currentStock = updateProductDto.currentStock;
+   //if (updateProductDto.currentStock !== undefined)
+      //product.currentStock = updateProductDto.currentStock; Ver si se deja actualizar el stock via update
     if (updateProductDto.minStock !== undefined)
       product.minStock = updateProductDto.minStock;
     if (updateProductDto.categoryId !== undefined)
@@ -94,21 +94,30 @@ export class ProductsService {
     stock: number,
     manager?: EntityManager,
   ): Promise<Product> {
-    const product = await this.findOne(id, manager);
-    if (stock > product.currentStock)
-      throw new BadRequestException('Insufficient current stock');
-    product.currentStock -= stock;
-    return this.productsRepository.update(product, manager);
+  const product = await this.findOne(id, manager);
+  const updated = await this.productsRepository.decreaseStockAtomic(
+    id, stock, manager,
+  );
+  if (!updated || updated.currentStock > product.currentStock) {
+    throw new BadRequestException('Insufficient current stock');
   }
+  return updated;
+}
 
   async increaseStock(
-    product: Product,
+    id: number,
     stock: number,
     manager?: EntityManager,
   ): Promise<Product> {
-    product.currentStock += stock;
-    return this.productsRepository.update(product, manager);
+  const product = await this.findOne(id, manager);
+  const updated = await this.productsRepository.increaseStockAtomic(
+    id, stock, manager,
+  );
+  if (!updated || updated.currentStock < product.currentStock) {
+    throw new BadRequestException('Stock could not update');
   }
+  return updated;
+}
 
   async remove(id: number): Promise<Product> {
     const product = await this.findOne(id);

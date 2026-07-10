@@ -1,6 +1,6 @@
 import {
-  IsDecimal,
   IsInt,
+  IsNumber,
   IsOptional,
   IsPositive,
   IsString,
@@ -12,7 +12,7 @@ export class CreateSupplyDto {
   name!: string;
 
   @IsPositive()
-  @IsDecimal()
+  @IsNumber()
   costPrice!: number;
 
   @IsInt()

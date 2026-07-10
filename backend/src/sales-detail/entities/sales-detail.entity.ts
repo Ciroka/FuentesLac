@@ -21,8 +21,9 @@ export class SalesDetail {
   subtotal!: number;
 
   @ManyToOne(() => Sale, (sale) => sale.details, { onDelete: 'RESTRICT' })
+  @JoinColumn({ name: 'sale_id' })
   sale!: Sale;
-
+  
   @ManyToOne(() => Product, (product) => product.salesDetails)
   @JoinColumn({ name: 'product_id' })
   product!: Product;

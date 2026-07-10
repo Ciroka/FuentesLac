@@ -22,7 +22,7 @@ export class SuppliesXproductionDetailService {
   }
 
   async findOne(id: number): Promise<SuppliesXproductionDetail> {
-    const detail = await this.detailRepository.finById(id);
+    const detail = await this.detailRepository.findOneById(id);
     if (!detail)
       throw new NotFoundException('SuppliesXproductionDetail not found');
     return detail;

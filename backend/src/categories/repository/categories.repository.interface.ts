@@ -14,7 +14,7 @@ export interface ICategoryRepository {
     sortBy?: SortByCategory,
     name?: string,
   ): Promise<PaginatedResult<Category>>;
-  findOne(id: number): Promise<Category | null>;
+  findOneById(id: number): Promise<Category | null>;
   create(input: CreateCategoryDto): Promise<Category>;
   update(input: UpdateCategoryDto): Promise<Category>;
   remove(category: Category): Promise<Category>;

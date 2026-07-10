@@ -30,7 +30,7 @@ export class OrdersService {
   }
 
   async findOne(id: number): Promise<Order> {
-    const order = await this.ordersRepository.finById(id);
+    const order = await this.ordersRepository.findOneById(id);
     if (!order) throw new NotFoundException('Order not found');
     return order;
   }
@@ -90,7 +90,7 @@ export class OrdersService {
         const detail = order.ordersDetails.find(
           (d) => d.supply.id === updateDtoDetail.supplyId,
         );
-        if (!detail) throw new BadRequestException('No se q poner');
+        if (!detail) throw new NotFoundException('Detail not found');
         detail.arrivalQuantity += updateDtoDetail.quantity;
         await this.supplyService.increaseStock(
           detail.supply,
@@ -98,7 +98,7 @@ export class OrdersService {
           manager,
         );
       }
-      order.arrival_total = order.ordersDetails.reduce(
+      order.arrivalTotal = order.ordersDetails.reduce(
         (total, d) =>
           total + Number(d.supply.costPrice) * Number(d.arrivalQuantity),
         0,

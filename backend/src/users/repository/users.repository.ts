@@ -48,7 +48,7 @@ export class UserRepository implements IUsersRepository {
     return paginatedResult;
   }
 
-  async finById(id: number): Promise<User | null> {
+  async findOneById(id: number): Promise<User | null> {
     return this.userRepository.findOneBy({ id });
   }
 

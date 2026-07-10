@@ -24,7 +24,7 @@ export class SuppliersService {
   }
 
   async findOne(id: number): Promise<Supplier> {
-    const supplier = await this.suppliersRepository.finById(id);
+    const supplier = await this.suppliersRepository.findOneById(id);
     if (!supplier) throw new NotFoundException('Supplier not found');
     return supplier;
   }

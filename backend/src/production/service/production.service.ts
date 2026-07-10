@@ -28,7 +28,7 @@ export class ProductionService {
   }
 
   async findOne(id: number): Promise<Production> {
-    const production = await this.productionRepository.finById(id);
+    const production = await this.productionRepository.findOneById(id);
     if (!production) throw new NotFoundException('Production not found');
     return production;
   }
@@ -55,7 +55,7 @@ export class ProductionService {
           supplies.push({ supply, quantity: s.quantity });
         }
         await this.productService.increaseStock(
-          product,
+          product.id,
           item.quantity,
           manager,
         );

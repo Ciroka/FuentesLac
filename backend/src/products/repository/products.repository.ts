@@ -10,7 +10,7 @@ import { ProductsRepository } from './products.repository.interface';
 import { Product } from '../entities/product.entity';
 
 @Injectable()
-export class ProductRespository implements ProductsRepository {
+export class ProductRepository implements ProductsRepository {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
@@ -42,7 +42,7 @@ export class ProductRespository implements ProductsRepository {
     return PaginatedResult;
   }
 
-  async findById(id: number, manager?: EntityManager): Promise<Product | null> {
+  async findOneById(id: number, manager?: EntityManager): Promise<Product | null> {
     const repo = manager
       ? manager.getRepository(Product)
       : this.productRepository;
@@ -85,7 +85,7 @@ export class ProductRespository implements ProductsRepository {
       .leftJoinAndSelect('product.category', 'category');
 
     if (name) {
-      query.where('product.name ILIKE name', { name: `%${name}%` });
+      query.where('product.name ILIKE :name', { name: `%${name}%` });
     }
 
     if (sortBy) {
@@ -98,4 +98,43 @@ export class ProductRespository implements ProductsRepository {
 
     return query;
   }
+
+  async decreaseStockAtomic(
+  id: number,
+  amount: number,
+  manager?: EntityManager,
+  ): Promise<Product | null> {
+  const repo = manager
+    ? manager.getRepository(Product)
+    : this.productRepository;
+
+  await repo
+    .createQueryBuilder()
+    .update(Product)
+    .set({ currentStock: () => `current_stock - :amount` })
+    .where('id = :id AND current_stock >= :amount', { id, amount })
+    .execute();
+
+  return repo.findOneBy({ id });
+  }
+
+  async increaseStockAtomic(
+  id: number,
+  amount: number,
+  manager?: EntityManager,
+  ): Promise<Product | null> {
+  const repo = manager
+    ? manager.getRepository(Product)
+    : this.productRepository;
+
+  await repo
+    .createQueryBuilder()
+    .update(Product)
+    .set({ currentStock: () => `current_stock + :amount` })
+    .where('id = :id', { id, amount })
+    .execute();
+
+  return repo.findOneBy({ id });
+  }
+
 }

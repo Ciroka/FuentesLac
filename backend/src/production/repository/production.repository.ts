@@ -32,7 +32,7 @@ export class ProductionRepositoryImpl implements ProductionRepository {
     return { items, total, page, limit };
   }
 
-  async finById(id: number): Promise<Production | null> {
+  async findOneById(id: number): Promise<Production | null> {
     return this.productionRepository.findOne({
       where: { id },
       relations: { details: true },

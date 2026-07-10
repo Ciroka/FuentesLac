@@ -34,14 +34,17 @@ export class Order {
     scale: 2,
     name: 'arrival_total',
   })
-  arrival_total: number = 0;
+  arrivalTotal: number = 0;
 
   @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.order, {
     cascade: true,
   })
   ordersDetails!: OrdersDetail[];
 
+  @Column({ name: 'supplier_id', nullable: true })
+  supplierId?: number;
+
   @ManyToOne(() => Supplier, (supplier) => supplier.orders)
   @JoinColumn({ name: 'supplier_id' })
-  supplier!: Supplier;
+  supplier?: Supplier;
 }

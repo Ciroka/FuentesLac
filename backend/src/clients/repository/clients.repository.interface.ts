@@ -12,7 +12,7 @@ export interface IClientsRepository {
     order: OrderEnum,
     name?: string,
   ): Promise<PaginatedResult<Client>>;
-  finById(id: number): Promise<Client | null>;
+  findOneById(id: number): Promise<Client | null>;
   create(input: CreateClientDto): Promise<Client>;
   update(client: Client): Promise<Client>;
   remove(client: Client): Promise<Client>;
