@@ -5,6 +5,7 @@ import { CLIENTS_REPOSITORY } from '../repository/clients.repository.interface';
 import type { IClientsRepository } from '../repository/clients.repository.interface';
 import { Client } from '../entities/client.entity';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
+import { EntityManager } from 'typeorm';
 
 @Injectable()
 export class ClientsService {
@@ -22,8 +23,8 @@ export class ClientsService {
     return this.clientsRepository.findAll(page, limit, order, name);
   }
 
-  async findOne(id: number): Promise<Client> {
-    const client = await this.clientsRepository.findOneById(id);
+  async findOne(id: number, manager?: EntityManager): Promise<Client> {
+    const client = await this.clientsRepository.findOneById(id, manager);
     if (!client) throw new NotFoundException('Client not found');
     return client;
   }

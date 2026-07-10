@@ -7,9 +7,5 @@ export class CreateSalesDetailDto {
 
   @IsInt()
   @IsPositive()
-  saleId!: number;
-
-  @IsInt()
-  @IsPositive()
   productId!: number;
 }

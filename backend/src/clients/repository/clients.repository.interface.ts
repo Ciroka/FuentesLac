@@ -1,3 +1,4 @@
+import { EntityManager } from 'typeorm';
 import { OrderEnum } from '../../shared/enums/order.enum';
 import { PaginatedResult } from '../../shared/pagination/pagination.type';
 import { CreateClientDto } from '../dto';
@@ -12,7 +13,7 @@ export interface IClientsRepository {
     order: OrderEnum,
     name?: string,
   ): Promise<PaginatedResult<Client>>;
-  findOneById(id: number): Promise<Client | null>;
+  findOneById(id: number, manager?: EntityManager): Promise<Client | null>;
   create(input: CreateClientDto): Promise<Client>;
   update(client: Client): Promise<Client>;
   remove(client: Client): Promise<Client>;

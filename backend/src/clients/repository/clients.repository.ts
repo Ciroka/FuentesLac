@@ -1,4 +1,4 @@
-import { Repository } from 'typeorm';
+import { EntityManager, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -45,7 +45,10 @@ export class ClientsRepository implements IClientsRepository {
     return paginatedResult;
   }
 
-  async findOneById(id: number): Promise<Client | null> {
+  async findOneById(
+    id: number,
+    manager?: EntityManager,
+  ): Promise<Client | null> {
     return this.clientRepository.findOneBy({ id });
   }
 

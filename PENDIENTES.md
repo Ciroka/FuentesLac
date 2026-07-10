@@ -28,3 +28,4 @@
 | 3 | Código muerto en Orders repository (create/update) | `orders/repository/orders.repository.ts` | Comentado |
 | 4 | Código muerto en Adjustments repository (create/update) | `adjustments/repository/adjustments.repository.ts` | Comentado |
 | 5 | Unused findOne en OrdersDetail service | `orders-detail/service/orders-detail.service.ts` | Comentado |
+| 6 | `SalesService.update()` solo actualiza `paymentMethod` | `sales/service/sales.service.ts` | `details` y `clientId` se ignoran |

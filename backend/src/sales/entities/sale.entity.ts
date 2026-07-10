@@ -26,7 +26,9 @@ export class Sale {
   @Column({ type: 'enum', enum: PaymentMethod, name: 'payment_method' })
   paymentMethod!: PaymentMethod;
 
-  @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.sale)
+  @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.sale, {
+    cascade: true,
+  })
   details!: SalesDetail[];
 
   @Column({ name: 'client_id', nullable: true })

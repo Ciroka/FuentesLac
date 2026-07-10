@@ -21,7 +21,7 @@ export class OrdersService {
     @Inject(ORDERS_REPOSITORY)
     private readonly ordersRepository: IOrdersRepository,
     private readonly dataSource: DataSource,
-    private readonly supplyService: SuppliesService,
+    private readonly suppliesService: SuppliesService,
   ) {}
 
   async findAll(params: QueryParamsOrders): Promise<PaginatedResult<Order>> {
@@ -48,7 +48,10 @@ export class OrdersService {
       }[] = [];
 
       for (const item of createOrderDto.details) {
-        const supply = await this.supplyService.findOne(item.supplyId, manager);
+        const supply = await this.suppliesService.findOne(
+          item.supplyId,
+          manager,
+        );
         const subtotal = supply.costPrice * item.quantity;
         total += subtotal;
         items.push({
@@ -95,7 +98,7 @@ export class OrdersService {
         );
         if (!detail) throw new NotFoundException('Detail not found');
         detail.arrivalQuantity += updateDtoDetail.quantity;
-        await this.supplyService.increaseStock(
+        await this.suppliesService.increaseStock(
           detail.supply.id,
           updateDtoDetail.quantity,
           manager,

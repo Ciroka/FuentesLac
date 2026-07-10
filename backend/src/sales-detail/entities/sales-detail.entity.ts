@@ -17,10 +17,19 @@ export class SalesDetail {
   @Column()
   quantity!: number;
 
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    name: 'ordered_subtotal',
+    default: 0,
+  })
+  unitPrice: number = 0;
+
   @Column({ type: 'decimal', precision: 10, scale: 2 })
   subtotal!: number;
 
-  @ManyToOne(() => Sale, (sale) => sale.details, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => Sale, (sale) => sale.details, { onDelete: 'CASCADE' })
   @JoinColumn({ name: 'sale_id' })
   sale!: Sale;
 
