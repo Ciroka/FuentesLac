@@ -58,42 +58,42 @@ export class SuppliesRepository implements ISuppliesRepository {
   }
 
   async decreaseStockAtomic(
-      id: number,
-      amount: number,
-      manager?: EntityManager,
-    ): Promise<Supply | null> {
-      const repo = manager
-        ? manager.getRepository(Supply)
-        : this.supplyRepository;
-  
-      await repo
-        .createQueryBuilder()
-        .update(Supply)
-        .set({ currentStock: () => `current_stock - :amount` })
-        .where('id = :id AND current_stock >= :amount', { id, amount })
-        .execute();
-  
-      return repo.findOneBy({ id });
-    }
-  
-    async increaseStockAtomic(
-      id: number,
-      amount: number,
-      manager?: EntityManager,
-    ): Promise<Supply | null> {
-      const repo = manager
-        ? manager.getRepository(Supply)
-        : this.supplyRepository;
-  
-      await repo
-        .createQueryBuilder()
-        .update(Supply)
-        .set({ currentStock: () => `current_stock + :amount` })
-        .where('id = :id', { id, amount })
-        .execute();
-  
-      return repo.findOneBy({ id });
-    }
+    id: number,
+    amount: number,
+    manager?: EntityManager,
+  ): Promise<Supply | null> {
+    const repo = manager
+      ? manager.getRepository(Supply)
+      : this.supplyRepository;
+
+    await repo
+      .createQueryBuilder()
+      .update(Supply)
+      .set({ currentStock: () => `current_stock - :amount` })
+      .where('id = :id AND current_stock >= :amount', { id, amount })
+      .execute();
+
+    return repo.findOneBy({ id });
+  }
+
+  async increaseStockAtomic(
+    id: number,
+    amount: number,
+    manager?: EntityManager,
+  ): Promise<Supply | null> {
+    const repo = manager
+      ? manager.getRepository(Supply)
+      : this.supplyRepository;
+
+    await repo
+      .createQueryBuilder()
+      .update(Supply)
+      .set({ currentStock: () => `current_stock + :amount` })
+      .where('id = :id', { id, amount })
+      .execute();
+
+    return repo.findOneBy({ id });
+  }
 
   async update(supply: Supply, manager?: EntityManager): Promise<Supply> {
     const repo = manager

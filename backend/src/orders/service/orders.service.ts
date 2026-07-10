@@ -87,7 +87,8 @@ export class OrdersService {
       });
 
       if (!order) throw new NotFoundException('Order not found');
-      if (!updateOrderDto.details) throw new BadRequestException('Missing details in request body');
+      if (!updateOrderDto.details)
+        throw new BadRequestException('Missing details in request body');
       for (const updateDtoDetail of updateOrderDto.details) {
         const detail = order.ordersDetails.find(
           (d) => d.supply.id === updateDtoDetail.supplyId,
@@ -99,8 +100,9 @@ export class OrdersService {
           updateDtoDetail.quantity,
           manager,
         );
-        detail.arrivalSubtotal = detail.arrivalQuantity * Number(detail.unitPrice);
-        order.arrivalTotal += detail.arrivalSubtotal; 
+        detail.arrivalSubtotal =
+          detail.arrivalQuantity * Number(detail.unitPrice);
+        order.arrivalTotal += detail.arrivalSubtotal;
       }
 
       return orderRepo.save(order);

@@ -51,7 +51,11 @@ export class ProductionService {
         const supplies: { supply: Supply; quantity: number }[] = [];
         for (const s of item.details) {
           const supply = await this.supplyService.findOne(s.supplyId, manager);
-          await this.supplyService.decreaseStock(supply.id, s.quantity, manager);
+          await this.supplyService.decreaseStock(
+            supply.id,
+            s.quantity,
+            manager,
+          );
           supplies.push({ supply, quantity: s.quantity });
         }
         await this.productService.increaseStock(

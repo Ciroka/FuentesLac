@@ -10,11 +10,7 @@ import { SUPPLIERS_REPOSITORY } from './repository/suppliers.repository.interfac
 import { SuppliersRepository } from './repository/suppliers.repository';
 
 @Module({
-  imports: [
-    SuppliesModule,
-    OrdersModule,
-    TypeOrmModule.forFeature([Supplier]),
-  ],
+  imports: [SuppliesModule, OrdersModule, TypeOrmModule.forFeature([Supplier])],
   controllers: [SuppliersController],
   providers: [
     SuppliersService,
