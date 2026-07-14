@@ -14,6 +14,8 @@ import {
   UpdateSuppliesXproductionDetailDto,
 } from '../dto';
 import { SuppliesXproductionDetail } from '../entities/supplies-xproduction-detail.entity';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('supplies-xproduction-detail')
 export class SuppliesXproductionDetailController {
@@ -53,6 +55,7 @@ export class SuppliesXproductionDetailController {
     );
   }
 
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string): Promise<SuppliesXproductionDetail> {
     return this.suppliesXproductionDetailService.remove(+id);

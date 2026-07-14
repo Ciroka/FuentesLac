@@ -1,15 +1,13 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
   Delete,
 } from '@nestjs/common';
 
 import { ProductionDetailService } from '../service/production-detail.service';
-import { CreateProductionDetailDto, UpdateProductionDetailDto } from '../dto';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('production-detail')
 export class ProductionDetailController {
@@ -27,19 +25,7 @@ export class ProductionDetailController {
     return this.productionDetailService.findOne(+id);
   }
 
-  // @Post()
-  // create(@Body() createProductionDetailDto: CreateProductionDetailDto) {
-  //   return this.productionDetailService.create(createProductionDetailDto);
-  // }
-
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateProductionDetailDto: UpdateProductionDetailDto,
-  // ) {
-  //   return this.productionDetailService.update(+id, updateProductionDetailDto);
-  // }
-
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string) {
     const detail = await this.productionDetailService.findOne(+id);

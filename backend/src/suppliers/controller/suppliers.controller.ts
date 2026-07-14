@@ -17,6 +17,8 @@ import {
   SupplierResponse,
 } from '../dto';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('suppliers')
 export class SuppliersController {
@@ -49,6 +51,7 @@ export class SuppliersController {
     return this.suppliersService.update(+id, updateSupplierDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string): Promise<SupplierResponse> {
     return this.suppliersService.remove(+id);

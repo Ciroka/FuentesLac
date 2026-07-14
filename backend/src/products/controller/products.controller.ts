@@ -17,6 +17,8 @@ import {
   ProductResponse,
 } from '../dto';
 import { ProductsService } from '../service/products.service';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('products')
 export class ProductsController {
@@ -49,6 +51,7 @@ export class ProductsController {
     return await this.productsService.update(+id, updateProductDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   async remove(@Param('id') id: string): Promise<ProductResponse> {
     return await this.productsService.remove(+id);

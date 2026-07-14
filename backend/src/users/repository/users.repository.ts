@@ -1,10 +1,9 @@
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
 import { PaginatedResult } from '../../shared/pagination/pagination.type';
 import { OrderEnum } from '../../shared/enums/order.enum';
-import { CreateUserDto } from '../dto';
 import {
   IUsersRepository,
   USERS_REPOSITORY,
@@ -15,7 +14,7 @@ import { User } from '../entities/user.entity';
 export class UserRepository implements IUsersRepository {
   constructor(
     @InjectRepository(User)
-    private readonly userRepository: Repository<User>,
+    private readonly usersRepository: Repository<User>,
   ) {}
 
   async findAll(
@@ -24,7 +23,7 @@ export class UserRepository implements IUsersRepository {
     order: OrderEnum,
     name?: string,
   ): Promise<PaginatedResult<User>> {
-    const query = this.userRepository.createQueryBuilder('user');
+    const query = this.usersRepository.createQueryBuilder('user');
 
     if (name) {
       query.where('user.name ILIKE :name', { name: `%${name}%` });
@@ -48,19 +47,61 @@ export class UserRepository implements IUsersRepository {
     return paginatedResult;
   }
 
-  async findOneById(id: number): Promise<User | null> {
-    return this.userRepository.findOneBy({ id });
-  }
+  async findOneById(id: string): Promise<User | null> {
+        return this.usersRepository.findOneBy({ id });
+    }
 
-  async create(input: CreateUserDto): Promise<User> {
-    return this.userRepository.save(input);
-  }
+    async findOneByEmail(email: string): Promise<User | null> {
+        return this.usersRepository.findOneBy({ email });
+    }
 
-  async update(user: User): Promise<User> {
-    return this.userRepository.save(user);
-  }
+    async findOneByEmailWithPassword(email: string): Promise<User | null> {
+        return this.usersRepository.createQueryBuilder('u')
+                            .addSelect('u.passwordHash')
+                            .where('u.email = :email', { email })
+                            .getOne();
+    }
 
-  async remove(user: User): Promise<User> {
-    return this.userRepository.remove(user);
-  }
+    async findOneByIdWithPassword(id: string): Promise<User | null> {
+        return this.usersRepository.createQueryBuilder('u')
+                            .addSelect('u.passwordHash')
+                            .where('u.id = :id', { id })
+                            .getOne();
+    }
+
+    async findOneByVerificationToken(verificationToken: string){
+        return this.usersRepository.createQueryBuilder('u')
+            .addSelect('u.verificationToken')
+            .where('u.verification_token = :verificationToken', { verificationToken })
+            .getOne();
+    }
+
+    async findOneByResetPasswordToken(resetPasswordToken: string): Promise<User | null>{
+        return this.usersRepository.createQueryBuilder('u')
+            .addSelect('u.codeHashResetPassword')
+            .where('u.code_hash_reset_password = :resetPasswordToken', { resetPasswordToken })
+            .getOne();
+    }
+
+    async count(): Promise<number> {
+        return this.usersRepository.count();
+    }
+
+    async register(user: DeepPartial<User>): Promise<User> {
+        const userCreated = this.usersRepository.create(user);
+        return this.usersRepository.save(userCreated);
+    }
+
+    async existsByEmail(email: string): Promise<boolean> {
+        return this.usersRepository.existsBy({ email });
+    }
+
+    async update(user: DeepPartial<User>): Promise<User> {
+        return this.usersRepository.save(user);
+    }
+
+    async delete(user: User): Promise<void> {
+        await this.usersRepository.remove(user);
+    }
 }
+

@@ -17,6 +17,8 @@ import {
   SaleResponse,
 } from '../dto';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('sales')
 export class SalesController {
@@ -44,6 +46,7 @@ export class SalesController {
     return this.salesService.update(+id, updateSaleDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string): Promise<SaleResponse> {
     return this.salesService.remove(+id);

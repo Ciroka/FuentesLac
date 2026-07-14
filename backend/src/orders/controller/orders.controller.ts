@@ -5,7 +5,6 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
   Query,
 } from '@nestjs/common';
 
@@ -46,9 +45,4 @@ export class OrdersController {
   ): Promise<OrderResponse> {
     return this.ordersService.update(+id, updateOrderDto);
   }
-
-  // @Delete(':id')
-  // remove(@Param('id') id: string): Promise<OrderResponse> {
-  //   return this.ordersService.remove(+id);
-  // }
 }

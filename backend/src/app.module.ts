@@ -1,6 +1,11 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import { ThrottlerModule } from '@nestjs/throttler';
+import { APP_GUARD } from '@nestjs/core';
+import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
+import { RolesGuard } from './shared/guards/roles.guard';
+import { ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { ProductionModule, Production } from './production';
@@ -23,10 +28,15 @@ import {
   SuppliesXproductionDetailModule,
   SuppliesXproductionDetail,
 } from './supplies-xproduction-detail';
+import { EmailSenderModule } from './email-sender/email-sender.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
+    ThrottlerModule.forRoot([{
+      ttl: 60000,
+      limit: 100,
+    }]),
     ProductsModule,
     ProductionModule,
     ProductionDetailModule,
@@ -51,7 +61,7 @@ import {
         username: config.getOrThrow('POSTGRES_USER'),
         password: config.getOrThrow('POSTGRES_PASSWORD'),
         database: config.getOrThrow('POSTGRES_DB'),
-        synchronize: true,
+        synchronize: config.get('NODE_ENV') !== 'production',
         entities: [
           User,
           Supplier,
@@ -73,8 +83,14 @@ import {
     }),
     BatchModule,
     SuppliesXproductionDetailModule,
+    EmailSenderModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    { provide: APP_GUARD, useClass: ThrottlerGuard },
+    { provide: APP_GUARD, useClass: JwtAuthGuard },
+    { provide: APP_GUARD, useClass: RolesGuard },
+  ],
 })
 export class AppModule {}

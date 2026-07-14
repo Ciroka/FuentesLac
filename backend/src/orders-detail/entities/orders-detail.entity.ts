@@ -23,7 +23,7 @@ export class OrdersDetail {
     type: 'decimal',
     precision: 10,
     scale: 2,
-    name: 'ordered_subtotal',
+    name: 'unit_price',
     default: 0,
   })
   unitPrice: number = 0;

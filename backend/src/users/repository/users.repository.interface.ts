@@ -1,6 +1,6 @@
+import { DeepPartial } from 'typeorm';
 import { OrderEnum } from '../../shared/enums/order.enum';
 import { PaginatedResult } from '../../shared/pagination/pagination.type';
-import { CreateUserDto } from '../dto';
 import { User } from '../entities/user.entity';
 
 export const USERS_REPOSITORY = 'USERS_REPOSITORY';
@@ -12,8 +12,15 @@ export interface IUsersRepository {
     order: OrderEnum,
     name?: string,
   ): Promise<PaginatedResult<User>>;
-  findOneById(id: number): Promise<User | null>;
-  create(input: CreateUserDto): Promise<User>;
-  update(user: User): Promise<User>;
-  remove(user: User): Promise<User>;
+  findOneByEmail(email: string): Promise<User | null>;
+  findOneById(id: string): Promise<User | null>;
+  findOneByEmailWithPassword(email: string): Promise<User | null>;
+  findOneByIdWithPassword(id: string): Promise<User | null>;
+  findOneByVerificationToken(verificationToken: string): Promise<User | null>;
+  findOneByResetPasswordToken(verificationToken: string): Promise<User | null>;
+  count(): Promise<number>;
+  register(user: DeepPartial<User>): Promise<User>;
+  existsByEmail(email: string): Promise<boolean>;
+  update(user: DeepPartial<User>): Promise<User>;
+  delete(user: User): Promise<void>;
 }

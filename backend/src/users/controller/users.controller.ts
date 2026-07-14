@@ -11,15 +11,16 @@ import {
 
 import { UsersService } from '../service/users.service';
 import {
-  CreateUserDto,
-  UpdateUserDto,
   QueryParamsUsers,
   UserResponse,
 } from '../dto';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 import { User } from '../entities/user.entity';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('users')
+@Roles(UserRole.ADMIN)
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
@@ -30,24 +31,12 @@ export class UsersController {
 
   @Get(':id')
   findOne(@Param('id') id: string): Promise<UserResponse> {
-    return this.usersService.findOne(+id);
+    return this.usersService.findOne(id);
   }
 
-  @Post()
-  create(@Body() createUserDto: CreateUserDto): Promise<UserResponse> {
-    return this.usersService.create(createUserDto);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateUserDto: UpdateUserDto,
-  ): Promise<UserResponse> {
-    return this.usersService.update(+id, updateUserDto);
-  }
 
   @Delete(':id')
   remove(@Param('id') id: string): Promise<UserResponse> {
-    return this.usersService.remove(+id);
+    return this.usersService.remove(id);
   }
 }

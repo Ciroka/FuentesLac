@@ -1,18 +1,13 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
   Delete,
 } from '@nestjs/common';
 import { OrdersDetailService } from '../service/orders-detail.service';
-import {
-  CreateOrdersDetailDto,
-  OrdersDetailResponse,
-  UpdateOrdersDetailDto,
-} from '../dto';
+import { OrdersDetailResponse } from '../dto';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('orders-detail')
 export class OrdersDetailController {
@@ -28,14 +23,7 @@ export class OrdersDetailController {
     return this.ordersDetailService.findOne(+id);
   }
 
-  // @Patch(':id')
-  // update(
-  //   @Param('id') id: string,
-  //   @Body() updateOrdersDetailDto: UpdateOrdersDetailDto,
-  // ): Promise<OrdersDetailResponse> {
-  //   return this.ordersDetailService.update(+id, updateOrdersDetailDto);
-  // }
-
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string): Promise<OrdersDetailResponse> {
     return this.ordersDetailService.remove(+id);

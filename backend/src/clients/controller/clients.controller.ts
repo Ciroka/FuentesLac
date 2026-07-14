@@ -16,6 +16,8 @@ import {
   ClientResponse,
 } from '../dto';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('clients')
 export class ClientsController {
@@ -46,6 +48,7 @@ export class ClientsController {
     return this.clientsService.update(+id, updateClientDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
   remove(@Param('id') id: string): Promise<ClientResponse> {
     return this.clientsService.remove(+id);
