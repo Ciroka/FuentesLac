@@ -33,10 +33,12 @@ import { EmailSenderModule } from './email-sender/email-sender.module';
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
-    ThrottlerModule.forRoot([{
-      ttl: 60000,
-      limit: 100,
-    }]),
+    ThrottlerModule.forRoot([
+      {
+        ttl: 60000,
+        limit: 100,
+      },
+    ]),
     ProductsModule,
     ProductionModule,
     ProductionDetailModule,

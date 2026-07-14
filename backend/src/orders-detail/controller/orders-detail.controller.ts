@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Delete } from '@nestjs/common';
 import { OrdersDetailService } from '../service/orders-detail.service';
 import { OrdersDetailResponse } from '../dto';
 import { Roles } from 'src/shared/decorators/roles.decorator';

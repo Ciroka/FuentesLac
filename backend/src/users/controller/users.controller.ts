@@ -10,10 +10,7 @@ import {
 } from '@nestjs/common';
 
 import { UsersService } from '../service/users.service';
-import {
-  QueryParamsUsers,
-  UserResponse,
-} from '../dto';
+import { QueryParamsUsers, UserResponse } from '../dto';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 import { User } from '../entities/user.entity';
 import { Roles } from 'src/shared/decorators/roles.decorator';
@@ -33,7 +30,6 @@ export class UsersController {
   findOne(@Param('id') id: string): Promise<UserResponse> {
     return this.usersService.findOne(id);
   }
-
 
   @Delete(':id')
   remove(@Param('id') id: string): Promise<UserResponse> {

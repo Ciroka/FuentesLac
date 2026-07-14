@@ -1,3 +1,3 @@
 export interface UserMessageResponse {
-    message: string;
+  message: string;
 }

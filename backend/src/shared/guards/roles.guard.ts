@@ -6,21 +6,19 @@ import { UserRole } from '../enums';
 
 @Injectable()
 export class RolesGuard implements CanActivate {
-    constructor(
-        private readonly reflector: Reflector
-    ) {}
+  constructor(private readonly reflector: Reflector) {}
 
-    canActivate(context: ExecutionContext): boolean {
-        const required = this.reflector.getAllAndOverride<UserRole[] | undefined>(
-            ROLES_KEY,
-            [context.getHandler(), context.getClass()]
-        );
+  canActivate(context: ExecutionContext): boolean {
+    const required = this.reflector.getAllAndOverride<UserRole[] | undefined>(
+      ROLES_KEY,
+      [context.getHandler(), context.getClass()],
+    );
 
-        if (!required?.length) return true;
-        
-        const req = context.switchToHttp().getRequest();
-        const role = req.user?.role as UserRole | undefined;
+    if (!required?.length) return true;
 
-        return !!role && required.includes(role);
-    }
+    const req = context.switchToHttp().getRequest();
+    const role = req.user?.role as UserRole | undefined;
+
+    return !!role && required.includes(role);
+  }
 }

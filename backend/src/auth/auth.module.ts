@@ -15,29 +15,22 @@ import { RolesGuard } from 'src/shared/guards/roles.guard';
     ConfigModule,
     TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
-    
+
     JwtModule.registerAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => ({
         secret: configService.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
-          expiresIn: Number(configService.get<string>('JWT_EXPIRES_SEC') ?? 3600),
-        }
-      })
-    })
+          expiresIn: Number(
+            configService.get<string>('JWT_EXPIRES_SEC') ?? 3600,
+          ),
+        },
+      }),
+    }),
   ],
   controllers: [AuthController],
-  providers: [
-    AuthService,
-    JwtStrategy,
-    JwtAuthGuard,
-    RolesGuard
-  ],
-  exports: [
-    JwtModule,
-    JwtAuthGuard,
-    RolesGuard
-  ],
+  providers: [AuthService, JwtStrategy, JwtAuthGuard, RolesGuard],
+  exports: [JwtModule, JwtAuthGuard, RolesGuard],
 })
 export class AuthModule {}

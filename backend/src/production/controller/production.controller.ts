@@ -1,16 +1,6 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Param,
-  Query,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
 import { ProductionService } from '../service/production.service';
-import {
-  CreateProductionDto,
-  QueryParamsProduction,
-} from '../dto';
+import { CreateProductionDto, QueryParamsProduction } from '../dto';
 
 @Controller('production')
 export class ProductionController {

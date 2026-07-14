@@ -1,6 +1,16 @@
-import { ForbiddenException, Inject, Injectable, NotFoundException, UnauthorizedException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Inject,
+  Injectable,
+  NotFoundException,
+  UnauthorizedException,
+} from '@nestjs/common';
 
-import { QueryParamsUsers, UpdateUserRoleDto, UserChangeEmailDto } from '../dto';
+import {
+  QueryParamsUsers,
+  UpdateUserRoleDto,
+  UserChangeEmailDto,
+} from '../dto';
 import { USERS_REPOSITORY } from '../repository/users.repository.interface';
 import type { IUsersRepository } from '../repository/users.repository.interface';
 import { User } from '../entities/user.entity';
@@ -36,27 +46,32 @@ export class UsersService {
     return user;
   }
 
-  
   async findOneByEmail(email: string): Promise<User | null> {
     return this.usersRepository.findOneByEmail(email.trim().toLowerCase());
   }
 
   async findOneByEmailWithPassword(email: string): Promise<User | null> {
-    return this.usersRepository.findOneByEmailWithPassword(email.trim().toLowerCase());
+    return this.usersRepository.findOneByEmailWithPassword(
+      email.trim().toLowerCase(),
+    );
   }
 
-  async findOneByVerificationToken(verificationToken: string): Promise<User | null> {
+  async findOneByVerificationToken(
+    verificationToken: string,
+  ): Promise<User | null> {
     return this.usersRepository.findOneByVerificationToken(verificationToken);
   }
 
-  async findOneByResetPasswordToken(resetPasswordToken: string): Promise<User | null> {
+  async findOneByResetPasswordToken(
+    resetPasswordToken: string,
+  ): Promise<User | null> {
     return this.usersRepository.findOneByResetPasswordToken(resetPasswordToken);
   }
-  
+
   async count(): Promise<number> {
     return this.usersRepository.count();
   }
-  
+
   async register(user: DeepPartial<User>): Promise<User> {
     return this.usersRepository.register(user);
   }
@@ -65,51 +80,67 @@ export class UsersService {
     return this.usersRepository.existsByEmail(email.trim().toLowerCase());
   }
 
-  async updateRole(adminId: string, id: string, dto: UpdateUserRoleDto): Promise<User> {
-    if (adminId === id) throw new ForbiddenException('No se puede cambiar rol propio.');
+  async updateRole(
+    adminId: string,
+    id: string,
+    dto: UpdateUserRoleDto,
+  ): Promise<User> {
+    if (adminId === id)
+      throw new ForbiddenException('No se puede cambiar rol propio.');
     const user = await this.findOneById(id);
     user.role = dto.role;
     return this.usersRepository.update(user);
   }
 
-  async updatePassword(id: string, dto: UserChangePasswordDto): Promise<UserMessageResponse> {
+  async updatePassword(
+    id: string,
+    dto: UserChangePasswordDto,
+  ): Promise<UserMessageResponse> {
     const user = await this.usersRepository.findOneByIdWithPassword(id);
 
-    if (!user || !(await bcrypt.compare(dto.currentPassword, user.passwordHash))) {
-      throw new UnauthorizedException("Credenciales inválidas");
+    if (
+      !user ||
+      !(await bcrypt.compare(dto.currentPassword, user.passwordHash))
+    ) {
+      throw new UnauthorizedException('Credenciales inválidas');
     }
-    
-    const rounds = Number(this.configService.get<string>('BCRYPT_COST') ?? '12');
+
+    const rounds = Number(
+      this.configService.get<string>('BCRYPT_COST') ?? '12',
+    );
     const passwordHash = await bcrypt.hash(dto.newPassword, rounds);
-    
+
     user.passwordHash = passwordHash;
     await this.usersRepository.update(user);
-    
-    return { message: "Password updated" };
+
+    return { message: 'Password updated' };
   }
-  
-  async updateEmail(id: string, dto: UserChangeEmailDto): Promise<UserMessageResponse> {
+
+  async updateEmail(
+    id: string,
+    dto: UserChangeEmailDto,
+  ): Promise<UserMessageResponse> {
     const user = await this.usersRepository.findOneByIdWithPassword(id);
-    
+
     if (!user || !(await bcrypt.compare(dto.password, user.passwordHash))) {
-      throw new UnauthorizedException("Credenciales inválidas");
+      throw new UnauthorizedException('Credenciales inválidas');
     }
-    
+
     user.email = dto.newEmail;
     await this.usersRepository.update(user);
 
-    return { message: "Email updated" };
+    return { message: 'Email updated' };
   }
 
   async resetPassword(user: User): Promise<void> {
     user.verificationToken = null;
     await this.usersRepository.update(user);
   }
-  
+
   async save(user: DeepPartial<User>): Promise<void> {
     await this.usersRepository.update(user);
   }
-  
+
   async remove(id: string): Promise<User> {
     const user = await this.findOneById(id);
     await this.usersRepository.delete(user);

@@ -48,60 +48,67 @@ export class UserRepository implements IUsersRepository {
   }
 
   async findOneById(id: string): Promise<User | null> {
-        return this.usersRepository.findOneBy({ id });
-    }
+    return this.usersRepository.findOneBy({ id });
+  }
 
-    async findOneByEmail(email: string): Promise<User | null> {
-        return this.usersRepository.findOneBy({ email });
-    }
+  async findOneByEmail(email: string): Promise<User | null> {
+    return this.usersRepository.findOneBy({ email });
+  }
 
-    async findOneByEmailWithPassword(email: string): Promise<User | null> {
-        return this.usersRepository.createQueryBuilder('u')
-                            .addSelect('u.passwordHash')
-                            .where('u.email = :email', { email })
-                            .getOne();
-    }
+  async findOneByEmailWithPassword(email: string): Promise<User | null> {
+    return this.usersRepository
+      .createQueryBuilder('u')
+      .addSelect('u.passwordHash')
+      .where('u.email = :email', { email })
+      .getOne();
+  }
 
-    async findOneByIdWithPassword(id: string): Promise<User | null> {
-        return this.usersRepository.createQueryBuilder('u')
-                            .addSelect('u.passwordHash')
-                            .where('u.id = :id', { id })
-                            .getOne();
-    }
+  async findOneByIdWithPassword(id: string): Promise<User | null> {
+    return this.usersRepository
+      .createQueryBuilder('u')
+      .addSelect('u.passwordHash')
+      .where('u.id = :id', { id })
+      .getOne();
+  }
 
-    async findOneByVerificationToken(verificationToken: string){
-        return this.usersRepository.createQueryBuilder('u')
-            .addSelect('u.verificationToken')
-            .where('u.verification_token = :verificationToken', { verificationToken })
-            .getOne();
-    }
+  async findOneByVerificationToken(verificationToken: string) {
+    return this.usersRepository
+      .createQueryBuilder('u')
+      .addSelect('u.verificationToken')
+      .where('u.verification_token = :verificationToken', { verificationToken })
+      .getOne();
+  }
 
-    async findOneByResetPasswordToken(resetPasswordToken: string): Promise<User | null>{
-        return this.usersRepository.createQueryBuilder('u')
-            .addSelect('u.codeHashResetPassword')
-            .where('u.code_hash_reset_password = :resetPasswordToken', { resetPasswordToken })
-            .getOne();
-    }
+  async findOneByResetPasswordToken(
+    resetPasswordToken: string,
+  ): Promise<User | null> {
+    return this.usersRepository
+      .createQueryBuilder('u')
+      .addSelect('u.codeHashResetPassword')
+      .where('u.code_hash_reset_password = :resetPasswordToken', {
+        resetPasswordToken,
+      })
+      .getOne();
+  }
 
-    async count(): Promise<number> {
-        return this.usersRepository.count();
-    }
+  async count(): Promise<number> {
+    return this.usersRepository.count();
+  }
 
-    async register(user: DeepPartial<User>): Promise<User> {
-        const userCreated = this.usersRepository.create(user);
-        return this.usersRepository.save(userCreated);
-    }
+  async register(user: DeepPartial<User>): Promise<User> {
+    const userCreated = this.usersRepository.create(user);
+    return this.usersRepository.save(userCreated);
+  }
 
-    async existsByEmail(email: string): Promise<boolean> {
-        return this.usersRepository.existsBy({ email });
-    }
+  async existsByEmail(email: string): Promise<boolean> {
+    return this.usersRepository.existsBy({ email });
+  }
 
-    async update(user: DeepPartial<User>): Promise<User> {
-        return this.usersRepository.save(user);
-    }
+  async update(user: DeepPartial<User>): Promise<User> {
+    return this.usersRepository.save(user);
+  }
 
-    async delete(user: User): Promise<void> {
-        await this.usersRepository.remove(user);
-    }
+  async delete(user: User): Promise<void> {
+    await this.usersRepository.remove(user);
+  }
 }
-

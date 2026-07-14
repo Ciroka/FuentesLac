@@ -1,9 +1,4 @@
-import {
-  Controller,
-  Get,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Delete } from '@nestjs/common';
 
 import { ProductionDetailService } from '../service/production-detail.service';
 import { Roles } from 'src/shared/decorators/roles.decorator';
