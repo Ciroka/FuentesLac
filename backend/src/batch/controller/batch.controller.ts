@@ -1,4 +1,12 @@
-import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Post,
+  Body,
+  Param,
+  Delete,
+  ParseIntPipe,
+} from '@nestjs/common';
 import { BatchService } from '../service/batch.service';
 import { BatchResponse, CreateBatchDto, toBatchResponse } from '../dto';
 import { Roles } from 'src/shared/decorators/roles.decorator';
@@ -25,14 +33,18 @@ export class BatchController {
   async create(@Body() dto: CreateBatchDto): Promise<BatchResponse> {
     const input: Partial<Batch> = {
       ...dto,
-      clientBatchDate: dto.clientBatchDate ? new Date(dto.clientBatchDate) : undefined,
+      clientBatchDate: dto.clientBatchDate
+        ? new Date(dto.clientBatchDate)
+        : undefined,
     };
     const batch = await this.batchService.create(input);
     return toBatchResponse(batch);
   }
 
   @Post(':id/recalculate-yield')
-  async recalculate(@Param('id', ParseIntPipe) id: number): Promise<BatchResponse> {
+  async recalculate(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<BatchResponse> {
     const batch = await this.batchService.recalculateYield(id);
     return toBatchResponse(batch);
   }

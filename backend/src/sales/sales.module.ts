@@ -11,7 +11,12 @@ import { SalesRepositoryImpl } from './repository/sales.repository';
 import { BatchModule } from 'src/batch';
 
 @Module({
-  imports: [SalesDetailModule, ClientsModule, BatchModule, TypeOrmModule.forFeature([Sale])],
+  imports: [
+    SalesDetailModule,
+    ClientsModule,
+    BatchModule,
+    TypeOrmModule.forFeature([Sale]),
+  ],
   controllers: [SalesController],
   providers: [
     SalesService,

@@ -15,10 +15,10 @@ export class AdjustmentsRepository implements IAdjustmentsRepository {
   ) {}
 
   async findAll(
-      page: number,
-      limit: number,
-      order: OrderEnum,
-      batchId?: number,
+    page: number,
+    limit: number,
+    order: OrderEnum,
+    batchId?: number,
   ): Promise<PaginatedResult<Adjustment>> {
     const query = this.adjustmentRepository
       .createQueryBuilder('adjustment')

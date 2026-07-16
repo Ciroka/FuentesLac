@@ -16,7 +16,10 @@ export class BatchRepository implements IBatchRepository {
     return this.batchRepository.find();
   }
 
-  async findOneById(id: number, manager?: EntityManager): Promise<Batch | null> {
+  async findOneById(
+    id: number,
+    manager?: EntityManager,
+  ): Promise<Batch | null> {
     const repo = manager ? manager.getRepository(Batch) : this.batchRepository;
     return repo.findOne({ where: { id }, relations: { product: true } });
   }

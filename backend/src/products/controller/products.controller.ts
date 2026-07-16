@@ -33,7 +33,9 @@ export class ProductsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id', ParseIntPipe) id: number): Promise<ProductResponse> {
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ProductResponse> {
     return this.productsService.findOne(id);
   }
 
@@ -67,7 +69,9 @@ export class ProductsController {
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param('id', ParseIntPipe) id: number): Promise<ProductResponse> {
+  async remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ProductResponse> {
     return await this.productsService.remove(id);
   }
 }

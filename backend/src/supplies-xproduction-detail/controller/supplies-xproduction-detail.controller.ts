@@ -30,7 +30,9 @@ export class SuppliesXproductionDetailController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<SuppliesXproductionDetail> {
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<SuppliesXproductionDetail> {
     return this.suppliesXproductionDetailService.findOne(id);
   }
 
@@ -58,7 +60,9 @@ export class SuppliesXproductionDetailController {
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id', ParseIntPipe) id: number): Promise<SuppliesXproductionDetail> {
+  remove(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<SuppliesXproductionDetail> {
     return this.suppliesXproductionDetailService.remove(id);
   }
 }

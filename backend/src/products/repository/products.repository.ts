@@ -72,7 +72,7 @@ export class ProductRepository implements ProductsRepository {
       : this.productRepository;
     return repo.save(product);
   }
-  
+
   async remove(product: Product): Promise<Product> {
     return this.productRepository.remove(product);
   }

@@ -39,7 +39,7 @@ export class ProductsService {
     return product;
   }
 
-  async getTotalStock(id: number): Promise<number>{
+  async getTotalStock(id: number): Promise<number> {
     return this.batchService.getTotalStockByProduct(id);
   }
 

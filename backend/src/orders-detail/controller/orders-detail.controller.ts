@@ -14,7 +14,9 @@ export class OrdersDetailController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseIntPipe) id: number): Promise<OrdersDetailResponse> {
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<OrdersDetailResponse> {
     return this.ordersDetailService.findOne(id);
   }
 

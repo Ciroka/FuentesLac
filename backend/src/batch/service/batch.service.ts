@@ -28,10 +28,7 @@ export class BatchService {
     return batch;
   }
 
-  async create(
-    input: Partial<Batch>,
-    manager?: EntityManager,
-  ): Promise<Batch> {
+  async create(input: Partial<Batch>, manager?: EntityManager): Promise<Batch> {
     return this.batchRepository.create(input, manager);
   }
 
@@ -84,9 +81,7 @@ export class BatchService {
 
   async recalculateYield(batchId: number): Promise<Batch> {
     const batch = await this.findOne(batchId);
-    const totalWeight = await this.salesDetailService.sumWeightByBatch(
-      batchId,
-    );
+    const totalWeight = await this.salesDetailService.sumWeightByBatch(batchId);
     batch.obtainedWeight = totalWeight;
     batch.yield = batch.milkLitersUsed
       ? totalWeight / batch.milkLitersUsed

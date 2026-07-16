@@ -43,7 +43,10 @@ export class SalesController {
   }
 
   @Patch(':id')
-  update(@Param('id', ParseIntPipe) id: number, @Body() updateSaleDto: UpdateSaleDto) {
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateSaleDto: UpdateSaleDto,
+  ) {
     return this.salesService.update(id, updateSaleDto);
   }
 

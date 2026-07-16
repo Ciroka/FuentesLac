@@ -8,10 +8,7 @@ import { Batch } from './entities/batch.entity';
 import { SalesDetailModule } from 'src/sales-detail';
 
 @Module({
-  imports: [
-    TypeOrmModule.forFeature([Batch]),
-    SalesDetailModule,
-  ],
+  imports: [TypeOrmModule.forFeature([Batch]), SalesDetailModule],
   controllers: [BatchController],
   providers: [
     BatchService,

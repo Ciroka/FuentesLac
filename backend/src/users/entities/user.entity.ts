@@ -31,17 +31,27 @@ export class User {
   @DeleteDateColumn({ name: 'deleted_at' })
   deletedAt?: Date;
 
-  @Column({ nullable: true, name: 'verification_token', type: 'varchar', select: false})
+  @Column({
+    nullable: true,
+    name: 'verification_token',
+    type: 'varchar',
+    select: false,
+  })
   verificationToken!: string | null;
 
-  @Column({ nullable: true, name: 'code_hash_reset_password', type: 'varchar', select: false })
+  @Column({
+    nullable: true,
+    name: 'code_hash_reset_password',
+    type: 'varchar',
+    select: false,
+  })
   codeHashResetPassword!: string | null;
 
   @Column({
     nullable: true,
     name: 'reset_code_password_expires',
     type: 'timestamptz',
-    select: false
+    select: false,
   })
   resetCodePasswordExpires!: Date | null;
 }
