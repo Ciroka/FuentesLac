@@ -19,16 +19,7 @@ export class CreateProductDto {
 
   @IsPositive()
   @IsNumber()
-  @IsOptional()
-  currentStock: number = 0;
-
-  @IsPositive()
-  @IsNumber()
   minStock!: number;
-
-  @IsNumber()
-  @IsOptional()
-  batchId?: number;
 
   @IsNumber()
   @IsPositive()

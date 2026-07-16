@@ -1,5 +1,11 @@
 import { Product } from 'src/products';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
 @Entity('batch')
 export class Batch {
@@ -12,6 +18,22 @@ export class Batch {
   @Column({ nullable: true })
   description?: string;
 
-  @OneToMany(() => Product, (products) => products.batch)
-  products!: Product[];
+  @Column({ nullable: true, name: 'milk_liters_used' })
+  milkLitersUsed?: number;
+
+  @Column({ nullable: true, name: 'obtained_weight' })
+  obtainedWeight?: number;
+
+  @Column({ type: 'date', name: 'client_batch_date', nullable: true })
+  clientBatchDate?: Date;
+
+  @Column({ default: 0, name: 'current_stock' })
+  currentStock!: number;
+
+  @Column({ name: 'product_id' })
+  productId!: number;
+
+  @ManyToOne(() => Product, (product) => product.batches)
+  @JoinColumn({ name: 'product_id' })
+  product!: Product;
 }

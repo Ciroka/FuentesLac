@@ -34,12 +34,6 @@ export class UsersService {
     return this.usersRepository.findAll(page, limit, order, name);
   }
 
-  async findOne(id: string): Promise<User> {
-    const user = await this.usersRepository.findOneById(id);
-    if (!user) throw new NotFoundException('User not found.');
-    return user;
-  }
-
   async findOneById(id: string): Promise<User> {
     const user = await this.usersRepository.findOneById(id);
     if (!user) throw new NotFoundException('User not found.');
@@ -143,7 +137,7 @@ export class UsersService {
 
   async remove(id: string): Promise<User> {
     const user = await this.findOneById(id);
-    await this.usersRepository.delete(user);
+    await this.usersRepository.softDelete(user);
     return user;
   }
 }

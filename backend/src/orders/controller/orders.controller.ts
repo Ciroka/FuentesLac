@@ -6,6 +6,7 @@ import {
   Patch,
   Param,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { OrdersService } from '../service/orders.service';
@@ -29,8 +30,8 @@ export class OrdersController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<OrderResponse> {
-    return this.ordersService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<OrderResponse> {
+    return this.ordersService.findOne(id);
   }
 
   @Post()
@@ -40,9 +41,9 @@ export class OrdersController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateOrderDto: UpdateOrderDto,
   ): Promise<OrderResponse> {
-    return this.ordersService.update(+id, updateOrderDto);
+    return this.ordersService.update(id, updateOrderDto);
   }
 }

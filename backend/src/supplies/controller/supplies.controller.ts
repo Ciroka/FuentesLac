@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { SuppliesService } from '../service/supplies.service';
@@ -33,8 +34,8 @@ export class SuppliesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<SupplyResponse> {
-    return this.suppliesService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<SupplyResponse> {
+    return this.suppliesService.findOne(id);
   }
 
   @Post()
@@ -44,15 +45,15 @@ export class SuppliesController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateSupplyDto: UpdateSupplyDto,
   ): Promise<SupplyResponse> {
-    return this.suppliesService.update(+id, updateSupplyDto);
+    return this.suppliesService.update(id, updateSupplyDto);
   }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<SupplyResponse> {
-    return this.suppliesService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<SupplyResponse> {
+    return this.suppliesService.remove(id);
   }
 }

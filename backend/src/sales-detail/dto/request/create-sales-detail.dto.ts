@@ -1,4 +1,4 @@
-import { IsInt, IsPositive } from 'class-validator';
+import { IsInt, IsNumber, IsOptional, IsPositive } from 'class-validator';
 
 export class CreateSalesDetailDto {
   @IsInt()
@@ -7,5 +7,10 @@ export class CreateSalesDetailDto {
 
   @IsInt()
   @IsPositive()
-  productId!: number;
+  batchId!: number;
+
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  weight?: number;
 }

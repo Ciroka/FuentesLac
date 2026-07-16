@@ -32,25 +32,25 @@ export class ProductionDetailRepositoryImpl implements ProductionDetailRepositor
     });
   }
 
-  async create(
-    input: Partial<ProductionDetail>,
-    manager?: EntityManager,
-  ): Promise<ProductionDetail> {
-    const repo = manager
-      ? manager.getRepository(ProductionDetail)
-      : this.detailRepository;
-    return repo.save(input);
-  }
+  //async create(
+  //   input: Partial<ProductionDetail>,
+  //   manager?: EntityManager,
+  // ): Promise<ProductionDetail> {
+  //   const repo = manager
+  //     ? manager.getRepository(ProductionDetail)
+  //     : this.detailRepository;
+  //   return repo.save(input);
+  // }
 
-  async update(
-    detail: ProductionDetail,
-    manager?: EntityManager,
-  ): Promise<ProductionDetail> {
-    const repo = manager
-      ? manager.getRepository(ProductionDetail)
-      : this.detailRepository;
-    return repo.save(detail);
-  }
+  // async update(
+  //   detail: ProductionDetail,
+  //   manager?: EntityManager,
+  // ): Promise<ProductionDetail> {
+  //   const repo = manager
+  //     ? manager.getRepository(ProductionDetail)
+  //     : this.detailRepository;
+  //   return repo.save(detail);
+  // }
 
   async remove(
     detail: ProductionDetail,

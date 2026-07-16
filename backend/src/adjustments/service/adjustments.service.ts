@@ -3,25 +3,25 @@ import { CreateAdjustmentDto, QueryParamsAdjustments } from '../dto';
 import { ADJUSTMENTS_REPOSITORY } from '../repository/adjustments.repository.interface';
 import type { IAdjustmentsRepository } from '../repository/adjustments.repository.interface';
 import { Adjustment } from '../entities/adjustment.entity';
-import { ProductsService } from 'src/products/service/products.service';
+import { BatchService } from 'src/batch/service/batch.service';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 import { DataSource } from 'typeorm';
-import { Product } from 'src/products';
+import { Batch } from 'src/batch/entities/batch.entity';
 
 @Injectable()
 export class AdjustmentsService {
   constructor(
     @Inject(ADJUSTMENTS_REPOSITORY)
     private readonly adjustmentsRepository: IAdjustmentsRepository,
-    private readonly productsService: ProductsService,
+    private readonly batchService: BatchService,
     private readonly dataSource: DataSource,
   ) {}
 
   async findAll(
     params: QueryParamsAdjustments,
   ): Promise<PaginatedResult<Adjustment>> {
-    const { page, limit, order, productId } = params;
-    return this.adjustmentsRepository.findAll(page, limit, order, productId);
+    const { page, limit, order, batchId } = params;
+    return this.adjustmentsRepository.findAll(page, limit, order, batchId);
   }
 
   async findOneById(id: number): Promise<Adjustment> {
@@ -31,57 +31,45 @@ export class AdjustmentsService {
   }
 
   async create(
-    productId: number,
+    batchId: number,
     createAdjustmentDto: CreateAdjustmentDto,
   ): Promise<Adjustment> {
     return this.dataSource.transaction(async (manager) => {
       const adjustmentRepo = manager.getRepository(Adjustment);
 
-      await this.productsService.decreaseStock(
-        productId,
+      await this.batchService.decreaseStock(
+        batchId,
         createAdjustmentDto.stockChange,
         manager,
       );
-      //    if (createAdjustmentDto.adjustmentType === AdjustmentType.LOST) {
-      //   await this.productsService.decreaseStock(productId, createAdjustmentDto.stockChange, manager);
-      // } else {
-      //   await this.productsService.increaseStock(productId, createAdjustmentDto.stockChange, manager);
-      // }
 
       const adjustment = await adjustmentRepo.save(
         adjustmentRepo.create({
           stockChange: createAdjustmentDto.stockChange,
           adjustmentType: createAdjustmentDto.adjustmentType,
-          product: { id: productId } as Product,
+          batch: { id: batchId } as Batch,
         }),
       );
       return adjustment;
     });
   }
 
-  /*  async update(id: number, updateAdjustmentDto: UpdateAdjustmentDto) {
-    const adjustment = await this.findOne(id);
-
-    if (updateAdjustmentDto.stockChange !== undefined) adjustment.stockChange = updateAdjustmentDto.stockChange;
-    if (updateAdjustmentDto.adjustmentType !== undefined) adjustment.adjustmentType = updateAdjustmentDto.adjustmentType;
-
-    return this.adjustmentsRepository.update(adjustment);
-  }  Para mi un ajuste una ves hecho no se tendria que poder cambiar
-*/
-
   async remove(id: number): Promise<Adjustment> {
     return this.dataSource.transaction(async (manager) => {
-      const adjustment = await this.findOneById(id);
-      //if (adjustment.adjustmentType === AdjustmentType.LOST) {
-      await this.productsService.increaseStock(
-        adjustment.productId!,
+      const adjustmentRepo = manager.getRepository(Adjustment);
+      const adjustment = await adjustmentRepo.findOne({
+        where: { id },
+        relations: { batch: true },
+      });
+      if (!adjustment) throw new NotFoundException('Adjustment not found');
+
+      await this.batchService.increaseStock(
+        adjustment.batchId!,
         adjustment.stockChange,
         manager,
       );
-      //} else {
-      //await this.productsService.decreaseStock(adjustment.productId!, adjustment.stockChange, manager);
-      //}
-      return this.adjustmentsRepository.remove(adjustment);
+
+      return adjustmentRepo.remove(adjustment);
     });
   }
 }

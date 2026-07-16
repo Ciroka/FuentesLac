@@ -1,4 +1,4 @@
-import { Controller, Get, Post, Body, Param, Query } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Query, ParseIntPipe } from '@nestjs/common';
 import { ProductionService } from '../service/production.service';
 import { CreateProductionDto, QueryParamsProduction } from '../dto';
 
@@ -12,8 +12,8 @@ export class ProductionController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productionService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.productionService.findOne(id);
   }
 
   @Post()

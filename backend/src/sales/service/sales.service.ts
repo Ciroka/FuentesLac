@@ -6,8 +6,8 @@ import type { SalesRepository } from '../repository/sales.repository.interface';
 import { Sale } from '../entities/sale.entity';
 import { DataSource } from 'typeorm';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
-import { Product } from 'src/products';
-import { ProductsService } from 'src/products/service/products.service';
+import { Batch } from 'src/batch/entities/batch.entity';
+import { BatchService } from 'src/batch/service/batch.service';
 import { ClientsService } from 'src/clients/service/clients.service';
 import { Client } from 'src/clients';
 
@@ -17,7 +17,7 @@ export class SalesService {
     @Inject(SALES_REPOSITORY)
     private readonly salesRepository: SalesRepository,
     private readonly dataSource: DataSource,
-    private readonly productsService: ProductsService,
+    private readonly batchService: BatchService,
     private readonly clientsService: ClientsService,
   ) {}
 
@@ -37,31 +37,34 @@ export class SalesService {
       const saleRepo = manager.getRepository(Sale);
       let total = 0;
       const items: {
-        product: Product;
+        batch: Batch;
         unitPrice: number;
         quantity: number;
         subtotal: number;
+        weight?: number;
       }[] = [];
 
       for (const item of createSaleDto.details) {
-        const product = await this.productsService.findOne(
-          item.productId,
-          manager,
-        );
-        const subtotal = product.salePrice * item.quantity;
+        const batch = await this.batchService.findOne(item.batchId, manager);
+        const unitPrice = batch.product.salePrice;
+        const subtotal = unitPrice * item.quantity;
         total += subtotal;
-        await this.productsService.decreaseStock(
-          product.id,
-          item.quantity,
-          manager,
-        );
+
+        await this.batchService.decreaseStock(batch.id, item.quantity, manager);
+
+        if (item.weight) {
+          await this.batchService.addSoldWeight(batch.id, item.weight, manager);
+        }
+
         items.push({
-          product,
-          unitPrice: product.salePrice,
+          batch,
+          unitPrice,
           quantity: item.quantity,
           subtotal,
+          weight: item.weight,
         });
       }
+
       let client: Client | undefined;
       if (createSaleDto.clientId) {
         client = await this.clientsService.findOne(
@@ -69,15 +72,17 @@ export class SalesService {
           manager,
         );
       }
+
       const sale = saleRepo.create({
         total,
         paymentMethod: createSaleDto.paymentMethod,
         ...(client && { client }),
         details: items.map((item) => ({
-          product: item.product,
+          batch: item.batch,
           quantity: item.quantity,
           unitPrice: item.unitPrice,
           subtotal: item.subtotal,
+          weight: item.weight,
         })),
       });
 
@@ -87,10 +92,8 @@ export class SalesService {
 
   async update(id: number, updateSaleDto: UpdateSaleDto): Promise<Sale> {
     const sale = await this.findOne(id);
-
     if (updateSaleDto.paymentMethod !== undefined)
       sale.paymentMethod = updateSaleDto.paymentMethod;
-
     return this.salesRepository.update(sale);
   }
 

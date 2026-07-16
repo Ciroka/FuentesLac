@@ -1,15 +1,12 @@
 import {
   Controller,
   Get,
-  Post,
-  Body,
-  Patch,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { SalesDetailService } from '../service/sales-detail.service';
-import { CreateSalesDetailDto, UpdateSalesDetailDto } from '../dto';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { UserRole } from 'src/shared/enums';
 
@@ -23,26 +20,13 @@ export class SalesDetailController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.salesDetailService.findOne(+id);
-  }
-
-  @Post()
-  create(@Body() createSalesDetailDto: CreateSalesDetailDto) {
-    return this.salesDetailService.create(createSalesDetailDto);
-  }
-
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateSalesDetailDto: UpdateSalesDetailDto,
-  ) {
-    return this.salesDetailService.update(+id, updateSalesDetailDto);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.salesDetailService.findOne(id);
   }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.salesDetailService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.salesDetailService.remove(id);
   }
 }

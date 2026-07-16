@@ -73,7 +73,7 @@ export class SuppliesService {
       stock,
       manager,
     );
-    if (!updated || updated.currentStock > supply.currentStock) {
+    if (!updated || updated.currentStock >= supply.currentStock) {
       throw new BadRequestException('Insufficient current stock');
     }
     return updated;

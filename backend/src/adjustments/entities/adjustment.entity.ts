@@ -7,7 +7,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Product } from '../../products/entities/product.entity';
+import { Batch } from '../../batch/entities/batch.entity';
 import { AdjustmentType } from '../../shared/enums/adjustmentType.enum';
 
 @Entity('adjustments')
@@ -24,10 +24,10 @@ export class Adjustment {
   @CreateDateColumn()
   date!: Date;
 
-  @Column({ name: 'product_id', nullable: true })
-  productId?: number;
+  @Column({ name: 'batch_id', nullable: true })
+  batchId?: number;
 
-  @ManyToOne(() => Product, (product) => product.adjustments)
-  @JoinColumn({ name: 'product_id' })
-  product?: Product;
+  @ManyToOne(() => Batch)
+  @JoinColumn({ name: 'batch_id' })
+  batch?: Batch;
 }

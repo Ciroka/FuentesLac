@@ -1,31 +1,46 @@
-import { Controller, Get, Post, Body, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { BatchService } from '../service/batch.service';
-import { BatchResponse, CreateBatchDto } from '../dto';
+import { BatchResponse, CreateBatchDto, toBatchResponse } from '../dto';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { UserRole } from 'src/shared/enums';
+import { Batch } from '../entities/batch.entity';
 
 @Controller('batch')
 export class BatchController {
   constructor(private readonly batchService: BatchService) {}
 
   @Get()
-  findAll(): Promise<BatchResponse[]> {
-    return this.batchService.findAll();
+  async findAll(): Promise<BatchResponse[]> {
+    const batches = await this.batchService.findAll();
+    return batches.map(toBatchResponse);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<BatchResponse> {
-    return this.batchService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<BatchResponse> {
+    const batch = await this.batchService.findOne(id);
+    return toBatchResponse(batch);
   }
 
   @Post()
-  create(@Body() createBatchDto: CreateBatchDto): Promise<BatchResponse> {
-    return this.batchService.create(createBatchDto);
+  async create(@Body() dto: CreateBatchDto): Promise<BatchResponse> {
+    const input: Partial<Batch> = {
+      ...dto,
+      clientBatchDate: dto.clientBatchDate ? new Date(dto.clientBatchDate) : undefined,
+    };
+    const batch = await this.batchService.create(input);
+    return toBatchResponse(batch);
+  }
+
+  @Post(':id/recalculate-yield')
+  async recalculate(@Param('id', ParseIntPipe) id: number): Promise<BatchResponse> {
+    const batch = await this.batchService.recalculateYield(id);
+    return toBatchResponse(batch);
   }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<BatchResponse> {
-    return this.batchService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<BatchResponse> {
+    const batch = await this.batchService.remove(id);
+    return toBatchResponse(batch);
   }
 }

@@ -15,6 +15,9 @@ export class CreateSupplyDto {
   @IsNumber()
   costPrice!: number;
 
+  @IsOptional()
+  isMilk?: boolean = false;
+
   @IsInt()
   @Min(0)
   @IsOptional()

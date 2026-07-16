@@ -2,6 +2,7 @@ export interface SalesDetailResponse {
   id: number;
   quantity: number;
   subtotal: number;
+  weight?: number;
   saleId: number;
-  productId: number;
+  batchId: number;
 }

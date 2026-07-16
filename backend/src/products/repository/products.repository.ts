@@ -72,45 +72,7 @@ export class ProductRepository implements ProductsRepository {
       : this.productRepository;
     return repo.save(product);
   }
-
-  async decreaseStockAtomic(
-    id: number,
-    amount: number,
-    manager?: EntityManager,
-  ): Promise<Product | null> {
-    const repo = manager
-      ? manager.getRepository(Product)
-      : this.productRepository;
-
-    await repo
-      .createQueryBuilder()
-      .update(Product)
-      .set({ currentStock: () => `current_stock - :amount` })
-      .where('id = :id AND current_stock >= :amount', { id, amount })
-      .execute();
-
-    return repo.findOneBy({ id });
-  }
-
-  async increaseStockAtomic(
-    id: number,
-    amount: number,
-    manager?: EntityManager,
-  ): Promise<Product | null> {
-    const repo = manager
-      ? manager.getRepository(Product)
-      : this.productRepository;
-
-    await repo
-      .createQueryBuilder()
-      .update(Product)
-      .set({ currentStock: () => `current_stock + :amount` })
-      .where('id = :id', { id, amount })
-      .execute();
-
-    return repo.findOneBy({ id });
-  }
-
+  
   async remove(product: Product): Promise<Product> {
     return this.productRepository.remove(product);
   }

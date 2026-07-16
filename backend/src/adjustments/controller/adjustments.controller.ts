@@ -30,21 +30,21 @@ export class AdjustmentsController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<AdjustmentResponse> {
-    return this.adjustmentsService.findOneById(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<AdjustmentResponse> {
+    return this.adjustmentsService.findOneById(id);
   }
 
-  @Post(':productId')
+  @Post(':batchId')
   create(
-    @Param('productId', ParseIntPipe) productId: number,
+    @Param('batchId', ParseIntPipe) batchId: number,
     @Body() createAdjustmentDto: CreateAdjustmentDto,
   ): Promise<AdjustmentResponse> {
-    return this.adjustmentsService.create(productId, createAdjustmentDto);
+    return this.adjustmentsService.create(batchId, createAdjustmentDto);
   }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<AdjustmentResponse> {
-    return this.adjustmentsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<AdjustmentResponse> {
+    return this.adjustmentsService.remove(id);
   }
 }

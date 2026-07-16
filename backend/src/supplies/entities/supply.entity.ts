@@ -28,6 +28,9 @@ export class Supply {
   @Column({ default: 0, name: 'min_stock' })
   minStock!: number;
 
+  @Column({ name: 'is_milk', type: 'boolean', default: false })
+  isMilk!: boolean;
+
   @Column({ name: 'supplier_id', nullable: true })
   supplierId?: number;
 

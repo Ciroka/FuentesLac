@@ -1,17 +1,14 @@
 import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
-import { CreateSalesDetailDto, UpdateSalesDetailDto } from '../dto';
+import type { ISalesDetailRepository } from '../repository/sales-detail.repository.interface';
 import { SALES_DETAIL_REPOSITORY } from '../repository/sales-detail.repository.interface';
-import type { SalesDetailRepository } from '../repository/sales-detail.repository.interface';
 import { SalesDetail } from '../entities/sales-detail.entity';
-import { ProductsService } from '../../products/service/products.service';
 
 @Injectable()
 export class SalesDetailService {
   constructor(
     @Inject(SALES_DETAIL_REPOSITORY)
-    private readonly detailRepository: SalesDetailRepository,
-    private readonly productsService: ProductsService,
+    private readonly detailRepository: ISalesDetailRepository,
   ) {}
 
   async findAll() {
@@ -28,24 +25,29 @@ export class SalesDetailService {
     return this.detailRepository.findBySale(saleId);
   }
 
-  async create(
-    createSalesDetailDto: CreateSalesDetailDto,
-  ): Promise<SalesDetail> {
-    const product = await this.productsService.findOne(
-      createSalesDetailDto.productId,
-    );
-    const subtotal = createSalesDetailDto.quantity * Number(product.salePrice);
-    return this.detailRepository.create({ ...createSalesDetailDto, subtotal });
+  async sumWeightByBatch(batchId: number): Promise<number> {
+    return this.detailRepository.sumWeightByBatch(batchId);
   }
 
-  async update(id: number, updateSalesDetailDto: UpdateSalesDetailDto) {
-    const detail = await this.findOne(id);
-    if (updateSalesDetailDto.quantity !== undefined) {
-      detail.quantity = updateSalesDetailDto.quantity;
-      detail.subtotal = detail.quantity * Number(detail.product.salePrice);
-    }
-    return this.detailRepository.update(detail);
-  }
+  // async create(
+  //   createSalesDetailDto: CreateSalesDetailDto,
+  // ): Promise<SalesDetail> {
+  //   const batch = await this.batchService.findOne(
+  //     createSalesDetailDto.batchId,
+  //   );
+  //   const subtotal =
+  //     createSalesDetailDto.quantity * Number(batch.product.salePrice);
+  //   return this.detailRepository.create({ ...createSalesDetailDto, subtotal });
+  // }
+
+  // async update(id: number, updateSalesDetailDto: UpdateSalesDetailDto) {
+  //   const detail = await this.findOne(id);
+  //   if (updateSalesDetailDto.quantity !== undefined) {
+  //     detail.quantity = updateSalesDetailDto.quantity;
+  //     detail.subtotal = detail.quantity * Number(detail.batch.product.salePrice);
+  //   }
+  //   return this.detailRepository.update(detail);
+  // }
 
   async remove(id: number) {
     const detail = await this.findOne(id);

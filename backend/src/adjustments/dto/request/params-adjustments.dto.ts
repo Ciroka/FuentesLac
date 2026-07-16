@@ -8,5 +8,5 @@ export class QueryParamsAdjustments extends QueryParams {
   @IsOptional()
   @IsInt()
   @IsPositive()
-  productId?: number;
+  batchId?: number;
 }

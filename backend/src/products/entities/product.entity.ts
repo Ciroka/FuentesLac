@@ -8,9 +8,7 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { Adjustment } from '../../adjustments/entities/adjustment.entity';
 import { Category } from '../../categories/entities/category.entity';
-import { SalesDetail } from '../../sales-detail/entities/sales-detail.entity';
 import { Supplier } from '../../suppliers/entities/supplier.entity';
 import { ProductionDetail } from 'src/production-detail';
 import { Batch } from 'src/batch/entities/batch.entity';
@@ -32,15 +30,8 @@ export class Product {
   @Column({ type: 'decimal', precision: 5, scale: 2, name: 'margin_percent' })
   marginPercent!: number;
 
-  @Column({ default: 0, name: 'current_stock' })
-  currentStock!: number;
-
   @Column({ default: 0, name: 'min_stock' })
   minStock!: number;
-
-  @ManyToOne(() => Batch, (batch) => batch.products)
-  @JoinColumn({ name: 'batch_id' })
-  batch!: Batch;
 
   @Column({ name: 'category_id', nullable: true })
   categoryId?: number;
@@ -54,11 +45,8 @@ export class Product {
   @ManyToMany(() => Supplier, (suppliers) => suppliers.products)
   suppliers!: Supplier[];
 
-  @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.product)
-  salesDetails!: SalesDetail[];
-
-  @OneToMany(() => Adjustment, (adjustments) => adjustments.product)
-  adjustments!: Adjustment[];
+  @OneToMany(() => Batch, (batch) => batch.product)
+  batches!: Batch[];
 
   @OneToMany(
     () => ProductionDetail,

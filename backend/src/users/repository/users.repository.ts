@@ -108,7 +108,7 @@ export class UserRepository implements IUsersRepository {
     return this.usersRepository.save(user);
   }
 
-  async delete(user: User): Promise<void> {
-    await this.usersRepository.remove(user);
+  async softDelete(user: User): Promise<void> {
+    await this.usersRepository.softRemove(user);
   }
 }

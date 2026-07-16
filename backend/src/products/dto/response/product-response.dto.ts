@@ -6,7 +6,6 @@ export interface ProductResponse {
   salePrice: number;
   costPrice: number;
   marginPercent: number;
-  currentStock: number;
   minStock: number;
   categoryId?: number;
   category?: CategoryResponse;

@@ -46,6 +46,6 @@ export class ClientsService {
 
   async remove(id: number): Promise<Client> {
     const client = await this.findOne(id);
-    return this.clientsRepository.remove(client);
+    return this.clientsRepository.softRemove(client);
   }
 }

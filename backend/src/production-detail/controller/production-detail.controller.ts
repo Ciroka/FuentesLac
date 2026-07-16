@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Delete, ParseIntPipe } from '@nestjs/common';
 
 import { ProductionDetailService } from '../service/production-detail.service';
 import { Roles } from 'src/shared/decorators/roles.decorator';
@@ -16,14 +16,14 @@ export class ProductionDetailController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.productionDetailService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.productionDetailService.findOne(id);
   }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const detail = await this.productionDetailService.findOne(+id);
+  async remove(@Param('id', ParseIntPipe) id: number) {
+    const detail = await this.productionDetailService.findOne(id);
     return this.productionDetailService.remove(detail);
   }
 }

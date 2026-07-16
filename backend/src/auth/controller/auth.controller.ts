@@ -14,13 +14,14 @@ import { AuthService } from '../service/auth.service';
 import { Public } from 'src/shared/decorators/public.decorator';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { UserRole } from 'src/shared/enums';
+import type { AuthenticatedRequest } from '../dto/request/user-request.dto';
 
 @Controller('auth')
 export class AuthController {
   constructor(private readonly authService: AuthService) {}
 
   @Get('me')
-  async me(@Request() req: any): Promise<UserMeResponse> {
+  async me(@Request() req: AuthenticatedRequest): Promise<UserMeResponse> {
     return this.authService.me(req.user.sub);
   }
 

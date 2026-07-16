@@ -9,12 +9,14 @@ import { PRODUCTION_REPOSITORY } from './repository/production.repository.interf
 import { ProductionRepositoryImpl } from './repository/production.repository';
 import { ProductsModule } from 'src/products';
 import { SuppliesModule } from 'src/supplies';
+import { BatchModule } from 'src/batch';
 
 @Module({
   imports: [
     ProductionDetailModule,
     ProductsModule,
     SuppliesModule,
+    BatchModule,
     TypeOrmModule.forFeature([Production]),
   ],
   controllers: [ProductionController],

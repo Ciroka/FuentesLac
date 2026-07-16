@@ -6,7 +6,9 @@ import { Production } from '../entities/production.entity';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 import { DataSource } from 'typeorm';
 import { ProductsService } from 'src/products/service/products.service';
+import { BatchService } from 'src/batch/service/batch.service';
 import { Product } from 'src/products';
+import { Batch } from 'src/batch/entities/batch.entity';
 import { Supply } from 'src/supplies';
 import { SuppliesService } from 'src/supplies/service/supplies.service';
 
@@ -17,6 +19,7 @@ export class ProductionService {
     private readonly productionRepository: ProductionRepository,
     private readonly supplyService: SuppliesService,
     private readonly productService: ProductsService,
+    private readonly batchService: BatchService,
     private readonly dataSource: DataSource,
   ) {}
 
@@ -38,6 +41,7 @@ export class ProductionService {
       const repo = manager.getRepository(Production);
       const items: {
         product: Product;
+        batch: Batch;
         quantity: number;
         supplies: { supply: Supply; quantity: number }[];
       }[] = [];
@@ -49,6 +53,7 @@ export class ProductionService {
         );
 
         const supplies: { supply: Supply; quantity: number }[] = [];
+        let milkLitersUsed = 0;
         for (const s of item.details) {
           const supply = await this.supplyService.findOne(s.supplyId, manager);
           await this.supplyService.decreaseStock(
@@ -56,14 +61,23 @@ export class ProductionService {
             s.quantity,
             manager,
           );
+          if (supply.isMilk) {
+            milkLitersUsed += s.quantity;
+          }
           supplies.push({ supply, quantity: s.quantity });
         }
-        await this.productService.increaseStock(
-          product.id,
-          item.quantity,
+
+        const batch = await this.batchService.create(
+          {
+            productId: product.id,
+            milkLitersUsed: milkLitersUsed || undefined,
+            clientBatchDate: item.clientBatchDate,
+          } as any,
           manager,
         );
-        items.push({ product, quantity: item.quantity, supplies });
+        await this.batchService.increaseStock(batch.id, item.quantity, manager);
+
+        items.push({ product, batch, quantity: item.quantity, supplies });
       }
 
       const production = repo.create({
@@ -80,13 +94,4 @@ export class ProductionService {
       return repo.save(production);
     });
   }
-
-  // async update(id: number, updateProductionDto: UpdateProductionDto): Promise<Production> {
-
-  // }
-
-  // async remove(id: number): Promise<Production> {
-  //   const production = await this.findOne(id);
-  //   return this.productionRepository.remove(production);
-  // } creo que no se va a usar
 }

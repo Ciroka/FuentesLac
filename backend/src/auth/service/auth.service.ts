@@ -106,7 +106,7 @@ export class AuthService {
         createdAt: user.createdAt,
       };
     } catch {
-      throw new UnauthorizedException('no se q poner');
+      throw new UnauthorizedException('Invalid token');
     }
   }
 

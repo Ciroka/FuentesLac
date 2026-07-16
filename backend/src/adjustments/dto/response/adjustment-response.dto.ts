@@ -5,5 +5,5 @@ export interface AdjustmentResponse {
   stockChange: number;
   adjustmentType: AdjustmentType;
   date: Date;
-  productId?: number;
+  batchId?: number;
 }

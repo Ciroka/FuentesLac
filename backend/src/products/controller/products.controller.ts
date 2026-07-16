@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { PaginatedResult } from '../../shared/pagination/pagination.type';
@@ -32,8 +33,21 @@ export class ProductsController {
   }
 
   @Get(':id')
-  async findOne(@Param('id') id: string): Promise<ProductResponse> {
-    return await this.productsService.findOne(+id);
+  async findOne(@Param('id', ParseIntPipe) id: number): Promise<ProductResponse> {
+    return this.productsService.findOne(id);
+  }
+
+  @Get(':id/stock-status')
+  async getStockStatus(@Param('id', ParseIntPipe) id: number) {
+    const totalStock = await this.productsService.getTotalStock(id);
+    const product = await this.productsService.findOne(id);
+    return {
+      productId: id,
+      productName: product.name,
+      minStock: product.minStock,
+      totalStock,
+      isLowStock: totalStock <= product.minStock,
+    };
   }
 
   @Post()
@@ -45,15 +59,15 @@ export class ProductsController {
 
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateProductDto: UpdateProductDto,
   ): Promise<ProductResponse> {
-    return await this.productsService.update(+id, updateProductDto);
+    return await this.productsService.update(id, updateProductDto);
   }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param('id') id: string): Promise<ProductResponse> {
-    return await this.productsService.remove(+id);
+  async remove(@Param('id', ParseIntPipe) id: number): Promise<ProductResponse> {
+    return await this.productsService.remove(id);
   }
 }

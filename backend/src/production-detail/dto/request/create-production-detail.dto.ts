@@ -2,7 +2,9 @@ import { Type } from 'class-transformer';
 import {
   ArrayMinSize,
   IsArray,
+  IsDateString,
   IsInt,
+  IsOptional,
   IsPositive,
   ValidateNested,
 } from 'class-validator';
@@ -16,6 +18,10 @@ export class CreateProductionDetailDto {
   @IsInt()
   @IsPositive()
   productId!: number;
+
+  @IsDateString()
+  @IsOptional()
+  clientBatchDate?: string;
 
   @IsArray()
   @ArrayMinSize(1)

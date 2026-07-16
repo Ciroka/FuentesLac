@@ -16,5 +16,5 @@ export interface IClientsRepository {
   findOneById(id: number, manager?: EntityManager): Promise<Client | null>;
   create(input: CreateClientDto): Promise<Client>;
   update(client: Client): Promise<Client>;
-  remove(client: Client): Promise<Client>;
+  softRemove(client: Client): Promise<Client>;
 }

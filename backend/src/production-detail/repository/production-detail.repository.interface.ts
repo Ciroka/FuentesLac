@@ -7,14 +7,14 @@ export interface ProductionDetailRepository {
   findAll(): Promise<ProductionDetail[]>;
   findByProduction(productionId: number): Promise<ProductionDetail[]>;
   findOneById(id: number): Promise<ProductionDetail | null>;
-  create(
-    input: Partial<ProductionDetail>,
-    manager?: EntityManager,
-  ): Promise<ProductionDetail>;
-  update(
-    detail: ProductionDetail,
-    manager?: EntityManager,
-  ): Promise<ProductionDetail>;
+  // create(
+  //   input: Partial<ProductionDetail>,
+  //   manager?: EntityManager,
+  // ): Promise<ProductionDetail>;
+  // update(
+  //   detail: ProductionDetail,
+  //   manager?: EntityManager,
+  // ): Promise<ProductionDetail>;
   remove(
     detail: ProductionDetail,
     manager?: EntityManager,

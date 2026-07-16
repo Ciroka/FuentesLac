@@ -7,6 +7,7 @@ import {
   Param,
   Delete,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 
 import { CategoriesService } from '../service/categories.service';
@@ -34,16 +35,16 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<CategoryResponse> {
-    return this.categoriesService.findOneById(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<CategoryResponse> {
+    return this.categoriesService.findOneById(id);
   }
 
   @Get(':id/products')
   findAllProducts(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Query() params: QueryParamsProducts,
   ): Promise<PaginatedResult<Product>> {
-    return this.categoriesService.findAllProducts(+id, params);
+    return this.categoriesService.findAllProducts(id, params);
   }
 
   @Post()
@@ -55,15 +56,15 @@ export class CategoriesController {
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<CategoryResponse> {
-    return this.categoriesService.update(+id, updateCategoryDto);
+    return this.categoriesService.update(id, updateCategoryDto);
   }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<CategoryResponse> {
-    return this.categoriesService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<CategoryResponse> {
+    return this.categoriesService.remove(id);
   }
 }

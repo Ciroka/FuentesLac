@@ -8,9 +8,10 @@ import { SalesService } from './service/sales.service';
 import { Sale } from './entities/sale.entity';
 import { SALES_REPOSITORY } from './repository/sales.repository.interface';
 import { SalesRepositoryImpl } from './repository/sales.repository';
+import { BatchModule } from 'src/batch';
 
 @Module({
-  imports: [SalesDetailModule, ClientsModule, TypeOrmModule.forFeature([Sale])],
+  imports: [SalesDetailModule, ClientsModule, BatchModule, TypeOrmModule.forFeature([Sale])],
   controllers: [SalesController],
   providers: [
     SalesService,

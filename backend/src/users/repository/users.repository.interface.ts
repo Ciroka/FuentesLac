@@ -22,5 +22,5 @@ export interface IUsersRepository {
   register(user: DeepPartial<User>): Promise<User>;
   existsByEmail(email: string): Promise<boolean>;
   update(user: DeepPartial<User>): Promise<User>;
-  delete(user: User): Promise<void>;
+  softDelete(user: User): Promise<void>;
 }

@@ -1,9 +1,4 @@
-import {
-  BadRequestException,
-  Inject,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Inject, Injectable, NotFoundException } from '@nestjs/common';
 
 import {
   CreateProductDto,
@@ -15,12 +10,14 @@ import { PRODUCTS_REPOSITORY } from '../repository/products.repository.interface
 import type { ProductsRepository } from '../repository/products.repository.interface';
 import { Product } from '../entities/product.entity';
 import { EntityManager } from 'typeorm';
+import { BatchService } from 'src/batch/service/batch.service';
 
 @Injectable()
 export class ProductsService {
   constructor(
     @Inject(PRODUCTS_REPOSITORY)
     private readonly productsRepository: ProductsRepository,
+    private readonly batchService: BatchService,
   ) {}
 
   async findAll(
@@ -40,6 +37,10 @@ export class ProductsService {
     const product = await this.productsRepository.findByName(name, manager);
     if (!product) throw new NotFoundException('Product not Found');
     return product;
+  }
+
+  async getTotalStock(id: number): Promise<number>{
+    return this.batchService.getTotalStockByProduct(id);
   }
 
   async create(createProductDto: CreateProductDto): Promise<Product> {
@@ -79,48 +80,12 @@ export class ProductsService {
       product.costPrice = updateProductDto.costPrice;
     if (updateProductDto.marginPercent !== undefined)
       product.marginPercent = updateProductDto.marginPercent;
-    //if (updateProductDto.currentStock !== undefined)
-    //product.currentStock = updateProductDto.currentStock; Ver si se deja actualizar el stock via update
     if (updateProductDto.minStock !== undefined)
       product.minStock = updateProductDto.minStock;
     if (updateProductDto.categoryId !== undefined)
       product.categoryId = updateProductDto.categoryId;
 
     return this.productsRepository.update(product);
-  }
-
-  async decreaseStock(
-    id: number,
-    stock: number,
-    manager?: EntityManager,
-  ): Promise<Product> {
-    const product = await this.findOne(id, manager);
-    const updated = await this.productsRepository.decreaseStockAtomic(
-      id,
-      stock,
-      manager,
-    );
-    if (!updated || updated.currentStock > product.currentStock) {
-      throw new BadRequestException('Insufficient current stock');
-    }
-    return updated;
-  }
-
-  async increaseStock(
-    id: number,
-    stock: number,
-    manager?: EntityManager,
-  ): Promise<Product> {
-    const product = await this.findOne(id, manager);
-    const updated = await this.productsRepository.increaseStockAtomic(
-      id,
-      stock,
-      manager,
-    );
-    if (!updated || updated.currentStock < product.currentStock) {
-      throw new BadRequestException('Stock could not update');
-    }
-    return updated;
   }
 
   async remove(id: number): Promise<Product> {

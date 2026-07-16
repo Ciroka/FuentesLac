@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { OrdersDetailService } from '../service/orders-detail.service';
 import { OrdersDetailResponse } from '../dto';
 import { Roles } from 'src/shared/decorators/roles.decorator';
@@ -14,13 +14,13 @@ export class OrdersDetailController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<OrdersDetailResponse> {
-    return this.ordersDetailService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<OrdersDetailResponse> {
+    return this.ordersDetailService.findOne(id);
   }
 
   @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<OrdersDetailResponse> {
-    return this.ordersDetailService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<OrdersDetailResponse> {
+    return this.ordersDetailService.remove(id);
   }
 }

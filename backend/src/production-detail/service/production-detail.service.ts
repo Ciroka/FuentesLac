@@ -28,19 +28,19 @@ export class ProductionDetailService {
     return this.detailRepository.findByProduction(productionId);
   }
 
-  async create(
-    createProductionDetailDto: Partial<ProductionDetail>,
-    manager?: EntityManager,
-  ): Promise<ProductionDetail> {
-    return this.detailRepository.create(createProductionDetailDto, manager);
-  }
+  // async create(
+  //   createProductionDetailDto: Partial<ProductionDetail>,
+  //   manager?: EntityManager,
+  // ): Promise<ProductionDetail> {
+  //   return this.detailRepository.create(createProductionDetailDto, manager);
+  // }
 
-  async update(
-    detail: ProductionDetail,
-    manager?: EntityManager,
-  ): Promise<ProductionDetail> {
-    return this.detailRepository.update(detail, manager);
-  }
+  // async update(
+  //   detail: ProductionDetail,
+  //   manager?: EntityManager,
+  // ): Promise<ProductionDetail> {
+  //   return this.detailRepository.update(detail, manager);
+  // }
 
   async remove(
     detail: ProductionDetail,

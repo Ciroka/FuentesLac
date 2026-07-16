@@ -60,7 +60,7 @@ export class ClientsRepository implements IClientsRepository {
     return this.clientRepository.save(client);
   }
 
-  async remove(client: Client): Promise<Client> {
-    return this.clientRepository.remove(client);
+  async softRemove(client: Client): Promise<Client> {
+    return this.clientRepository.softRemove(client);
   }
 }

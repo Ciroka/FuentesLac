@@ -15,17 +15,17 @@ export class AdjustmentsRepository implements IAdjustmentsRepository {
   ) {}
 
   async findAll(
-    page: number,
-    limit: number,
-    order: OrderEnum,
-    productId?: number,
+      page: number,
+      limit: number,
+      order: OrderEnum,
+      batchId?: number,
   ): Promise<PaginatedResult<Adjustment>> {
     const query = this.adjustmentRepository
       .createQueryBuilder('adjustment')
-      .leftJoinAndSelect('adjustment.product', 'product');
+      .leftJoinAndSelect('adjustment.batch', 'batch');
 
-    if (productId) {
-      query.where('adjustment.productId = :productId', { productId });
+    if (batchId) {
+      query.where('adjustment.batchId = :batchId', { batchId });
     }
 
     query.orderBy('adjustment.date', order);
@@ -48,7 +48,7 @@ export class AdjustmentsRepository implements IAdjustmentsRepository {
   async findOneById(id: number): Promise<Adjustment | null> {
     return this.adjustmentRepository.findOne({
       where: { id },
-      relations: { product: true },
+      relations: { batch: true },
     });
   }
 

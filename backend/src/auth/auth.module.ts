@@ -9,10 +9,14 @@ import { JwtModule } from '@nestjs/jwt';
 import { JwtStrategy } from './strategies/jwt.strategy';
 import { JwtAuthGuard } from 'src/shared/guards/jwt-auth.guard';
 import { RolesGuard } from 'src/shared/guards/roles.guard';
+import { UsersModule } from 'src/users';
+import { EmailSenderModule } from 'src/email-sender/email-sender.module';
 
 @Module({
   imports: [
     ConfigModule,
+    UsersModule,
+    EmailSenderModule,
     TypeOrmModule.forFeature([User]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
 
