@@ -1,12 +1,7 @@
 import { Component, OnDestroy, OnInit, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
-//import { firstValueFrom } from 'rxjs';
-
-//import { AuthService, ProductsService, CategoriesService } from '../../services';
-
 @Component({
   selector: 'app-home',
-  imports: [RouterLink],
+  imports: [],
   templateUrl: './home.html',
   styleUrl: './home.scss',
 })
