@@ -1,0 +1,48 @@
+<div class="container d-flex justify-content-center align-items-center px-3" style="min-height: 100vh;">
+  <div class="row justify-content-center w-100">
+    <div class="col-11 col-sm-9 col-md-7 col-lg-5">
+      <div class="card shadow-sm">
+        <div class="card-body p-3 p-md-5">
+          <div class="text-center mb-4">
+            <i class="bi bi-box-arrow-in-right display-4" style="color: var(--primary)"></i>
+            <h3 class="mt-3 fw-bold">Iniciar sesión</h3>
+          </div>
+
+          <form (ngSubmit)="submit()" #form="ngForm">
+            <div class="mb-3">
+              <label for="email" class="form-label fw-medium">Email</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text"><i class="bi bi-envelope"></i></span>
+                <input id="email" type="email" class="form-control" [(ngModel)]="email" name="email" required email
+                  placeholder="ejemplo@correo.com" />
+              </div>
+            </div>
+
+            <div class="mb-4">
+              <label for="password" class="form-label fw-medium">Contraseña</label>
+              <div class="input-group input-group-lg">
+                <span class="input-group-text"><i class="bi bi-lock"></i></span>
+                <input id="password" [type]="showPassword() ? 'text' : 'password'" class="form-control"
+                  [(ngModel)]="password" name="password" required placeholder="••••••••" />
+                <button class="btn btn-outline-secondary" type="button" (click)="togglePassword()">
+                  <i [class]="showPassword() ? 'bi bi-eye-slash' : 'bi bi-eye'"></i>
+                </button>
+              </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary btn-lg w-100" [disabled]="form.invalid || loading()">
+              @if (loading()) {
+                <span class="spinner-border spinner-border-sm me-1" role="status"></span>
+              }
+              Ingresar
+            </button>
+          </form>
+
+          <p class="mt-5" style="text-align: center;">
+            <a routerLink="/forgot-password">¿Olvidaste tu contraseña?</a>
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
