@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
 import { Navbar } from '../../shared/navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -13,18 +13,16 @@ import { Supply } from '../../models/supply.model';
   styleUrl: './supplies.scss',
 })
 export class Supplies implements OnInit {
+  private suppliesService = inject(SuppliesService);
+  private cdr = inject(ChangeDetectorRef);
+
   insumos: Supply[] = [];
   categorias: { id: number; name: string }[] = [];
   searchTerm = '';
   selectedCategoryId: number | null = null;
 
-  constructor(
-    private SuppliesService: SuppliesService,
-    private cdr: ChangeDetectorRef
-  ) {}
-
   ngOnInit(): void {
-    this.SuppliesService.findAll().subscribe({
+    this.suppliesService.findAll().subscribe({
       next: (data) => {
         this.insumos = data;
         this.categorias = this.extraerCategorias(data);
@@ -52,12 +50,10 @@ export class Supplies implements OnInit {
     return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
   }
 
-  // Calcula el % de la barra de stock
   getStockPercent(insumo: Supply): number {
     return Math.min((insumo.currentStock / insumo.minStock) * 100, 100);
   }
 
-  // Determina el color de la barra y el estado (OK / BAJO / CRÍTICO)
   getEstado(insumo: Supply): { color: string; label: string; tagClass: string } {
     const ratio = insumo.currentStock / insumo.minStock;
 
