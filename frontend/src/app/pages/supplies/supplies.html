@@ -1,0 +1,53 @@
+<div><app-navbar></app-navbar></div>
+
+<main class="contenido">
+
+<div class="view-header">
+      <h2>Insumos</h2>
+</div>
+<div class="search-row">
+      <input type="text" placeholder="Buscar insumo…"
+             [(ngModel)]="searchTerm">
+      <select [(ngModel)]="selectedCategoryId">
+        <option [ngValue]="null">Todas las categorías</option>
+        <option *ngFor="let cat of categorias"
+                [ngValue]="cat.id">{{ cat.name }}</option>
+      </select>
+    </div>
+
+<div class="card">
+  <table>
+    <thead>
+      <tr>
+        <th>Insumo</th><th>Categoría</th><th>Proveedor</th>
+        <th class="num">Stock actual</th><th class="num">Stock mínimo</th>
+        <th class="num">Precio unit.</th><th>Estado</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let insumo of filteredInsumos">
+        <td><strong>{{ insumo.name }}</strong></td>
+        <td>{{ insumo.category?.name }}</td>
+        <td>{{ insumo.supplier?.name }}</td>
+        <td class="num">
+          <div class="stock-cell">
+            <span class="stockbar">
+              <i [style.width.%]="getStockPercent(insumo)"
+                 [style.background]="getEstado(insumo).color"></i>
+            </span>
+            <span class="stock-num">{{ insumo.currentStock | number }}</span>
+          </div>
+        </td>
+        <td class="num">{{ insumo.minStock | number }}</td>
+        <td class="num">{{ insumo.costPrice | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
+        <td>
+          <span class="tag" [ngClass]="getEstado(insumo).tagClass">
+            {{ getEstado(insumo).label }}
+          </span>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+</main>

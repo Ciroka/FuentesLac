@@ -1,0 +1,44 @@
+.stock-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.stockbar {
+  display: inline-block;
+  width: 60px;
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+
+  i {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+}
+
+.stock-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  min-width: 30px;
+  text-align: right;
+}
+
+.tag {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 8px;
+  border-radius: 4px;
+}
+
+.tag-ok      { background: var(--green-soft); color: var(--green); }
+.tag-warn    { background: var(--gold-soft);  color: var(--gold);  }
+.tag-danger  { background: var(--wax-soft);   color: var(--wax);   }

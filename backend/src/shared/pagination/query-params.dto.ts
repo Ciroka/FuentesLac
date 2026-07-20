@@ -21,7 +21,7 @@ export class QueryParams {
   @IsInt()
   @Min(1)
   @Type(() => Number)
-  @Max(100)
+  @Max(1000)
   @IsOptional()
   limit: number = 10;
 }

@@ -9,7 +9,7 @@ import {
 
 import { Order } from '../../orders/entities/order.entity';
 import { Product } from '../../products/entities/product.entity';
-import { Supply } from 'src/supplies';
+import { Supply } from '../../supplies/entities/supply.entity';
 
 @Entity('suppliers')
 export class Supplier {

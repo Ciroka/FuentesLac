@@ -1,5 +1,5 @@
 import { Production } from 'src/production/entities/production.entity';
-import { Product } from 'src/products';
+import { Product } from '../../products/entities/product.entity';
 import { SuppliesXproductionDetail } from 'src/supplies-xproduction-detail/entities/supplies-xproduction-detail.entity';
 import {
   Column,

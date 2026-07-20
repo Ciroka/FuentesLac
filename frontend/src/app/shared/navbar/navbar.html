@@ -1,0 +1,65 @@
+
+<div class="container">
+    <aside class="sidebar">
+        <div class="sidebar-header">
+            <div class="brand-mark">FL</div>
+            <div>
+                <h2>Fuente Lac</h2>
+            </div>
+        </div><!--/.sidebar-header-->
+
+        <div class="menu-section">
+            <h4>
+                <span>Menu Principal</span>
+                <div class="menu-separator"></div>
+            </h4>
+
+            <ul class="sidebar-links main-links">
+                <li>
+                    <a routerLink="/home">
+                        <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/supplies">
+                        <i class="bi bi-droplet-half" aria-hidden="true"></i>
+                        <span>Insumos</span>
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/products">
+                        <i class="bi bi-boxes" aria-hidden="true"></i>
+                        <span>Productos</span>
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/production">
+                        <i class="bi bi-building" aria-hidden="true"></i>
+                        <span>Producción</span>
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/sales">
+                        <i class="bi bi-truck" aria-hidden="true"></i>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li>
+                    <a routerLink="/clients">
+                        <i class="bi bi-people" aria-hidden="true"></i>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+            </ul><!--/.sidebar-links-->
+            <ul class="sidebar-links bottom-links">
+                <li><a href="#"><i class="bi bi-gear-fill" aria-hidden="true"></i>
+                <span>Configuración</span></a></li>
+            </ul><!--Link de abajo Config-->
+        </div><!--/.menu-section-->
+    </aside><!--/.sidebar-->
+</div>
+
+<div class="topbar">
+    <span id="clock" style="font-size: 18px; font-family: var(--serif); word-spacing: 5px;">{{ currentTime() }}</span>
+</div>

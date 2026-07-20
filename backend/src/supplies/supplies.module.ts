@@ -17,6 +17,6 @@ import { SuppliesRepository } from './repository/supplies.repository';
       useClass: SuppliesRepository,
     },
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, SuppliesService],
 })
 export class SuppliesModule {}

@@ -1,6 +1,6 @@
-import { Category } from 'src/categories';
-import { OrdersDetail } from 'src/orders-detail';
-import { Supplier } from 'src/suppliers';
+import { Category } from '../../categories/entities/category.entity';
+import { OrdersDetail } from '../../orders-detail/entities/orders-detail.entity';
+import { Supplier } from '../../suppliers/entities/supplier.entity';
 import { SuppliesXproductionDetail } from 'src/supplies-xproduction-detail/entities/supplies-xproduction-detail.entity';
 import {
   Column,

@@ -1,4 +1,4 @@
-import { ProductionDetail } from 'src/production-detail';
+import { ProductionDetail } from '../../production-detail/entities/production-detail.entity';
 import {
   Column,
   CreateDateColumn,

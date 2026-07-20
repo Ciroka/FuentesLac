@@ -1,7 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { SalesModule } from '../sales/sales.module';
 import { ClientsController } from './controller/clients.controller';
 import { ClientsService } from './service/clients.service';
 import { Client } from './entities/client.entity';
@@ -9,7 +8,7 @@ import { CLIENTS_REPOSITORY } from './repository/clients.repository.interface';
 import { ClientsRepository } from './repository/clients.repository';
 
 @Module({
-  imports: [SalesModule, TypeOrmModule.forFeature([Client])],
+  imports: [TypeOrmModule.forFeature([Client])],
   controllers: [ClientsController],
   providers: [
     ClientsService,
@@ -18,6 +17,6 @@ import { ClientsRepository } from './repository/clients.repository';
       useClass: ClientsRepository,
     },
   ],
-  exports: [TypeOrmModule],
+  exports: [TypeOrmModule, ClientsService],
 })
 export class ClientsModule {}

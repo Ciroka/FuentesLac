@@ -3,11 +3,11 @@
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
-    "front": "npm run start --prefix front",
-    "preback": "docker compose -f back/docker-compose.yml up -d",
-    "back": "npm run start:dev --prefix back",
+    "front": "npm run start --prefix frontend",
+    "preback": "docker compose -f backend/docker-compose.yml up -d",
+    "back": "npm run start:dev --prefix backend",
     "start": "concurrently \"npm run front\" \"npm run back\"",
-    "stop": "docker compose -f back/docker-compose.yml down",
+    "stop": "docker compose -f backend/docker-compose.yml down",
     "prepare": "husky"
   },
   "keywords": [],
