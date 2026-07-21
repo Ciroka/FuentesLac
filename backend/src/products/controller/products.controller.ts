@@ -52,6 +52,7 @@ export class ProductsController {
     };
   }
 
+  @Roles(UserRole.ADMIN)
   @Post()
   async create(
     @Body() createProductDto: CreateProductDto,

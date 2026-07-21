@@ -89,3 +89,45 @@
         }
     }
 }
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 16px;
+}
+
+.user-email {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink-dim);
+}
+
+.user-role {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--gold);
+    background: var(--gold-soft);
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.logout-btn {
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px 12px;
+    cursor: pointer;
+    color: var(--ink-dim);
+    font-size: 16px;
+    transition: all 0.15s ease;
+    margin-left: 12px;
+
+    &:hover {
+        color: var(--wax);
+        border-color: var(--wax);
+        background: var(--wax-soft);
+    }
+}

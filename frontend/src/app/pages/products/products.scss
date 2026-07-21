@@ -1,0 +1,29 @@
+.stock-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.stockbar {
+  display: inline-block;
+  width: 60px;
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+
+  i {
+    display: block;
+    height: 100%;
+    border-radius: 3px;
+    transition: width 0.3s ease;
+  }
+}
+
+.stock-num {
+  font-family: var(--mono);
+  font-size: 12px;
+  min-width: 30px;
+  text-align: right;
+}

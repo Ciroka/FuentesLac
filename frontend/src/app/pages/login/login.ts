@@ -1,8 +1,7 @@
-import { Component, signal } from '@angular/core';
+import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-//import { firstValueFrom } from 'rxjs';
-
-//import { AuthService, ToastService } from '../../services';
+import { Router } from '@angular/router';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -11,8 +10,8 @@ import { FormsModule } from '@angular/forms';
   styleUrl: './login.scss',
 })
 export class LoginPage {
-  //private authService = inject(AuthService);
-  //private toastService = inject(ToastService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
 
   email = '';
   password = '';
@@ -23,19 +22,16 @@ export class LoginPage {
   async submit(): Promise<void> {
     this.error = '';
     this.loading.set(true);
-    /*try {
-      await firstValueFrom(this.authService.login({ email: this.email, password: this.password }));
-      this.router.navigate(['/']);
-    } catch (err: any) {
-      this.error = 'Error al iniciar sesión';
-      this.mostrarMsjError();
-    } finally {
-      this.loading.set(false);
-    }*/
-  }
 
-  mostrarMsjError(): void {
-    //this.toastService.error({ message: this.error });
+    this.authService.login(this.email, this.password).subscribe({
+      next: () => {
+        this.router.navigate(['/home']);
+      },
+      error: () => {
+        this.error = 'Credenciales inválidas';
+        this.loading.set(false);
+      }
+    });
   }
 
   togglePassword(): void {

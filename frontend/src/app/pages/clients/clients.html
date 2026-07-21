@@ -1,1 +1,36 @@
-<app-navbar></app-navbar>
+<div><app-navbar></app-navbar></div>
+
+<main class="contenido">
+
+  <div class="view-header">
+    <h2>Clientes</h2>
+  </div>
+
+  <div class="search-row">
+    <input type="text" placeholder="Buscar por nombre, CUIT o email…"
+           [(ngModel)]="searchTerm">
+  </div>
+
+  <div class="card table-scroll">
+    <table>
+      <thead>
+        <tr>
+          <th>Nombre</th><th>Apellido</th>
+          <th>Teléfono</th><th>CUIT</th><th>Email</th>
+        </tr>
+      </thead>
+      <tbody>
+        @for (cliente of filteredClientes; track cliente.id) {
+          <tr>
+            <td><strong>{{ cliente.name }}</strong></td>
+            <td>{{ cliente.lastName }}</td>
+            <td>{{ cliente.phone }}</td>
+            <td>{{ cliente.cuit }}</td>
+            <td>{{ cliente.email }}</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+</main>

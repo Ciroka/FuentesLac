@@ -40,7 +40,7 @@ export class SuppliesController {
   findOne(@Param('id', ParseIntPipe) id: number): Promise<SupplyResponse> {
     return this.suppliesService.findOne(id);
   }
-  @Public()
+  @Roles(UserRole.ADMIN)
   @Post()
   create(@Body() createSupplyDto: CreateSupplyDto): Promise<SupplyResponse> {
     return this.suppliesService.create(createSupplyDto);

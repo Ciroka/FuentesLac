@@ -3,86 +3,45 @@
 <main class="contenido">
     <div class="grid grid-4" style="margin-bottom:14px;">
       <div class="card">
-        <div class="card-label">Producción total</div>
-        <div class="card-value">3.870 u</div>
-        <div class="card-delta up">▲ 6.4% vs. mayo</div>
+        <div class="card-label">Productos activos</div>
+        <div class="card-value">{{ totalProductos }}</div>
+        <div class="card-delta" style="color:var(--ink-dim)">en catálogo</div>
       </div>
       <div class="card">
-        <div class="card-label">Gasto en insumos</div>
-        <div class="card-value">$8,14M</div>
-        <div class="card-delta down">▲ 4.5% vs. mayo</div>
+        <div class="card-label">Insumos</div>
+        <div class="card-value">{{ totalInsumos }}</div>
+        <div class="card-delta" style="color:var(--ink-dim)">materias primas</div>
       </div>
       <div class="card">
-        <div class="card-label">Costo prom. / unidad</div>
-        <div class="card-value">$2.103</div>
-        <div class="card-delta up">▼ 2.1% vs. mayo</div>
+        <div class="card-label">Stock insumos (valor)</div>
+        <div class="card-value">{{ formatCurrency(gastoInsumos) }}</div>
+        <div class="card-delta" style="color:var(--ink-dim)">valor total en stock</div>
       </div>
       <div class="card">
         <div class="card-label">Insumos bajo mínimo</div>
-        <div class="card-value" style="color:var(--wax)">4</div>
-        <div class="card-delta" style="color:var(--ink-dim)">de 12 insumos activos</div>
-      </div>
-    </div>
-
-    <div class="grid grid-2" style="margin-bottom:14px;">
-      <div class="card">
-        <div class="panel-title">Producción por producto (u.) — últimos 6 meses</div>
-        <div class="chart-box"><canvas id="chartProduccion" width="844" height="230" style="display: block; box-sizing: border-box; height: 230px; width: 844px;"></canvas></div>
-      </div>
-      <div class="card">
-        <div class="panel-title">Gasto de insumos por producto (junio)</div>
-        <div class="chart-box"><canvas id="chartGastoPie" width="401" height="230" style="display: block; box-sizing: border-box; height: 230px; width: 401px;"></canvas></div>
+        <div class="card-value" style="color:var(--wax)">{{ insumosBajoMinimo }}</div>
+        <div class="card-delta" style="color:var(--ink-dim)">de {{ totalInsumos }} insumos activos</div>
       </div>
     </div>
 
     <div class="card">
-      <div class="panel-title">Detalle producción vs. gasto — junio 2026</div>
-      <table>
-        <thead><tr><th>Producto</th><th class="num">Unid. producidas</th><th class="num">Gasto insumos</th><th class="num">Costo/unidad</th><th class="num">Margen est.</th></tr></thead>
-        <tbody id="tblProdGasto">
-      <tr>
-        <td><strong>Queso Cremoso x1kg</strong></td>
-        <td class="num">980</td>
-        <td class="num">$1.620.000</td>
-        <td class="num">$1653</td>
-        <td class="num" style="color:var(--green)">+$628</td>
-      </tr>
-      <tr>
-        <td><strong>Queso Port Salut x1kg</strong></td>
-        <td class="num">720</td>
-        <td class="num">$1.780.000</td>
-        <td class="num">$2472</td>
-        <td class="num" style="color:var(--green)">+$939</td>
-      </tr>
-      <tr>
-        <td><strong>Provolone Ahumado x1kg</strong></td>
-        <td class="num">610</td>
-        <td class="num">$2.050.000</td>
-        <td class="num">$3361</td>
-        <td class="num" style="color:var(--green)">+$1277</td>
-      </tr>
-      <tr>
-        <td><strong>Queso Sardo x1kg</strong></td>
-        <td class="num">540</td>
-        <td class="num">$1.310.000</td>
-        <td class="num">$2426</td>
-        <td class="num" style="color:var(--green)">+$922</td>
-      </tr>
-      <tr>
-        <td><strong>Queso en Hebras 500g</strong></td>
-        <td class="num">620</td>
-        <td class="num">$890.000</td>
-        <td class="num">$1435</td>
-        <td class="num" style="color:var(--green)">+$545</td>
-      </tr>
-      <tr>
-        <td><strong>Ricotta 500g</strong></td>
-        <td class="num">400</td>
-        <td class="num">$490.000</td>
-        <td class="num">$1225</td>
-        <td class="num" style="color:var(--green)">+$466</td>
-      </tr></tbody>
-      </table>
+      <div class="table-label">Productos en catálogo</div>
+      <div class="table-scroll" style="max-height:400px;">
+        <table>
+          <thead><tr><th>Producto</th><th>Categoría</th><th class="num">Precio venta</th><th class="num">Precio costo</th><th class="num">Margen</th></tr></thead>
+          <tbody>
+            @for (producto of data?.productos || []; track producto.id) {
+              <tr>
+                <td><strong>{{ producto.name }}</strong></td>
+                <td>{{ producto.category?.name }}</td>
+                <td class="num">{{ producto.salePrice | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
+                <td class="num">{{ producto.costPrice | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
+                <td class="num" style="color:var(--green)">+{{ producto.marginPercent }}%</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      </div>
     </div>
 </main>
 
