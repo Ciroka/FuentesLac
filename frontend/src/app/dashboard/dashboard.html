@@ -1,1 +1,95 @@
-<p>dashboard works!</p>
+<body>
+  <app-navbar></app-navbar>
+  <main class="contenido">
+
+    @if (loading()) {
+      <div class="loading-state">
+        <div class="spinner"></div>
+        <p>Cargando resumen del día...</p>
+      </div>
+    }
+
+    @if (error()) {
+      <div class="error-state card">
+        <p>{{ error() }}</p>
+        <button class="btn" (click)="ngOnInit()">Reintentar</button>
+      </div>
+    }
+
+    @if (summary(); as s) {
+
+      <div class="grid grid-4">
+        <app-kpi-card
+          label="Producción hoy"
+          [value]="s.todayProduction.totalQuantity + ' u'"
+          [delta]="s.todayProduction.totalQuantity === 0 && s.todayProduction.vsYesterday === 0 ? undefined : s.todayProduction.vsYesterday"
+          deltaLabel="vs ayer"
+          icon="bi bi-building"
+          [noActivity]="s.todayProduction.totalQuantity === 0 && s.todayProduction.vsYesterday === 0"
+          [ariaLabel]="'Producción hoy: ' + s.todayProduction.totalQuantity + ' unidades'"
+        ></app-kpi-card>
+        <app-kpi-card
+          label="Ventas hoy"
+          [value]="formatCurrency(s.todaySales.totalAmount)"
+          [suffix]="'/' + s.todaySales.totalUnits + ' u'"
+          [delta]="s.todaySales.totalUnits === 0 && s.todaySales.vsYesterday === 0 ? undefined : s.todaySales.vsYesterday"
+          deltaLabel="vs ayer"
+          icon="bi bi-graph-up-arrow"
+          [noActivity]="s.todaySales.totalUnits === 0 && s.todaySales.vsYesterday === 0"
+          [ariaLabel]="'Ventas hoy: ' + formatCurrency(s.todaySales.totalAmount) + ', ' + s.todaySales.totalUnits + ' unidades'"
+        ></app-kpi-card>
+        <app-kpi-card
+          label="Stock producido"
+          [value]="s.productionVsSales.balance > 0 ? '+' + s.productionVsSales.balance + ' u' : s.productionVsSales.balance + ' u'"
+          [valueClass]="s.productionVsSales.balance > 0 ? 'up' : s.productionVsSales.balance < 0 ? 'down' : ''"
+          deltaLabel="producido vs vendido"
+          icon="bi bi-box-seam"
+          [noActivity]="s.productionVsSales.produced === 0 && s.productionVsSales.sold === 0"
+          [ariaLabel]="'Stock producido: balance ' + s.productionVsSales.balance + ' unidades'"
+        ></app-kpi-card>
+        <app-kpi-card
+          label="Insumos bajo mín."
+          [value]="s.criticalSupplies.length.toString()"
+          [valueClass]="s.criticalSupplies.length > 0 ? 'down' : 'up'"
+          [suffix]="s.criticalSupplies.length === 0 ? ' OK' : ' alerta'"
+          icon="bi bi-droplet-half"
+          [ariaLabel]="'Insumos bajo mínimo: ' + s.criticalSupplies.length"
+        ></app-kpi-card>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="section-header">
+            <div class="section-label">Acciones sugeridas</div>
+          </div>
+          <app-action-list [actions]="s.suggestedActions"></app-action-list>
+        </div>
+
+        <div class="card">
+          <div class="section-header">
+            <div class="section-label">Producción semanal</div>
+          </div>
+          <app-weekly-chart [days]="s.weeklyProduction"></app-weekly-chart>
+        </div>
+      </div>
+
+      <div class="grid grid-2">
+        <div class="card">
+          <div class="section-header">
+            <div class="section-label">Stock de productos</div>
+          </div>
+          <app-product-stock-bars [products]="s.productStocks"></app-product-stock-bars>
+        </div>
+
+        <div class="card">
+          <div class="section-header">
+            <div class="section-label">Más vendidos hoy</div>
+          </div>
+          <app-top-selling-list [products]="s.todaySales.topProducts"></app-top-selling-list>
+        </div>
+      </div>
+
+    }
+
+  </main>
+</body>

@@ -1,0 +1,88 @@
+.selling-list {
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.selling-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 12px;
+  border-radius: 8px;
+  background: var(--panel-2);
+}
+
+.selling-rank {
+  font-family: var(--mono);
+  font-size: 12px;
+  font-weight: 700;
+  color: var(--gold);
+  width: 24px;
+  flex-shrink: 0;
+}
+
+.selling-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+  min-width: 0;
+}
+
+.selling-name {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.selling-amount {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--color-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.selling-qty {
+  font-family: var(--mono);
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--color-success);
+  flex-shrink: 0;
+  font-variant-numeric: tabular-nums;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 32px 16px;
+  gap: 8px;
+  text-align: center;
+}
+
+.empty-icon {
+  font-size: 28px;
+  color: var(--color-muted);
+  opacity: 0.5;
+}
+
+.empty-title {
+  font-family: var(--sans);
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.empty-sub {
+  font-family: var(--mono);
+  font-size: 11px;
+  color: var(--color-muted);
+  max-width: 240px;
+}

@@ -44,7 +44,10 @@ export class SalesRepositoryImpl implements SalesRepository {
   async findOneById(id: number): Promise<Sale | null> {
     return this.saleRepository.findOne({
       where: { id },
-      relations: { details: true, client: true },
+      relations: {
+        details: { batch: { product: true } },
+        client: true,
+      },
     });
   }
 

@@ -22,7 +22,7 @@ export class SalesDetailRepository implements ISalesDetailRepository {
   async findBySale(saleId: number): Promise<SalesDetail[]> {
     return this.detailRepository.find({
       where: { sale: { id: saleId } as Sale },
-      relations: { batch: true },
+      relations: { batch: { product: true } },
     });
   }
 

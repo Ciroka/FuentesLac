@@ -12,7 +12,7 @@ export const routes: Routes = [
   },
   {
     path: 'home',
-    loadComponent: () => import('./pages/home/home').then((m) => m.HomePage),
+    loadComponent: () => import('./dashboard/dashboard').then((m) => m.Dashboard),
   },
   {
     path: 'supplies',
@@ -29,6 +29,10 @@ export const routes: Routes = [
   {
     path: 'clients',
     loadComponent: () => import('./pages/clients/clients').then((m) => m.Clients),
+  },
+  {
+    path: 'production',
+    loadComponent: () => import('./pages/production/production').then((m) => m.Production),
   },
   {
     path: '**',

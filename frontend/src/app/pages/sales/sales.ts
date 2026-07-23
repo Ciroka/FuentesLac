@@ -3,6 +3,7 @@ import { Navbar } from '../../shared/navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SalesService } from '../../services/sales.service';
+import { SalesDetailService } from '../../services/sales-detail.service';
 import { Sale } from '../../models/sale.model';
 
 @Component({
@@ -14,10 +15,13 @@ import { Sale } from '../../models/sale.model';
 })
 export class Sales implements OnInit {
   private salesService = inject(SalesService);
+  private salesDetailService = inject(SalesDetailService);
   private cdr = inject(ChangeDetectorRef);
 
   ventas: Sale[] = [];
   searchTerm = '';
+  expandedIds = new Set<number>();
+  loadingDetailId: number | null = null;
 
   ngOnInit(): void {
     this.salesService.findAll().subscribe({
@@ -42,6 +46,42 @@ export class Sales implements OnInit {
     });
   }
 
+  toggleDetail(venta: Sale): void {
+    if (this.expandedIds.has(venta.id)) {
+      this.expandedIds.delete(venta.id);
+      return;
+    }
+
+    if (venta.details?.length) {
+      this.expandedIds.add(venta.id);
+      this.cdr.detectChanges();
+      return;
+    }
+
+    this.loadingDetailId = venta.id;
+    this.salesDetailService.findBySaleId(venta.id).subscribe({
+      next: (details) => {
+        venta.details = details;
+        this.expandedIds.add(venta.id);
+        this.loadingDetailId = null;
+        this.cdr.detectChanges();
+      },
+      error: (err) => {
+        console.error('Error al traer detalles de venta:', err);
+        this.loadingDetailId = null;
+        this.cdr.detectChanges();
+      }
+    });
+  }
+
+  isExpanded(id: number): boolean {
+    return this.expandedIds.has(id);
+  }
+
+  isLoadingDetail(id: number): boolean {
+    return this.loadingDetailId === id;
+  }
+
   getMetodoPago(method: string): string {
     const map: Record<string, string> = {
       'EFECTIVO': 'Efectivo',
@@ -58,5 +98,9 @@ export class Sales implements OnInit {
       return `${venta.client.name} ${venta.client.lastName}`;
     }
     return '—';
+  }
+
+  getProductName(detail: any): string {
+    return detail.batch?.product?.name ?? '—';
   }
 }

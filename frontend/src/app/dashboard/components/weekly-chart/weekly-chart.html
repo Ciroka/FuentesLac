@@ -1,0 +1,50 @@
+@if (isEmpty()) {
+  <div class="chart-empty">
+    <i class="bi bi-bar-chart chart-empty-icon"></i>
+    <div class="chart-empty-title">Todavía no hay producción esta semana</div>
+    <div class="chart-empty-sub">Los datos de producción aparecerán acá al registrar producción</div>
+  </div>
+} @else {
+  <div class="vchart">
+    <div class="vchart-body">
+      <div class="vchart-yaxis">
+        @for (tick of yScale(); track tick) {
+          <span class="vchart-ytick">{{ tick }}</span>
+        }
+      </div>
+      <div class="vchart-area">
+        <div class="vchart-grid">
+          @for (tick of yScale(); track tick) {
+            <div class="vchart-gridline"></div>
+          }
+        </div>
+        <div class="vchart-bars">
+          @for (day of days(); track day.date) {
+            <div class="vchart-col" [class.today]="isToday(day.date)">
+              <div class="vchart-val" [class.today-val]="isToday(day.date)">
+                @if (day.total > 0) {
+                  {{ day.total }}
+                }
+              </div>
+              <div class="vchart-track">
+                <div class="vchart-fill"
+                     [class.today-fill]="isToday(day.date)"
+                     [style.height.%]="barHeight(day)"
+                     [title]="tooltipText(day)">
+                </div>
+              </div>
+            </div>
+          }
+        </div>
+        <div class="vchart-xaxis">
+          @for (day of days(); track day.date) {
+            <div class="vchart-xlabel" [class.today]="isToday(day.date)">
+              <span class="vchart-xday">{{ dayLabel(day.date) }}</span>
+              <span class="vchart-xnum">{{ dayNumber(day.date) }}</span>
+            </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+}

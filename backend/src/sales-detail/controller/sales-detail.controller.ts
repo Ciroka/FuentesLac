@@ -13,6 +13,11 @@ export class SalesDetailController {
     return this.salesDetailService.findAll();
   }
 
+  @Get('sale/:saleId')
+  findBySale(@Param('saleId', ParseIntPipe) saleId: number) {
+    return this.salesDetailService.findBySale(saleId);
+  }
+
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number) {
     return this.salesDetailService.findOne(id);

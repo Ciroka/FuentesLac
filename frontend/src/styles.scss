@@ -6,7 +6,13 @@
   --panel-2: #efe8d8;
   --line: #ddd3ba;
   --ink: #2c2618;
-  --ink-dim: #877c64;
+  --ink-dim: #6B6355;
+  --color-success: #2F6B4F;
+  --color-warning: #C98A2E;
+  --color-danger: #B3432E;
+  --color-muted: #6B6355;
+  --card-track: #EDE6D3;
+  --today-highlight: rgba(169,116,30,0.06);
   --gold: #a9741e;
   --gold-soft: #f1e2bd;
   --green: #4a7455;
@@ -72,6 +78,7 @@ body {
     font-size: 26px;
     font-weight: 700;
     color: var(--ink);
+    font-variant-numeric: tabular-nums;
 }
 
 .card-delta {
@@ -97,6 +104,11 @@ body {
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
   border: 1px solid rgba(255,255,255,.5);
+}
+
+*:focus-visible {
+  outline: 2px solid var(--gold);
+  outline-offset: 2px;
 }
 
 .btn {
@@ -464,6 +476,28 @@ code {
   .d-none-desktop { display: none !important; }
 }
 
+@media (max-width: 1024px) {
+  .grid-4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .grid-4 {
+    grid-template-columns: 1fr;
+  }
+  .grid-2 {
+    grid-template-columns: 1fr;
+  }
+  .grid-3 {
+    grid-template-columns: 1fr;
+  }
+  .contenido {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+  }
+}
+
 .brand-mark {
     width: 38px;
     height: 38px;
@@ -505,6 +539,10 @@ code {
 
 .grid-4 {
     grid-template-columns: repeat(4, 1fr);
+}
+
+.grid-2 {
+    grid-template-columns: repeat(2, 1fr);
 }
 
 .grid {
@@ -697,6 +735,12 @@ td {
     color: var(--green);
     border-color: var(--green);
     background: var(--green-soft);
+}
+
+.tag-warn {
+    color: var(--gold);
+    border-color: var(--gold);
+    background: var(--gold-soft);
 }
 
 .tag-danger {

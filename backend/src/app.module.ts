@@ -29,6 +29,7 @@ import {
   SuppliesXproductionDetail,
 } from './supplies-xproduction-detail';
 import { EmailSenderModule } from './email-sender/email-sender.module';
+import { DashboardModule } from './dashboard';
 
 @Module({
   imports: [
@@ -86,6 +87,7 @@ import { EmailSenderModule } from './email-sender/email-sender.module';
     BatchModule,
     SuppliesXproductionDetailModule,
     EmailSenderModule,
+    DashboardModule,
   ],
   controllers: [AppController],
   providers: [

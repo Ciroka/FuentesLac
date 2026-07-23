@@ -1,0 +1,43 @@
+.kpi-card {
+  position: relative;
+}
+
+.kpi-header {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 9px;
+}
+
+.kpi-icon {
+  font-size: 16px;
+  color: var(--color-muted);
+  flex-shrink: 0;
+}
+
+.kpi-header .card-label {
+  margin-bottom: 0;
+}
+
+.kpi-suffix {
+  font-size: 16px;
+  color: var(--color-muted);
+  font-weight: 400;
+}
+
+.kpi-no-activity {
+  font-style: italic;
+  color: var(--color-muted);
+}
+
+.dim {
+  color: var(--color-muted);
+}
+
+.up {
+  color: var(--color-success) !important;
+}
+
+.down {
+  color: var(--color-danger) !important;
+}

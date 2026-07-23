@@ -510,3 +510,23 @@ FuentesLac/
 | **Categorías** | Sin componente | Backend tiene CRUD |
 | **Proveedores** | Sin componente | Backend tiene CRUD |
 | **Usuarios** | Sin componente | Backend tiene CRUD (solo ADMIN) |
+
+
+Dashboard completo. Backend y frontend compilan sin errores. Resumen de lo creado:
+Backend (/dashboard):
+- DTOs: DashboardSummary, DashboardAction, ProductStock, WeeklyDay + barrel export
+- Strategies: ActionGenerator interface, ProduceActionGenerator, PurchaseActionGenerator, CompositeActionGenerator
+- Service (Facade): Agrega datos de Products, Batches, Production, Sales, Supplies en paralelo con Promise.all. Calcula KPIs, top productos, stock crítico, acciones sugeridas
+- Controller: GET /dashboard/summary
+- Module: Registra repos de TypeORM + inyecta generators con factory
+Frontend (/dashboard):
+- Model: Interfaces TypeScript que espejan los DTOs del backend
+- Service: Llama a GET /dashboard/summary con shareReplay(1)
+- Smart component (Dashboard): Señales, loading/error states, orquesta 5 dumb components
+- 5 Dumb components:
+- KpiCard — KPI individual con valor, delta, suffix
+- ActionList — Lista de acciones sugeridas (producir/comprar) con prioridad
+- WeeklyChart — Barras horizontales de producción semanal
+- ProductStockBars — Barras de stock por producto con status tags
+- TopSellingList — Top 5 productos más vendidos hoy
+- Routing: /home → Dashboard (reemplaza el viejo HomePage)

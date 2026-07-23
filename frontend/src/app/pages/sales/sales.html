@@ -15,19 +15,71 @@
     <table>
       <thead>
         <tr>
+          <th class="col-toggle"></th>
           <th>#</th><th>Fecha</th><th>Cliente</th>
           <th>Método de pago</th><th class="num">Total</th>
         </tr>
       </thead>
       <tbody>
         @for (venta of filteredVentas; track venta.id) {
-          <tr>
+          <tr class="venta-row" [class.expanded]="isExpanded(venta.id)">
+            <td class="col-toggle">
+              <button class="toggle-btn" (click)="toggleDetail(venta)"
+                      [attr.aria-label]="isExpanded(venta.id) ? 'Colapsar detalles' : 'Expandir detalles'">
+                @if (isLoadingDetail(venta.id)) {
+                  <span class="spinner"></span>
+                } @else {
+                  {{ isExpanded(venta.id) ? '−' : '+' }}
+                }
+              </button>
+            </td>
             <td>{{ venta.id }}</td>
             <td>{{ venta.date | date:'dd/MM/yyyy HH:mm' }}</td>
             <td><strong>{{ getCliente(venta) }}</strong></td>
             <td>{{ getMetodoPago(venta.paymentMethod) }}</td>
             <td class="num">{{ venta.total | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
           </tr>
+          @if (isExpanded(venta.id)) {
+            <tr class="detail-row">
+              <td colspan="6">
+                <div class="detail-panel">
+                  @if (venta.details?.length) {
+                    <table class="detail-table">
+                      <thead>
+                        <tr>
+                          <th>Producto</th>
+                          <th class="num">Cantidad</th>
+                          <th class="num">P. Unit.</th>
+                          <th class="num">Subtotal</th>
+                          <th class="num">Peso</th>
+                          <th class="col-photo">Foto</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (detail of venta.details; track detail.id) {
+                          <tr>
+                            <td><strong>{{ getProductName(detail) }}</strong></td>
+                            <td class="num">{{ detail.quantity | number }}</td>
+                            <td class="num">{{ detail.unitPrice | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
+                            <td class="num">{{ detail.subtotal | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
+                            <td class="num">{{ detail.weight ? (detail.weight | number:'1.2-2') + ' kg' : '—' }}</td>
+                            <td class="col-photo">
+                              <span class="photo-placeholder">
+                                <span class="photo-icon">📷</span>
+                                <span>Sin foto</span>
+                              </span>
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  } @else {
+                    <div class="detail-empty">Sin detalles</div>
+                  }
+                </div>
+              </td>
+            </tr>
+          }
         }
       </tbody>
     </table>

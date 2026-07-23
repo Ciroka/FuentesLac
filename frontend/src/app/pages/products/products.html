@@ -17,42 +17,27 @@
     </select>
   </div>
 
-  <div class="card table-scroll">
-    <table>
-      <thead>
-        <tr>
-          <th>Producto</th><th>Categoría</th>
-          <th class="num">Stock actual</th><th class="num">Stock mínimo</th>
-          <th class="num">Precio venta</th><th class="num">Precio costo</th>
-          <th>Estado</th>
-        </tr>
-      </thead>
-      <tbody>
-        @for (producto of filteredProducts; track producto.id) {
-          <tr>
-            <td><strong>{{ producto.name }}</strong></td>
-            <td>{{ producto.category?.name }}</td>
-            <td class="num">
-              <div class="stock-cell">
-                <span class="stockbar">
-                  <i [style.width.%]="getStockPercent(producto)"
-                     [style.background]="getEstado(producto).color"></i>
-                </span>
-                <span class="stock-num">{{ producto.totalStock ?? 0 | number }}</span>
-              </div>
-            </td>
-            <td class="num">{{ producto.minStock | number }}</td>
-            <td class="num">{{ producto.salePrice | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
-            <td class="num">{{ producto.costPrice | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
-            <td>
-              <span class="tag" [ngClass]="getEstado(producto).tagClass">
-                {{ getEstado(producto).label }}
-              </span>
-            </td>
-          </tr>
+  <div class="grid grid-3">
+    @for (producto of filteredProducts; track producto.id) {
+      <div class="prod-card">
+        <div class="prod-card-top">
+          <div>
+            <div class="prod-name">{{ producto.name }}</div>
+            <div class="prod-cat">{{ producto.category?.name }}</div>
+          </div>
+          <div class="prod-stock">{{ (producto.totalStock ?? 0) | number }}<small>unidades</small></div>
+        </div>
+        <span class="tag {{ getEstado(producto).tagClass }}">{{ getEstado(producto).label }} · mín. {{ producto.minStock | number }}</span>
+        <div class="prod-stockbar"><i [style.width.%]="getStockPercent(producto)" [style.background]="getEstado(producto).color"></i></div>
+        @if (producto.suppliers?.length) {
+          <div class="prov-list">
+            @for (prov of producto.suppliers; track prov.id) {
+              <span class="prov-chip">{{ prov.name }}</span>
+            }
+          </div>
         }
-      </tbody>
-    </table>
+      </div>
+    }
   </div>
 
 </main>

@@ -1,0 +1,33 @@
+@if (actions().length === 0) {
+  <div class="empty-state">No hay acciones pendientes</div>
+} @else {
+  <ul class="action-list">
+    @for (action of visibleActions(); track $index) {
+      <li class="action-item" [class.high]="action.priority === 'high'" [class.medium]="action.priority === 'medium'" [class.low]="action.priority === 'low'">
+        <span class="action-icon">
+          @if (action.type === 'produce') {
+            <i class="bi bi-building"></i>
+          } @else {
+            <i class="bi bi-cart3"></i>
+          }
+        </span>
+        <div class="action-body">
+          <span class="action-label">{{ action.label }}</span>
+          <span class="action-detail">{{ action.detail }}</span>
+        </div>
+        <span class="action-priority" [class.priority-high]="action.priority === 'high'" [class.priority-medium]="action.priority === 'medium'" [class.priority-low]="action.priority === 'low'">
+          @switch (action.priority) {
+            @case ('high') { URGENTE }
+            @case ('medium') { ATENCIÓN }
+            @case ('low') { BAJA }
+          }
+        </span>
+      </li>
+    }
+  </ul>
+  @if (hasOverflow()) {
+    <button class="toggle-btn" (click)="toggle()">
+      {{ showAll() ? 'Ver menos' : 'Ver todas (' + actions().length + ')' }}
+    </button>
+  }
+}

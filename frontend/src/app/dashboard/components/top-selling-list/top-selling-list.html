@@ -1,0 +1,20 @@
+@if (products().length === 0) {
+  <div class="empty-state">
+    <i class="bi bi-bag empty-icon"></i>
+    <div class="empty-title">Sin ventas hoy</div>
+    <div class="empty-sub">Los productos más vendidos aparecerán acá a medida que se registren ventas.</div>
+  </div>
+} @else {
+  <ul class="selling-list">
+    @for (product of products(); track product.productName; let i = $index) {
+      <li class="selling-item">
+        <span class="selling-rank">#{{ i + 1 }}</span>
+        <div class="selling-body">
+          <span class="selling-name">{{ product.productName }}</span>
+          <span class="selling-amount">{{ formatCurrency(product.amount) }}</span>
+        </div>
+        <span class="selling-qty">{{ product.quantity }} u</span>
+      </li>
+    }
+  </ul>
+}
