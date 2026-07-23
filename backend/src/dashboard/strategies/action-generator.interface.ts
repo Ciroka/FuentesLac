@@ -4,7 +4,13 @@ import { CriticalSupply } from '../dto/response/dashboard-summary.dto';
 
 export interface DashboardContext {
   products: ProductStock[];
-  supplies: { id: number; name: string; currentStock: number; minStock: number; supplier?: { name: string } }[];
+  supplies: {
+    id: number;
+    name: string;
+    currentStock: number;
+    minStock: number;
+    supplier?: { name: string };
+  }[];
   criticalSupplies: CriticalSupply[];
 }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { Navbar } from '../shared/navbar/navbar';
 import { DashboardService } from '../services/dashboard.service';
-import { DashboardSummary, DashboardAction, ProductStock, CriticalSupply, WeeklyDay } from '../models/dashboard.model';
+import { DashboardSummary } from '../models/dashboard.model';
 import { KpiCard } from './components/kpi-card/kpi-card';
 import { ActionList } from './components/action-list/action-list';
 import { WeeklyChart } from './components/weekly-chart/weekly-chart';
@@ -28,7 +28,7 @@ export class Dashboard implements OnInit {
         this.summary.set(data);
         this.loading.set(false);
       },
-      error: (err) => {
+      error: () => {
         this.error.set('Error al cargar el resumen del día');
         this.loading.set(false);
       },

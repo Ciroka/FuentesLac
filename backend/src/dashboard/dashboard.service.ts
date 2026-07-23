@@ -42,20 +42,27 @@ export class DashboardService {
     const yesterday = this.startOfDay(new Date(Date.now() - 86400000));
     const weekStart = this.startOfDay(new Date(Date.now() - 6 * 86400000));
 
-    const [productStocks, supplies, todayProduction, yesterdayProduction, todaySales, yesterdaySales, weeklyProduction] =
-      await Promise.all([
-        this.getProductStocks(),
-        this.supplyRepo.find({ relations: { supplier: true } }),
-        this.getProductionByDate(today),
-        this.getProductionByDate(yesterday),
-        this.getSalesByDate(today),
-        this.getSalesByDate(yesterday),
-        this.getWeeklyProduction(weekStart),
-      ]);
+    const [
+      productStocks,
+      supplies,
+      todayProduction,
+      yesterdayProduction,
+      todaySales,
+      yesterdaySales,
+      weeklyProduction,
+    ] = await Promise.all([
+      this.getProductStocks(),
+      this.supplyRepo.find({ relations: { supplier: true } }),
+      this.getProductionByDate(today),
+      this.getProductionByDate(yesterday),
+      this.getSalesByDate(today),
+      this.getSalesByDate(yesterday),
+      this.getWeeklyProduction(weekStart),
+    ]);
 
     const criticalSupplies: CriticalSupply[] = supplies
-      .filter(s => s.currentStock < s.minStock)
-      .map(s => ({
+      .filter((s) => s.currentStock < s.minStock)
+      .map((s) => ({
         id: s.id,
         name: s.name,
         currentStock: s.currentStock,
@@ -65,20 +72,42 @@ export class DashboardService {
 
     const lowestStockProduct = this.findLowestStock(productStocks);
 
-    const todayTotalProd = todayProduction.reduce((sum, p) => sum + p.quantity, 0);
-    const yesterdayTotalProd = yesterdayProduction.reduce((sum, p) => sum + p.quantity, 0);
-    const vsYesterdayProd = yesterdayTotalProd > 0
-      ? Math.round(((todayTotalProd - yesterdayTotalProd) / yesterdayTotalProd) * 100)
-      : 0;
+    const todayTotalProd = todayProduction.reduce(
+      (sum, p) => sum + p.quantity,
+      0,
+    );
+    const yesterdayTotalProd = yesterdayProduction.reduce(
+      (sum, p) => sum + p.quantity,
+      0,
+    );
+    const vsYesterdayProd =
+      yesterdayTotalProd > 0
+        ? Math.round(
+            ((todayTotalProd - yesterdayTotalProd) / yesterdayTotalProd) * 100,
+          )
+        : 0;
 
-    const todayTotalSales = todaySales.reduce((sum, s) => sum + Number(s.total), 0);
+    const todayTotalSales = todaySales.reduce(
+      (sum, s) => sum + Number(s.total),
+      0,
+    );
     const todayUnitsSold = todaySales.length;
-    const yesterdayTotalSales = yesterdaySales.reduce((sum, s) => sum + Number(s.total), 0);
-    const vsYesterdaySales = yesterdayTotalSales > 0
-      ? Math.round(((todayTotalSales - yesterdayTotalSales) / yesterdayTotalSales) * 100)
-      : 0;
+    const yesterdayTotalSales = yesterdaySales.reduce(
+      (sum, s) => sum + Number(s.total),
+      0,
+    );
+    const vsYesterdaySales =
+      yesterdayTotalSales > 0
+        ? Math.round(
+            ((todayTotalSales - yesterdayTotalSales) / yesterdayTotalSales) *
+              100,
+          )
+        : 0;
 
-    const topProductsMap = new Map<string, { quantity: number; amount: number }>();
+    const topProductsMap = new Map<
+      string,
+      { quantity: number; amount: number }
+    >();
     for (const sale of todaySales) {
       if (!sale.details) continue;
       for (const detail of sale.details) {
@@ -102,7 +131,7 @@ export class DashboardService {
 
     const ctx: DashboardContext = {
       products: productStocks,
-      supplies: supplies.map(s => ({
+      supplies: supplies.map((s) => ({
         id: s.id,
         name: s.name,
         currentStock: s.currentStock,
@@ -116,7 +145,9 @@ export class DashboardService {
       todayProduction: {
         totalQuantity: todayTotalProd,
         vsYesterday: vsYesterdayProd,
-        breakdown: Array.from(breakdownMap.entries()).map(([productName, quantity]) => ({ productName, quantity })),
+        breakdown: Array.from(breakdownMap.entries()).map(
+          ([productName, quantity]) => ({ productName, quantity }),
+        ),
       },
       todaySales: {
         totalAmount: todayTotalSales,
@@ -138,9 +169,11 @@ export class DashboardService {
   }
 
   private async getProductStocks(): Promise<ProductStock[]> {
-    const products = await this.productRepo.find({ relations: { category: true } });
+    const products = await this.productRepo.find({
+      relations: { category: true },
+    });
     const stocks = await Promise.all(
-      products.map(async p => {
+      products.map(async (p) => {
         const totalStock = await this.batchService.getTotalStockByProduct(p.id);
         const ratio = p.minStock > 0 ? totalStock / p.minStock : 1;
         const status: ProductStock['status'] =
@@ -155,32 +188,38 @@ export class DashboardService {
         };
       }),
     );
-    return stocks.sort((a, b) => (a.totalStock / a.minStock) - (b.totalStock / b.minStock));
+    return stocks.sort(
+      (a, b) => a.totalStock / a.minStock - b.totalStock / b.minStock,
+    );
   }
 
   private findLowestStock(products: ProductStock[]): ProductStock {
     return products.reduce((min, p) =>
-      p.totalStock / p.minStock < min.totalStock / min.minStock ? p : min
+      p.totalStock / p.minStock < min.totalStock / min.minStock ? p : min,
     );
   }
 
-  private async getProductionByDate(date: Date): Promise<{ quantity: number; product?: Product }[]> {
+  private async getProductionByDate(
+    date: Date,
+  ): Promise<{ quantity: number; product?: Product }[]> {
     const nextDay = new Date(date.getTime() + 86400000);
     const productions = await this.productionRepo.find({
       where: { productionDate: MoreThanOrEqual(date) },
       relations: { details: { product: true } },
     });
     return productions
-      .filter(p => p.productionDate < nextDay)
-      .flatMap(p => p.details ?? []);
+      .filter((p) => p.productionDate < nextDay)
+      .flatMap((p) => p.details ?? []);
   }
 
   private async getSalesByDate(date: Date): Promise<Sale[]> {
     const nextDay = new Date(date.getTime() + 86400000);
-    return this.saleRepo.find({
-      where: { date: MoreThanOrEqual(date) },
-      relations: { details: { batch: { product: true } }, client: true },
-    }).then(sales => sales.filter(s => s.date < nextDay));
+    return this.saleRepo
+      .find({
+        where: { date: MoreThanOrEqual(date) },
+        relations: { details: { batch: { product: true } }, client: true },
+      })
+      .then((sales) => sales.filter((s) => s.date < nextDay));
   }
 
   private async getWeeklyProduction(startDate: Date): Promise<WeeklyDay[]> {
@@ -206,7 +245,9 @@ export class DashboardService {
       const d = new Date(startDate.getTime() + i * 86400000);
       const key = this.formatDate(d);
       const productMap = dayMap.get(key) ?? new Map();
-      const products = Array.from(productMap.entries()).map(([productName, quantity]) => ({ productName, quantity }));
+      const products = Array.from(productMap.entries()).map(
+        ([productName, quantity]) => ({ productName, quantity }),
+      );
       days.push({
         date: key,
         total: products.reduce((sum, p) => sum + p.quantity, 0),

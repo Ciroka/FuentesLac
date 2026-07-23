@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SalesService } from '../../services/sales.service';
 import { SalesDetailService } from '../../services/sales-detail.service';
-import { Sale } from '../../models/sale.model';
+import { Sale, SaleDetail } from '../../models/sale.model';
 
 @Component({
   selector: 'app-sales',
@@ -100,7 +100,7 @@ export class Sales implements OnInit {
     return '—';
   }
 
-  getProductName(detail: any): string {
+  getProductName(detail: SaleDetail): string {
     return detail.batch?.product?.name ?? '—';
   }
 }
