@@ -50,7 +50,10 @@ describe('AuditLogInterceptor', () => {
   it('records LOGIN for a successful /auth/login using the response body', () => {
     const context = buildContext({ method: 'POST', path: '/auth/login' });
     interceptor
-      .intercept(context, handlerReturning({ user: { id: 'u1', email: 'a@a.com' } }))
+      .intercept(
+        context,
+        handlerReturning({ user: { id: 'u1', email: 'a@a.com' } }),
+      )
       .subscribe();
 
     expect(auditLogService.record).toHaveBeenCalledWith(

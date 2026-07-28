@@ -11,7 +11,9 @@ describe('UsersController', () => {
   let usersService: { updateRole: jest.Mock };
 
   beforeEach(async () => {
-    usersService = { updateRole: jest.fn().mockResolvedValue({ id: 'target-id' }) };
+    usersService = {
+      updateRole: jest.fn().mockResolvedValue({ id: 'target-id' }),
+    };
 
     const module: TestingModule = await Test.createTestingModule({
       controllers: [UsersController],
@@ -34,8 +36,12 @@ describe('UsersController', () => {
 
     await controller.updateRole(req, 'target-id', { role: UserRole.ADMIN });
 
-    expect(usersService.updateRole).toHaveBeenCalledWith('admin-id', 'target-id', {
-      role: UserRole.ADMIN,
-    });
+    expect(usersService.updateRole).toHaveBeenCalledWith(
+      'admin-id',
+      'target-id',
+      {
+        role: UserRole.ADMIN,
+      },
+    );
   });
 });
