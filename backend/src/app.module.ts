@@ -22,6 +22,7 @@ import { AdjustmentsModule, Adjustment } from './adjustments';
 import { ClientsModule, Client } from './clients';
 import { UsersModule, User } from './users';
 import { AuthModule } from './auth';
+import { RefreshToken } from './auth/entities/refresh-token.entity';
 import { BatchModule } from './batch/batch.module';
 import { Batch } from './batch/entities/batch.entity';
 import {
@@ -30,6 +31,7 @@ import {
 } from './supplies-xproduction-detail';
 import { EmailSenderModule } from './email-sender/email-sender.module';
 import { DashboardModule } from './dashboard';
+import { AuditLogModule, AuditLog } from './audit-log';
 
 @Module({
   imports: [
@@ -81,6 +83,8 @@ import { DashboardModule } from './dashboard';
           Adjustment,
           Batch,
           SuppliesXproductionDetail,
+          RefreshToken,
+          AuditLog,
         ],
       }),
     }),
@@ -88,6 +92,7 @@ import { DashboardModule } from './dashboard';
     SuppliesXproductionDetailModule,
     EmailSenderModule,
     DashboardModule,
+    AuditLogModule,
   ],
   controllers: [AppController],
   providers: [

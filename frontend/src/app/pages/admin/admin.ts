@@ -1,0 +1,167 @@
+import { Component, OnInit, inject, signal } from '@angular/core';
+import { CommonModule } from '@angular/common';
+import { FormsModule } from '@angular/forms';
+import { Navbar } from '../../shared/navbar/navbar';
+import { MatTabsModule } from '@angular/material/tabs';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatButtonModule } from '@angular/material/button';
+import { MatIconModule } from '@angular/material/icon';
+import { MatTableModule } from '@angular/material/table';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+
+import { SuppliesService, CreateSupply } from '../../services/supplies.service';
+import { ProductsService, CreateProduct } from '../../services/products.service';
+import { CategoriesService } from '../../services/categories.service';
+import { SuppliersService } from '../../services/suppliers.service';
+import { UsersService } from '../../services/users.service';
+import { AuthService } from '../../services/auth.service';
+import { AuditLogService } from '../../services/audit-log.service';
+import { Category } from '../../models/category.model';
+import { Supplier } from '../../models/supplier.model';
+import { AuthUser, UserRole } from '../../models/auth.model';
+import { AuditLog } from '../../models/audit-log.model';
+
+@Component({
+  selector: 'app-admin',
+  standalone: true,
+  imports: [
+    CommonModule, FormsModule, Navbar,
+    MatTabsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule,
+    MatButtonModule, MatIconModule, MatTableModule, MatCheckboxModule, MatSnackBarModule,
+  ],
+  templateUrl: './admin.html',
+  styleUrl: './admin.scss',
+})
+export class Admin implements OnInit {
+  private readonly suppliesService = inject(SuppliesService);
+  private readonly productsService = inject(ProductsService);
+  private readonly categoriesService = inject(CategoriesService);
+  private readonly suppliersService = inject(SuppliersService);
+  private readonly usersService = inject(UsersService);
+  private readonly authService = inject(AuthService);
+  private readonly auditLogService = inject(AuditLogService);
+  private readonly snackBar = inject(MatSnackBar);
+
+  readonly UserRole = UserRole;
+
+  categories: Category[] = [];
+  suppliers: Supplier[] = [];
+  users = signal<AuthUser[]>([]);
+  auditLogs = signal<AuditLog[]>([]);
+  auditPage = signal(1);
+  auditTotal = signal(0);
+  auditLimit = 20;
+
+  savingSupply = signal(false);
+  savingProduct = signal(false);
+  savingAccount = signal(false);
+
+  newSupply: CreateSupply = { name: '', costPrice: 0, minStock: 0, currentStock: 0, isMilk: false };
+  newProduct: CreateProduct = { name: '', costPrice: 0, marginPercent: 0.3, minStock: 0 };
+  newAccount = { name: '', email: '', password: '' };
+
+  usersColumns = ['email', 'role', 'createdAt', 'actions'];
+  auditColumns = ['createdAt', 'userEmail', 'action', 'resource', 'resourceId'];
+
+  ngOnInit(): void {
+    this.categoriesService.findAll().subscribe(data => (this.categories = data));
+    this.suppliersService.findAll().subscribe(data => (this.suppliers = data));
+    this.loadUsers();
+    this.loadAuditLogs();
+  }
+
+  private loadUsers(): void {
+    this.usersService.findAll().subscribe(data => this.users.set(data));
+  }
+
+  private loadAuditLogs(): void {
+    this.auditLogService.findAll(this.auditPage(), this.auditLimit).subscribe(res => {
+      this.auditLogs.set(res.items);
+      this.auditTotal.set(res.total);
+    });
+  }
+
+  createSupply(): void {
+    this.savingSupply.set(true);
+    this.suppliesService.create(this.newSupply).subscribe({
+      next: () => {
+        this.savingSupply.set(false);
+        this.snackBar.open('Insumo creado', 'Cerrar', { duration: 3000 });
+        this.newSupply = { name: '', costPrice: 0, minStock: 0, currentStock: 0, isMilk: false };
+      },
+      error: () => {
+        this.savingSupply.set(false);
+        this.snackBar.open('No se pudo crear el insumo', 'Cerrar', { duration: 3000 });
+      },
+    });
+  }
+
+  createProduct(): void {
+    this.savingProduct.set(true);
+    this.productsService.create(this.newProduct).subscribe({
+      next: () => {
+        this.savingProduct.set(false);
+        this.snackBar.open('Producto creado', 'Cerrar', { duration: 3000 });
+        this.newProduct = { name: '', costPrice: 0, marginPercent: 0.3, minStock: 0 };
+      },
+      error: () => {
+        this.savingProduct.set(false);
+        this.snackBar.open('No se pudo crear el producto', 'Cerrar', { duration: 3000 });
+      },
+    });
+  }
+
+  createAccount(): void {
+    this.savingAccount.set(true);
+    this.authService
+      .register(this.newAccount.name, this.newAccount.email, this.newAccount.password)
+      .subscribe({
+        next: () => {
+          this.savingAccount.set(false);
+          this.snackBar.open('Cuenta creada', 'Cerrar', { duration: 3000 });
+          this.newAccount = { name: '', email: '', password: '' };
+          this.loadUsers();
+        },
+        error: () => {
+          this.savingAccount.set(false);
+          this.snackBar.open('No se pudo crear la cuenta', 'Cerrar', { duration: 3000 });
+        },
+      });
+  }
+
+  changeRole(user: AuthUser, role: UserRole): void {
+    this.usersService.updateRole(user.id, role).subscribe({
+      next: () => {
+        this.snackBar.open('Rol actualizado', 'Cerrar', { duration: 3000 });
+        this.loadUsers();
+      },
+      error: () => this.snackBar.open('No se pudo actualizar el rol', 'Cerrar', { duration: 3000 }),
+    });
+  }
+
+  removeUser(user: AuthUser): void {
+    this.usersService.remove(user.id).subscribe({
+      next: () => {
+        this.snackBar.open('Cuenta eliminada', 'Cerrar', { duration: 3000 });
+        this.loadUsers();
+      },
+      error: () => this.snackBar.open('No se pudo eliminar la cuenta', 'Cerrar', { duration: 3000 }),
+    });
+  }
+
+  nextAuditPage(): void {
+    if (this.auditPage() * this.auditLimit >= this.auditTotal()) return;
+    this.auditPage.update(p => p + 1);
+    this.loadAuditLogs();
+  }
+
+  prevAuditPage(): void {
+    if (this.auditPage() <= 1) return;
+    this.auditPage.update(p => p - 1);
+    this.loadAuditLogs();
+  }
+}

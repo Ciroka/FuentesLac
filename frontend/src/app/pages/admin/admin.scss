@@ -1,0 +1,22 @@
+.admin-tabs {
+  margin-top: 1rem;
+}
+
+.admin-form {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  align-items: center;
+  padding: 1.5rem 0;
+
+  mat-form-field {
+    min-width: 220px;
+  }
+}
+
+.audit-pagination {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 0;
+}

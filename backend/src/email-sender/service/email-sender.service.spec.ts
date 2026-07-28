@@ -1,4 +1,5 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { ConfigService } from '@nestjs/config';
 import { EmailSenderService } from './email-sender.service';
 
 describe('EmailSenderService', () => {
@@ -6,7 +7,10 @@ describe('EmailSenderService', () => {
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      providers: [EmailSenderService],
+      providers: [
+        EmailSenderService,
+        { provide: ConfigService, useValue: { get: () => undefined } },
+      ],
     }).compile();
 
     service = module.get<EmailSenderService>(EmailSenderService);

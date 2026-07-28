@@ -4,6 +4,16 @@ import { Observable, map } from 'rxjs';
 import { Supply } from '../models/supply.model';
 import { environment } from '../../environments/environment';
 
+export interface CreateSupply {
+  name: string;
+  costPrice: number;
+  isMilk?: boolean;
+  currentStock?: number;
+  minStock: number;
+  supplierId?: number;
+  categoryId?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -15,5 +25,9 @@ export class SuppliesService {
     return this.http.get<{ items: Supply[] }>(`${this.api}?limit=${limit}`).pipe(
       map(res => res.items)
     );
+  }
+
+  create(supply: CreateSupply): Observable<Supply> {
+    return this.http.post<Supply>(this.api, supply);
   }
 }

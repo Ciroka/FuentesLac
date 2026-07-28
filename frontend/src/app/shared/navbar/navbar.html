@@ -51,6 +51,14 @@
                         <span>Clientes</span>
                     </a>
                 </li>
+                @if (isAdmin()) {
+                <li routerLinkActive="active">
+                    <a routerLink="/admin">
+                        <mat-icon aria-hidden="true">admin_panel_settings</mat-icon>
+                        <span>Admin</span>
+                    </a>
+                </li>
+                }
             </ul>
             <ul class="sidebar-links bottom-links">
                 <li><a href="#"><mat-icon aria-hidden="true">settings</mat-icon>

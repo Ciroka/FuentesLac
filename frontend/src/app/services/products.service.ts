@@ -12,6 +12,15 @@ interface StockStatus {
   isLowStock: boolean;
 }
 
+export interface CreateProduct {
+  name: string;
+  salePrice?: number;
+  costPrice: number;
+  marginPercent?: number;
+  minStock: number;
+  categoryId?: number;
+}
+
 @Injectable({
   providedIn: 'root'
 })
@@ -48,5 +57,9 @@ export class ProductsService {
 
   getStockStatus(id: number): Observable<StockStatus> {
     return this.http.get<StockStatus>(`${this.api}/${id}/stock-status`);
+  }
+
+  create(product: CreateProduct): Observable<Product> {
+    return this.http.post<Product>(this.api, product);
   }
 }

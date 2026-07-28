@@ -7,5 +7,4 @@ export interface UserLoginResponse {
     role: UserRole;
     createdAt: Date;
   };
-  access_token: string;
 }

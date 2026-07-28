@@ -10,3 +10,4 @@ backend/test/
 !.env.example
 /docs
 /.claude
+/CLAUDE.md

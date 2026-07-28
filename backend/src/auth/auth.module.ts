@@ -3,6 +3,7 @@ import { AuthController } from './controller/auth.controller';
 import { AuthService } from './service/auth.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { User } from '../users/entities/user.entity';
+import { RefreshToken } from './entities/refresh-token.entity';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { PassportModule } from '@nestjs/passport';
 import { JwtModule } from '@nestjs/jwt';
@@ -17,7 +18,7 @@ import { EmailSenderModule } from 'src/email-sender/email-sender.module';
     ConfigModule,
     UsersModule,
     EmailSenderModule,
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, RefreshToken]),
     PassportModule.register({ defaultStrategy: 'jwt' }),
 
     JwtModule.registerAsync({
@@ -27,7 +28,7 @@ import { EmailSenderModule } from 'src/email-sender/email-sender.module';
         secret: configService.getOrThrow<string>('JWT_SECRET'),
         signOptions: {
           expiresIn: Number(
-            configService.get<string>('JWT_EXPIRES_SEC') ?? 3600,
+            configService.get<string>('JWT_EXPIRES_SEC') ?? 900,
           ),
         },
       }),

@@ -10,7 +10,7 @@ import {
 
 import { Category } from '../../categories/entities/category.entity';
 import { Supplier } from '../../suppliers/entities/supplier.entity';
-import { ProductionDetail } from 'src/production-detail';
+import { ProductionDetail } from 'src/production-detail/entities/production-detail.entity';
 import { Batch } from 'src/batch/entities/batch.entity';
 
 @Entity('products')
