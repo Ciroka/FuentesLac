@@ -1,7 +1,7 @@
-<div class="card kpi-card" [attr.aria-label]="ariaLabel()">
+<mat-card class="kpi-card" [attr.aria-label]="ariaLabel()">
   @if (icon()) {
     <div class="kpi-header">
-      <i class="kpi-icon" [class]="icon()!"></i>
+      <mat-icon class="kpi-icon">{{ icon() }}</mat-icon>
       <span class="card-label">{{ label() }}</span>
     </div>
   } @else {
@@ -16,9 +16,14 @@
     <div class="card-delta kpi-no-activity">Sin actividad registrada hoy</div>
   } @else if (delta() !== undefined) {
     <div class="card-delta" [class.up]="delta()! > 0" [class.down]="delta()! < 0">
+      @if (delta()! > 0) {
+        <mat-icon class="trend-icon">arrow_upward</mat-icon>
+      } @else if (delta()! < 0) {
+        <mat-icon class="trend-icon">arrow_downward</mat-icon>
+      }
       {{ delta()! > 0 ? '+' : '' }}{{ delta() }}% {{ deltaLabel() ?? '' }}
     </div>
   } @else if (deltaLabel()) {
     <div class="card-delta dim">{{ deltaLabel() }}</div>
   }
-</div>
+</mat-card>

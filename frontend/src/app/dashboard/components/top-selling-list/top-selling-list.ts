@@ -1,8 +1,12 @@
 import { Component, input } from '@angular/core';
+import { MatListModule } from '@angular/material/list';
+import { MatIconModule } from '@angular/material/icon';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-top-selling-list',
   standalone: true,
+  imports: [CommonModule, MatListModule, MatIconModule],
   templateUrl: './top-selling-list.html',
   styleUrl: './top-selling-list.scss',
 })

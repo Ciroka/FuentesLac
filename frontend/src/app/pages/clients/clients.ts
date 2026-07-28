@@ -4,11 +4,18 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ClientsService } from '../../services/clients.service';
 import { Client } from '../../models/client.model';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-clients',
   standalone: true,
-  imports: [Navbar, CommonModule, FormsModule],
+  imports: [
+    Navbar, CommonModule, FormsModule,
+    MatTableModule, MatFormFieldModule, MatInputModule, MatIconModule
+  ],
   templateUrl: './clients.html',
   styleUrl: './clients.scss',
 })
@@ -18,6 +25,7 @@ export class Clients implements OnInit {
 
   clientes: Client[] = [];
   searchTerm = '';
+  displayedColumns = ['name', 'lastName', 'phone', 'cuit', 'email'];
 
   ngOnInit(): void {
     this.clientsService.findAll().subscribe({

@@ -1,0 +1,101 @@
+<div><app-navbar></app-navbar></div>
+
+<main class="contenido">
+
+  <div class="view-header">
+    <h2>Registrar producción</h2>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="form-error">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <mat-card class="form-card">
+    <mat-card-content>
+
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-label">Productos elaborados</div>
+          <button mat-stroked-button type="button" (click)="addLine()">
+            <mat-icon>add</mat-icon> Agregar producto
+          </button>
+        </div>
+
+        @for (line of lines; track $index; let i = $index) {
+          <div class="production-line">
+            <div class="production-line-header">
+              <mat-form-field appearance="outline" class="line-product">
+                <mat-label>Producto</mat-label>
+                <mat-select [(ngModel)]="line.productId">
+                  @for (p of products; track p.id) {
+                    <mat-option [value]="p.id">{{ p.name }}</mat-option>
+                  }
+                </mat-select>
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="line-qty">
+                <mat-label>Cantidad producida</mat-label>
+                <input matInput type="number" min="1" [(ngModel)]="line.quantity">
+              </mat-form-field>
+
+              <mat-form-field appearance="outline" class="line-date">
+                <mat-label>Fecha del lote</mat-label>
+                <input matInput type="date" [(ngModel)]="line.clientBatchDate">
+              </mat-form-field>
+
+              <button mat-icon-button type="button" (click)="removeLine(i)" [disabled]="lines.length === 1" aria-label="Quitar producto">
+                <mat-icon>delete</mat-icon>
+              </button>
+            </div>
+
+            <div class="supplies-section">
+              <div class="supplies-header">
+                <span class="supplies-label">Insumos consumidos</span>
+                <button mat-stroked-button type="button" (click)="addSupply(line)">
+                  <mat-icon>add</mat-icon> Agregar insumo
+                </button>
+              </div>
+
+              @for (s of line.supplies; track $index; let j = $index) {
+                <div class="supply-row">
+                  <mat-form-field appearance="outline" class="supply-select">
+                    <mat-label>Insumo</mat-label>
+                    <mat-select [(ngModel)]="s.supplyId">
+                      @for (sup of supplies; track sup.id) {
+                        <mat-option [value]="sup.id">{{ sup.name }} · {{ sup.currentStock | number }} disp.</mat-option>
+                      }
+                    </mat-select>
+                  </mat-form-field>
+
+                  <mat-form-field appearance="outline" class="supply-qty">
+                    <mat-label>Cantidad</mat-label>
+                    <input matInput type="number" min="1" [max]="getSupply(s.supplyId)?.currentStock ?? null" [(ngModel)]="s.quantity">
+                  </mat-form-field>
+
+                  <button mat-icon-button type="button" (click)="removeSupply(line, j)" [disabled]="line.supplies.length === 1" aria-label="Quitar insumo">
+                    <mat-icon>close</mat-icon>
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button" routerLink="/production">Cancelar</button>
+        <button mat-raised-button color="primary" type="button" [disabled]="!isValid() || submitting()" (click)="submit()">
+          @if (submitting()) {
+            <mat-spinner diameter="18" class="btn-spinner"></mat-spinner>
+          }
+          Registrar producción
+        </button>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+</main>

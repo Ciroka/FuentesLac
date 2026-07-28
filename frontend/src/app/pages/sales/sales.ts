@@ -1,15 +1,28 @@
 import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { Navbar } from '../../shared/navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { SalesService } from '../../services/sales.service';
 import { SalesDetailService } from '../../services/sales-detail.service';
 import { Sale, SaleDetail } from '../../models/sale.model';
+import { MatTableModule } from '@angular/material/table';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatCardModule } from '@angular/material/card';
+import { MatTooltipModule } from '@angular/material/tooltip';
 
 @Component({
   selector: 'app-sales',
   standalone: true,
-  imports: [Navbar, CommonModule, FormsModule],
+  imports: [
+    Navbar, CommonModule, FormsModule, RouterLink,
+    MatTableModule, MatFormFieldModule, MatInputModule, MatIconModule,
+    MatButtonModule, MatProgressSpinnerModule, MatCardModule, MatTooltipModule
+  ],
   templateUrl: './sales.html',
   styleUrl: './sales.scss',
 })
@@ -22,6 +35,8 @@ export class Sales implements OnInit {
   searchTerm = '';
   expandedIds = new Set<number>();
   loadingDetailId: number | null = null;
+  displayedColumns = ['toggle', 'id', 'date', 'client', 'total'];
+  displayedDetailColumns = ['product', 'quantity', 'unitPrice', 'subtotal', 'weight', 'photo'];
 
   ngOnInit(): void {
     this.salesService.findAll().subscribe({
@@ -38,11 +53,9 @@ export class Sales implements OnInit {
     const term = this.searchTerm.toLowerCase();
     return this.ventas.filter(venta => {
       const cliente = venta.client;
-      const matchCliente = cliente
+      return cliente
         ? `${cliente.name} ${cliente.lastName}`.toLowerCase().includes(term)
         : false;
-      const matchMetodo = venta.paymentMethod.toLowerCase().includes(term);
-      return matchCliente || matchMetodo;
     });
   }
 
@@ -80,17 +93,6 @@ export class Sales implements OnInit {
 
   isLoadingDetail(id: number): boolean {
     return this.loadingDetailId === id;
-  }
-
-  getMetodoPago(method: string): string {
-    const map: Record<string, string> = {
-      'EFECTIVO': 'Efectivo',
-      'TRANSFERENCIA': 'Transferencia',
-      'QR': 'QR',
-      'TARJETA_DEBITO': 'Débito',
-      'TARJETA_CREDITO': 'Crédito',
-    };
-    return map[method] || method;
   }
 
   getCliente(venta: Sale): string {

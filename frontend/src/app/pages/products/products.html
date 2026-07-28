@@ -7,37 +7,65 @@
   </div>
 
   <div class="search-row">
-    <input type="text" placeholder="Buscar producto…"
-           [(ngModel)]="searchTerm">
-    <select [(ngModel)]="selectedCategoryId">
-      <option [ngValue]="null">Todas las categorías</option>
-      @for (cat of categorias; track cat.id) {
-        <option [ngValue]="cat.id">{{ cat.name }}</option>
-      }
-    </select>
+    <mat-form-field appearance="outline" class="search-field">
+      <mat-label>Buscar producto</mat-label>
+      <input matInput [(ngModel)]="searchTerm" placeholder="Nombre del producto...">
+      <mat-icon matPrefix>search</mat-icon>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="category-field">
+      <mat-label>Categoría</mat-label>
+      <mat-select [(ngModel)]="selectedCategoryId">
+        <mat-option [value]="null">Todas las categorías</mat-option>
+        @for (cat of categorias; track cat.id) {
+          <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+        }
+      </mat-select>
+    </mat-form-field>
   </div>
 
-  <div class="grid grid-3">
-    @for (producto of filteredProducts; track producto.id) {
-      <div class="prod-card">
-        <div class="prod-card-top">
-          <div>
-            <div class="prod-name">{{ producto.name }}</div>
-            <div class="prod-cat">{{ producto.category?.name }}</div>
-          </div>
-          <div class="prod-stock">{{ (producto.totalStock ?? 0) | number }}<small>unidades</small></div>
-        </div>
-        <span class="tag {{ getEstado(producto).tagClass }}">{{ getEstado(producto).label }} · mín. {{ producto.minStock | number }}</span>
-        <div class="prod-stockbar"><i [style.width.%]="getStockPercent(producto)" [style.background]="getEstado(producto).color"></i></div>
-        @if (producto.suppliers?.length) {
-          <div class="prov-list">
-            @for (prov of producto.suppliers; track prov.id) {
-              <span class="prov-chip">{{ prov.name }}</span>
+  @if (filteredProducts.length === 0) {
+    <div class="empty-state">
+      <mat-icon>search_off</mat-icon>
+      <div class="empty-state-title">Sin resultados</div>
+      <div class="empty-state-sub">No hay productos que coincidan con la búsqueda o la categoría seleccionada.</div>
+    </div>
+  } @else {
+    <div class="grid grid-3">
+      @for (producto of filteredProducts; track producto.id) {
+        <mat-card class="prod-card">
+          <mat-card-content>
+            <div class="prod-card-top">
+              <div>
+                <div class="prod-name">{{ producto.name }}</div>
+                <div class="prod-cat">{{ producto.category?.name }}</div>
+              </div>
+              <div class="prod-stock">
+                {{ (producto.totalStock ?? 0) | number }}
+                <small>unidades</small>
+              </div>
+            </div>
+
+            <span class="chip-status" [ngClass]="getEstado(producto).chipClass">
+              {{ getEstado(producto).label }} · mín. {{ producto.minStock | number }}
+            </span>
+
+            <mat-progress-bar mode="determinate" [value]="getStockPercent(producto)"
+                              [color]="getEstado(producto).label === 'CRÍTICO' ? 'warn' : getEstado(producto).label === 'BAJO' ? 'accent' : 'primary'"
+                              class="stock-bar">
+            </mat-progress-bar>
+
+            @if (producto.suppliers?.length) {
+              <div class="prov-list">
+                @for (prov of producto.suppliers; track prov.id) {
+                  <span class="prov-chip">{{ prov.name }}</span>
+                }
+              </div>
             }
-          </div>
-        }
-      </div>
-    }
-  </div>
+          </mat-card-content>
+        </mat-card>
+      }
+    </div>
+  }
 
 </main>

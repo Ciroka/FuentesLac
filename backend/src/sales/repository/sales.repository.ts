@@ -24,6 +24,8 @@ export class SalesRepositoryImpl implements SalesRepository {
     const query = this.saleRepository
       .createQueryBuilder('sale')
       .leftJoinAndSelect('sale.details', 'details')
+      .leftJoinAndSelect('details.batch', 'batch')
+      .leftJoinAndSelect('batch.product', 'product')
       .leftJoinAndSelect('sale.client', 'client');
 
     if (clientId) {

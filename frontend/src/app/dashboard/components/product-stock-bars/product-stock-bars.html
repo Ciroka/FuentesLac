@@ -16,10 +16,10 @@
         ></div>
         <div class="stock-min-marker" [style.left.%]="minMarkerPercent()"></div>
       </div>
-      @if (product.status === 'warn') {
-        <span class="stock-status tag tag-warn">AJUSTADO</span>
-      } @else if (product.status === 'critical') {
-        <span class="stock-status tag tag-danger">BAJO</span>
+      @if (product.status !== 'ok') {
+        <span class="chip-status" [ngClass]="getStatusClass(product.status)">
+          {{ getStatusLabel(product.status) }}
+        </span>
       }
     </div>
   }

@@ -4,11 +4,23 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductsService } from '../../services/products.service';
 import { Product } from '../../models/product.model';
+import { MatCardModule } from '@angular/material/card';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatIconModule } from '@angular/material/icon';
+import { MatSelectModule } from '@angular/material/select';
+import { MatOptionModule } from '@angular/material/core';
+import { MatChipsModule } from '@angular/material/chips';
+import { MatProgressBarModule } from '@angular/material/progress-bar';
 
 @Component({
   selector: 'app-products',
   standalone: true,
-  imports: [Navbar, CommonModule, FormsModule],
+  imports: [
+    Navbar, CommonModule, FormsModule,
+    MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
+    MatSelectModule, MatOptionModule, MatChipsModule, MatProgressBarModule
+  ],
   templateUrl: './products.html',
   styleUrl: './products.scss',
 })
@@ -56,22 +68,22 @@ export class Products implements OnInit {
     return Math.min((stock / min) * 100, 100);
   }
 
-  getEstado(producto: Product): { color: string; label: string; tagClass: string } {
+  getEstado(producto: Product): { color: string; label: string; chipClass: string } {
     const stock = producto.totalStock ?? 0;
     const min = producto.minStock;
 
     if (min <= 0) {
-      return { color: 'var(--green)', label: 'OK', tagClass: 'tag-ok' };
+      return { color: 'var(--color-success)', label: 'OK', chipClass: 'chip-ok' };
     }
 
     const ratio = stock / min;
 
     if (ratio < 1) {
-      return { color: 'var(--wax)', label: 'CRÍTICO', tagClass: 'tag-danger' };
+      return { color: 'var(--color-danger)', label: 'CRÍTICO', chipClass: 'chip-danger' };
     } else if (ratio < 1.2) {
-      return { color: 'var(--gold)', label: 'BAJO', tagClass: 'tag-warn' };
+      return { color: 'var(--color-warning)', label: 'BAJO', chipClass: 'chip-warn' };
     } else {
-      return { color: 'var(--green)', label: 'OK', tagClass: 'tag-ok' };
+      return { color: 'var(--color-success)', label: 'OK', chipClass: 'chip-ok' };
     }
   }
 }

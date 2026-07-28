@@ -7,11 +7,18 @@ import { ActionList } from './components/action-list/action-list';
 import { WeeklyChart } from './components/weekly-chart/weekly-chart';
 import { ProductStockBars } from './components/product-stock-bars/product-stock-bars';
 import { TopSellingList } from './components/top-selling-list/top-selling-list';
+import { MatCardModule, MatCardContent } from '@angular/material/card';
+import { MatButtonModule } from '@angular/material/button';
+import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [Navbar, KpiCard, ActionList, WeeklyChart, ProductStockBars, TopSellingList],
+  imports: [
+    Navbar, KpiCard, ActionList, WeeklyChart, ProductStockBars, TopSellingList,
+    MatCardModule, MatCardContent, MatButtonModule, MatProgressSpinnerModule, MatIconModule
+  ],
   templateUrl: './dashboard.html',
   styleUrl: './dashboard.scss',
 })
@@ -37,15 +44,5 @@ export class Dashboard implements OnInit {
 
   formatCurrency(value: number): string {
     return `$${value.toLocaleString('es-AR')}`;
-  }
-
-  formatDate(dateStr: string): string {
-    const d = new Date(dateStr + 'T00:00:00');
-    return d.toLocaleDateString('es-AR', { weekday: 'short', day: 'numeric' });
-  }
-
-  maxWeeklyTotal(): number {
-    const days = this.summary()?.weeklyProduction ?? [];
-    return Math.max(...days.map(d => d.total), 1);
   }
 }

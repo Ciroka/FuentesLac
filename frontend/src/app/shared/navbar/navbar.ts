@@ -1,12 +1,13 @@
 import { Component, OnDestroy, OnInit, inject, signal } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { RouterLink, RouterLinkActive } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
+import { MatIconModule } from '@angular/material/icon';
 
 @Component({
   selector: 'app-navbar',
   standalone: true,
-  imports: [RouterLink, CommonModule],
+  imports: [RouterLink, RouterLinkActive, CommonModule, MatIconModule],
   templateUrl: './navbar.html',
   styleUrl: './navbar.scss',
 })

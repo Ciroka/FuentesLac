@@ -4,7 +4,7 @@ import { Router } from '@angular/router';
 @Component({
   selector: 'app-home',
   standalone: true,
-  template: `<p>Redirecting...</p>`,
+  template: ``,
 })
 export class HomePage {
   constructor() {

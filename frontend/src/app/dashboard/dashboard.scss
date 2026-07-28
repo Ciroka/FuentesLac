@@ -1,41 +1,7 @@
-body {
-  background: var(--gray-50);
-  min-height: 100vh;
-  font-family: 'Inter', system-ui, -apple-system, sans-serif;
-  color: var(--gray-800);
-  -webkit-font-smoothing: antialiased;
-}
-
 .contenido {
   margin-left: 85px;
   padding: 20px 28px;
   min-height: 100vh;
-}
-
-.page-title {
-  font-family: var(--serif);
-  font-size: 22px;
-  font-weight: 700;
-  color: var(--ink);
-  margin-bottom: 18px;
-}
-
-.grid {
-  display: grid;
-  gap: 14px;
-  margin-bottom: 14px;
-}
-
-.section-header {
-  margin-bottom: 14px;
-}
-
-.section-label {
-  font-family: var(--mono);
-  font-size: 10.5px;
-  color: var(--ink-dim);
-  text-transform: uppercase;
-  letter-spacing: 1px;
 }
 
 .loading-state {
@@ -46,21 +12,8 @@ body {
   padding: 60px 20px;
   gap: 14px;
   color: var(--ink-dim);
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 12px;
-}
-
-.spinner {
-  width: 32px;
-  height: 32px;
-  border: 3px solid var(--line);
-  border-top-color: var(--gold);
-  border-radius: 50%;
-  animation: spin 0.8s linear infinite;
-}
-
-@keyframes spin {
-  to { transform: rotate(360deg); }
 }
 
 .error-state {
@@ -70,45 +23,42 @@ body {
   gap: 14px;
   padding: 40px;
   text-align: center;
-}
 
-.btn {
-  background: var(--gold);
-  color: #fff;
-  border: none;
-  padding: 8px 18px;
-  border-radius: 6px;
-  font-family: var(--mono);
-  font-size: 12px;
-  cursor: pointer;
-  transition: background var(--transition);
-}
-
-.btn:hover {
-  background: #8c5f15;
-}
-
-@media (max-width: 1024px) {
-  .grid.grid-4 {
-    grid-template-columns: repeat(2, 1fr);
+  mat-icon {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+    color: var(--color-danger);
   }
+}
+
+.section-header {
+  margin-bottom: 14px;
+}
+
+.chart-card {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+
+  ::ng-deep .mat-mdc-card-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+}
+
+.section-label {
+  font-family: var(--sans);
+  font-size: 10.5px;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 @media (max-width: 768px) {
   .contenido {
     margin-left: 0;
     padding: 16px;
-  }
-
-  .grid.grid-4 {
-    grid-template-columns: 1fr;
-  }
-
-  .grid.grid-2 {
-    grid-template-columns: 1fr;
-  }
-
-  .page-title {
-    font-size: 18px;
   }
 }

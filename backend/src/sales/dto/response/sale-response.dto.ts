@@ -1,5 +1,3 @@
-import { PaymentMethod } from 'src/shared/enums';
-
 export interface SaleDetailResponse {
   id: number;
   quantity: number;
@@ -20,7 +18,6 @@ export interface SaleResponse {
   id: number;
   date: Date;
   total: number;
-  paymentMethod: PaymentMethod;
   clientId?: number;
   details?: SaleDetailResponse[];
 }

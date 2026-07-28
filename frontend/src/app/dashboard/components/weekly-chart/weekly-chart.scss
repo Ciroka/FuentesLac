@@ -1,159 +1,19 @@
-.vchart {
-  width: 100%;
-}
-
-.vchart-body {
-  display: flex;
-  gap: 0;
-}
-
-.vchart-yaxis {
-  display: flex;
-  flex-direction: column-reverse;
-  justify-content: space-between;
-  padding-right: 8px;
-  flex-shrink: 0;
-  height: 180px;
-}
-
-.vchart-ytick {
-  font-family: var(--mono);
-  font-size: 10px;
-  color: var(--color-muted);
-  text-align: right;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-
-.vchart-area {
-  flex: 1;
+:host {
   display: flex;
   flex-direction: column;
-  min-width: 0;
-  position: relative;
+  flex: 1;
+  min-height: 0;
 }
 
-.vchart-grid {
-  position: absolute;
-  top: 0;
-  left: 0;
-  right: 0;
-  height: 180px;
-  display: flex;
-  flex-direction: column-reverse;
-  justify-content: space-between;
-  pointer-events: none;
-}
-
-.vchart-gridline {
+.chart-container {
+  flex: 1;
+  min-height: 220px;
   width: 100%;
-  height: 1px;
-  background: var(--line);
-  opacity: 0.5;
-}
-
-.vchart-bars {
-  position: relative;
-  z-index: 1;
-  display: flex;
-  align-items: flex-end;
-  height: 180px;
-  gap: 0;
-}
-
-.vchart-col {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  height: 100%;
-  padding: 0 2px;
-}
-
-.vchart-val {
-  font-family: var(--mono);
-  font-size: 10px;
-  font-weight: 600;
-  color: var(--color-muted);
-  margin-bottom: 4px;
-  font-variant-numeric: tabular-nums;
-  line-height: 1;
-}
-
-.vchart-val.today-val {
-  color: var(--gold);
-  font-weight: 700;
-}
-
-.vchart-track {
-  flex: 1;
-  width: 100%;
-  display: flex;
-  align-items: flex-end;
-  justify-content: center;
-}
-
-.vchart-fill {
-  width: 60%;
-  max-width: 40px;
-  min-height: 2px;
-  background: var(--color-success);
-  border-radius: 4px 4px 0 0;
-  transition: height 0.4s ease;
-  cursor: default;
-}
-
-.vchart-fill:hover {
-  opacity: 0.85;
-}
-
-.vchart-fill.today-fill {
-  background: var(--gold);
-  width: 70%;
-  max-width: 48px;
-}
-
-.vchart-xaxis {
-  display: flex;
-  gap: 0;
-  margin-top: 6px;
-}
-
-.vchart-xlabel {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 1px;
-}
-
-.vchart-xday {
-  font-family: var(--mono);
-  font-size: 9px;
-  color: var(--color-muted);
-  text-transform: capitalize;
-  line-height: 1.1;
-}
-
-.vchart-xnum {
-  font-family: var(--mono);
-  font-size: 11px;
-  font-weight: 600;
-  color: var(--ink);
-  line-height: 1.2;
-}
-
-.vchart-xlabel.today .vchart-xday {
-  color: var(--gold);
-  font-weight: 700;
-}
-
-.vchart-xlabel.today .vchart-xnum {
-  color: var(--gold);
 }
 
 .chart-empty {
   display: flex;
+  flex: 1;
   flex-direction: column;
   align-items: center;
   justify-content: center;
@@ -176,7 +36,7 @@
 }
 
 .chart-empty-sub {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 11px;
   color: var(--color-muted);
   max-width: 240px;

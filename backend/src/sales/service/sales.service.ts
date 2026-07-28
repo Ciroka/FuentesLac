@@ -75,7 +75,6 @@ export class SalesService {
 
       const sale = saleRepo.create({
         total,
-        paymentMethod: createSaleDto.paymentMethod,
         ...(client && { client }),
         details: items.map((item) => ({
           batch: item.batch,
@@ -92,8 +91,6 @@ export class SalesService {
 
   async update(id: number, updateSaleDto: UpdateSaleDto): Promise<Sale> {
     const sale = await this.findOne(id);
-    if (updateSaleDto.paymentMethod !== undefined)
-      sale.paymentMethod = updateSaleDto.paymentMethod;
     return this.salesRepository.update(sale);
   }
 

@@ -12,7 +12,7 @@ export class Batch {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column({ nullable: true })
+  @Column({ type: 'decimal', precision: 10, scale: 6, nullable: true })
   yield?: number;
 
   @Column({ nullable: true })
@@ -21,7 +21,13 @@ export class Batch {
   @Column({ nullable: true, name: 'milk_liters_used' })
   milkLitersUsed?: number;
 
-  @Column({ nullable: true, name: 'obtained_weight' })
+  @Column({
+    type: 'decimal',
+    precision: 10,
+    scale: 2,
+    nullable: true,
+    name: 'obtained_weight',
+  })
   obtainedWeight?: number;
 
   @Column({ type: 'date', name: 'client_batch_date', nullable: true })

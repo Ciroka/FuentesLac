@@ -72,7 +72,7 @@ export class BatchService {
     manager?: EntityManager,
   ): Promise<Batch> {
     const batch = await this.findOne(batchId, manager);
-    batch.obtainedWeight = (batch.obtainedWeight ?? 0) + weight;
+    batch.obtainedWeight = Number(batch.obtainedWeight ?? 0) + weight;
     if (batch.milkLitersUsed) {
       batch.yield = batch.obtainedWeight / batch.milkLitersUsed;
     }
@@ -95,7 +95,10 @@ export class BatchService {
     manager?: EntityManager,
   ): Promise<Batch> {
     const batch = await this.findOne(batchId, manager);
-    batch.obtainedWeight = Math.max((batch.obtainedWeight ?? 0) - weight, 0);
+    batch.obtainedWeight = Math.max(
+      Number(batch.obtainedWeight ?? 0) - weight,
+      0,
+    );
     if (batch.milkLitersUsed) {
       batch.yield = batch.milkLitersUsed
         ? batch.obtainedWeight / batch.milkLitersUsed

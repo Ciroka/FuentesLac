@@ -8,3 +8,5 @@ dist/
 backend/test/
 *.env
 !.env.example
+/docs
+/.claude

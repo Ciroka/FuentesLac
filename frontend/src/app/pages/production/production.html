@@ -1,1 +1,99 @@
 <div><app-navbar></app-navbar></div>
+
+<main class="contenido">
+
+  <div class="view-header view-header-row">
+    <h2>Producción</h2>
+    <button mat-raised-button color="white" routerLink="/production/new">
+      <mat-icon>add</mat-icon> Registrar producción
+    </button>
+  </div>
+
+  <mat-form-field appearance="outline" class="search-field">
+    <mat-label>Buscar producción</mat-label>
+    <input matInput [(ngModel)]="searchTerm" placeholder="Producto...">
+    <mat-icon matPrefix>search</mat-icon>
+  </mat-form-field>
+
+  @if (filteredProducciones.length === 0) {
+    <div class="empty-state">
+      <mat-icon>search_off</mat-icon>
+      <div class="empty-state-title">Sin resultados</div>
+      <div class="empty-state-sub">No hay producciones que coincidan con la búsqueda.</div>
+    </div>
+  } @else {
+    <div class="mat-elevation-z2 table-container">
+      <table mat-table [dataSource]="filteredProducciones" multiTemplateDataRows>
+        <ng-container matColumnDef="toggle">
+          <th mat-header-cell *matHeaderCellDef class="col-toggle"></th>
+          <td mat-cell *matCellDef="let produccion" class="col-toggle">
+            <button mat-icon-button class="toggle-btn"
+                    (click)="$event.stopPropagation(); toggleDetail(produccion)"
+                    [matTooltip]="isExpanded(produccion.id) ? 'Colapsar' : 'Expandir'"
+                    [attr.aria-label]="isExpanded(produccion.id) ? 'Colapsar detalles' : 'Expandir detalles'">
+              <mat-icon>{{ isExpanded(produccion.id) ? 'expand_less' : 'expand_more' }}</mat-icon>
+            </button>
+          </td>
+        </ng-container>
+
+        <ng-container matColumnDef="id">
+          <th mat-header-cell *matHeaderCellDef>#</th>
+          <td mat-cell *matCellDef="let produccion">{{ produccion.id }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef>Fecha</th>
+          <td mat-cell *matCellDef="let produccion">{{ produccion.productionDate | date:'dd/MM/yyyy HH:mm' }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="products">
+          <th mat-header-cell *matHeaderCellDef>Productos</th>
+          <td mat-cell *matCellDef="let produccion">{{ getProductNames(produccion) }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="totalQuantity">
+          <th mat-header-cell *matHeaderCellDef class="num">Total unidades</th>
+          <td mat-cell *matCellDef="let produccion" class="num">{{ getTotalQuantity(produccion) | number }}</td>
+        </ng-container>
+
+        <ng-container matColumnDef="expandedDetail">
+          <td mat-cell *matCellDef="let produccion" [attr.colspan]="displayedColumns.length" class="detail-cell">
+            <div class="detail-panel" [class.detail-panel-open]="isExpanded(produccion.id)">
+              @if (produccion.details?.length) {
+                <table class="detail-table">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th class="num">Cantidad</th>
+                      <th>Insumos consumidos</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    @for (detail of produccion.details; track detail.id) {
+                      <tr>
+                        <td><strong>{{ detail.product?.name ?? '—' }}</strong></td>
+                        <td class="num">{{ detail.quantity | number }}</td>
+                        <td>{{ getSupplyNames(detail) }}</td>
+                      </tr>
+                    }
+                  </tbody>
+                </table>
+              } @else {
+                <div class="detail-empty">Sin detalles</div>
+              }
+            </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumns;"
+            [class.expanded-row]="isExpanded(row.id)"
+            (click)="toggleDetail(row)"></tr>
+        <tr mat-row *matRowDef="let row; columns: ['expandedDetail']"
+            class="detail-row"
+            [class.detail-row-visible]="isExpanded(row.id)"></tr>
+      </table>
+    </div>
+  }
+
+</main>

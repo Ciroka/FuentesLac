@@ -1,7 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
-import { Client } from '../models/client.model';
+import { Client, CreateClientRequest } from '../models/client.model';
 import { environment } from '../../environments/environment';
 
 @Injectable({
@@ -15,5 +15,9 @@ export class ClientsService {
     return this.http.get<{ items: Client[] }>(`${this.api}?limit=${limit}`).pipe(
       map(res => res.items)
     );
+  }
+
+  create(client: CreateClientRequest): Observable<Client> {
+    return this.http.post<Client>(this.api, client);
   }
 }

@@ -6,7 +6,7 @@
             <div>
                 <h2>Fuente Lac</h2>
             </div>
-        </div><!--/.sidebar-header-->
+        </div>
 
         <div class="menu-section">
             <h4>
@@ -15,49 +15,49 @@
             </h4>
 
             <ul class="sidebar-links main-links">
-                <li>
+                <li routerLinkActive="active">
                     <a routerLink="/home">
-                        <i class="bi bi-speedometer2" aria-hidden="true"></i>
+                        <mat-icon aria-hidden="true">speed</mat-icon>
                         <span>Dashboard</span>
                     </a>
                 </li>
-                <li>
+                <li routerLinkActive="active">
                     <a routerLink="/supplies">
-                        <i class="bi bi-droplet-half" aria-hidden="true"></i>
+                        <mat-icon aria-hidden="true">water_drop</mat-icon>
                         <span>Insumos</span>
                     </a>
                 </li>
-                <li>
+                <li routerLinkActive="active">
                     <a routerLink="/products">
-                        <i class="bi bi-boxes" aria-hidden="true"></i>
+                        <mat-icon aria-hidden="true">inventory_2</mat-icon>
                         <span>Productos</span>
                     </a>
                 </li>
-                <li>
+                <li routerLinkActive="active">
                     <a routerLink="/production">
-                        <i class="bi bi-building" aria-hidden="true"></i>
+                        <mat-icon aria-hidden="true">apartment</mat-icon>
                         <span>Producción</span>
                     </a>
                 </li>
-                <li>
+                <li routerLinkActive="active">
                     <a routerLink="/sales">
-                        <i class="bi bi-truck" aria-hidden="true"></i>
+                        <mat-icon aria-hidden="true">local_shipping</mat-icon>
                         <span>Ventas</span>
                     </a>
                 </li>
-                <li>
+                <li routerLinkActive="active">
                     <a routerLink="/clients">
-                        <i class="bi bi-people" aria-hidden="true"></i>
+                        <mat-icon aria-hidden="true">people</mat-icon>
                         <span>Clientes</span>
                     </a>
                 </li>
-            </ul><!--/.sidebar-links-->
+            </ul>
             <ul class="sidebar-links bottom-links">
-                <li><a href="#"><i class="bi bi-gear-fill" aria-hidden="true"></i>
+                <li><a href="#"><mat-icon aria-hidden="true">settings</mat-icon>
                 <span>Configuración</span></a></li>
-            </ul><!--Link de abajo Config-->
-        </div><!--/.menu-section-->
-    </aside><!--/.sidebar-->
+            </ul>
+        </div>
+    </aside>
 </div>
 
 <div class="topbar">
@@ -65,8 +65,8 @@
         <span class="user-email">{{ userName() }}</span>
         <span class="user-role">{{ userRole() }}</span>
     </div>
-    <span id="clock" style="font-size: 18px; font-family: var(--serif); word-spacing: 5px;">{{ currentTime() }}</span>
+    <span id="clock" class="topbar-clock">{{ currentTime() }}</span>
     <button class="logout-btn" (click)="logout()" title="Cerrar sesión">
-        <i class="bi bi-box-arrow-right"></i>
+        <mat-icon>logout</mat-icon>
     </button>
 </div>

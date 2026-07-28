@@ -6,3 +6,11 @@ export interface Client {
   cuit: string;
   email: string;
 }
+
+export interface CreateClientRequest {
+  name: string;
+  lastName: string;
+  phone: string;
+  cuit: string;
+  email: string;
+}

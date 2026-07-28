@@ -1,0 +1,130 @@
+<div><app-navbar></app-navbar></div>
+
+<main class="contenido">
+
+  <div class="view-header">
+    <h2>Registrar venta</h2>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="form-error">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <mat-card class="form-card">
+    <mat-card-content>
+
+      <div class="form-section">
+        <div class="section-label">Cliente</div>
+        <mat-button-toggle-group [(ngModel)]="clientMode" name="clientMode" class="client-toggle">
+          <mat-button-toggle value="existing">Cliente existente</mat-button-toggle>
+          <mat-button-toggle value="new">Cliente nuevo</mat-button-toggle>
+        </mat-button-toggle-group>
+
+        @if (clientMode === 'existing') {
+          <mat-form-field appearance="outline" class="full-width">
+            <mat-label>Seleccionar cliente</mat-label>
+            <mat-select [(ngModel)]="selectedClientId">
+              @for (c of clients; track c.id) {
+                <mat-option [value]="c.id">{{ c.name }} {{ c.lastName }}</mat-option>
+              }
+            </mat-select>
+          </mat-form-field>
+        } @else {
+          <div class="grid grid-3 new-client-grid">
+            <mat-form-field appearance="outline">
+              <mat-label>Nombre</mat-label>
+              <input matInput [(ngModel)]="newClient.name">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Apellido</mat-label>
+              <input matInput [(ngModel)]="newClient.lastName">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Teléfono</mat-label>
+              <input matInput [(ngModel)]="newClient.phone">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>CUIT</mat-label>
+              <input matInput [(ngModel)]="newClient.cuit">
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Email</mat-label>
+              <input matInput type="email" [(ngModel)]="newClient.email">
+            </mat-form-field>
+          </div>
+        }
+      </div>
+
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-label">Productos</div>
+          <button mat-stroked-button type="button" (click)="addItem()">
+            <mat-icon>add</mat-icon> Agregar producto
+          </button>
+        </div>
+
+        @for (row of items; track $index; let i = $index) {
+          <div class="item-row">
+            <mat-form-field appearance="outline" class="item-product">
+              <mat-label>Producto</mat-label>
+              <mat-select [(ngModel)]="row.productId" (selectionChange)="onProductChange(row)">
+                @for (p of products; track p.id) {
+                  <mat-option [value]="p.id">{{ p.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="item-batch">
+              <mat-label>Lote</mat-label>
+              <mat-select [(ngModel)]="row.batchId" [disabled]="!row.productId">
+                @for (b of getBatchesForProduct(row.productId); track b.id) {
+                  <mat-option [value]="b.id">
+                    Lote {{ b.clientBatchCode ?? b.id }} · {{ b.currentStock | number }} disp.
+                  </mat-option>
+                } @empty {
+                  <mat-option [disabled]="true">Sin lotes con stock</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="item-qty">
+              <mat-label>Cantidad</mat-label>
+              <input matInput type="number" min="1" [max]="getBatch(row.batchId)?.currentStock ?? null" [(ngModel)]="row.quantity">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="item-weight">
+              <mat-label>Peso (kg)</mat-label>
+              <input matInput type="number" min="0" step="0.01" [(ngModel)]="row.weight">
+            </mat-form-field>
+
+            <div class="item-subtotal">{{ formatCurrency(rowSubtotal(row)) }}</div>
+
+            <button mat-icon-button type="button" (click)="removeItem(i)" [disabled]="items.length === 1" aria-label="Quitar producto">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="form-total">
+        <span>Total</span>
+        <strong>{{ formatCurrency(total) }}</strong>
+      </div>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button" routerLink="/sales">Cancelar</button>
+        <button mat-raised-button color="primary" type="button" [disabled]="!isValid() || submitting()" (click)="submit()">
+          @if (submitting()) {
+            <mat-spinner diameter="18" class="btn-spinner"></mat-spinner>
+          }
+          Registrar venta
+        </button>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+</main>

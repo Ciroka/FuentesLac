@@ -24,6 +24,9 @@ export class ProductionRepositoryImpl implements ProductionRepository {
     const [items, total] = await this.productionRepository
       .createQueryBuilder('production')
       .leftJoinAndSelect('production.details', 'details')
+      .leftJoinAndSelect('details.product', 'product')
+      .leftJoinAndSelect('details.supplyXDetail', 'supplyXDetail')
+      .leftJoinAndSelect('supplyXDetail.supply', 'supply')
       .orderBy('production.productionDate', order)
       .take(limit)
       .skip(offset)
@@ -35,7 +38,9 @@ export class ProductionRepositoryImpl implements ProductionRepository {
   async findOneById(id: number): Promise<Production | null> {
     return this.productionRepository.findOne({
       where: { id },
-      relations: { details: true },
+      relations: {
+        details: { product: true, supplyXDetail: { supply: true } },
+      },
     });
   }
 

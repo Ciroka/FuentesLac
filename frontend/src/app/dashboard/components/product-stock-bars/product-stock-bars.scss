@@ -36,7 +36,7 @@
 }
 
 .stock-ratio {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 11px;
   color: var(--color-muted);
   font-variant-numeric: tabular-nums;
@@ -58,17 +58,9 @@
   z-index: 1;
 }
 
-.stock-bar.ok {
-  background: var(--color-success);
-}
-
-.stock-bar.warn {
-  background: var(--color-warning);
-}
-
-.stock-bar.critical {
-  background: var(--color-danger);
-}
+.stock-bar.ok { background: var(--color-success); }
+.stock-bar.warn { background: var(--color-warning); }
+.stock-bar.critical { background: var(--color-danger); }
 
 .stock-min-marker {
   position: absolute;
@@ -81,30 +73,16 @@
   opacity: 0.6;
 }
 
-.stock-status {
-  font-family: var(--mono);
+.chip-status {
+  font-family: var(--sans);
   font-size: 10px;
   font-weight: 700;
   letter-spacing: 0.5px;
-}
-
-.tag {
-  display: inline-block;
   padding: 3px 8px;
   border-radius: 4px;
+  white-space: nowrap;
 }
 
-.tag-ok {
-  background: var(--green-soft);
-  color: var(--color-success);
-}
-
-.tag-warn {
-  background: var(--gold-soft);
-  color: var(--color-warning);
-}
-
-.tag-danger {
-  background: var(--wax-soft);
-  color: var(--color-danger);
-}
+.chip-ok { background: var(--success-soft); color: var(--color-success); }
+.chip-warn { background: var(--warning-soft); color: var(--color-warning); }
+.chip-danger { background: var(--danger-soft); color: var(--color-danger); }

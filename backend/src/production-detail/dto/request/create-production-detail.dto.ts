@@ -8,7 +8,7 @@ import {
   IsPositive,
   ValidateNested,
 } from 'class-validator';
-import { CreateSuppliesXproductionDetailDto } from 'src/supplies-xproduction-detail/dto';
+import { CreateProductionSupplyDto } from './create-production-supply.dto';
 
 export class CreateProductionDetailDto {
   @IsInt()
@@ -26,6 +26,6 @@ export class CreateProductionDetailDto {
   @IsArray()
   @ArrayMinSize(1)
   @ValidateNested({ each: true })
-  @Type(() => CreateSuppliesXproductionDetailDto)
-  details!: CreateSuppliesXproductionDetailDto[];
+  @Type(() => CreateProductionSupplyDto)
+  details!: CreateProductionSupplyDto[];
 }

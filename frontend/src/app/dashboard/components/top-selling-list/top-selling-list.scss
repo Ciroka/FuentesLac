@@ -1,34 +1,28 @@
 .selling-list {
-  list-style: none;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+  max-height: 420px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+  scrollbar-color: var(--line) transparent;
 }
 
 .selling-item {
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  padding: 10px 12px;
+  margin-bottom: 6px;
   border-radius: 8px;
-  background: var(--panel-2);
 }
 
 .selling-rank {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 12px;
   font-weight: 700;
-  color: var(--gold);
+  color: var(--accent);
   width: 24px;
-  flex-shrink: 0;
-}
-
-.selling-body {
+  height: 24px;
   display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-  min-width: 0;
+  align-items: center;
+  justify-content: center;
+  background: var(--accent-soft);
+  border-radius: 50%;
+  flex-shrink: 0;
 }
 
 .selling-name {
@@ -42,14 +36,14 @@
 }
 
 .selling-amount {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 11px;
   color: var(--color-muted);
   font-variant-numeric: tabular-nums;
 }
 
 .selling-qty {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 13px;
   font-weight: 700;
   color: var(--color-success);
@@ -81,7 +75,7 @@
 }
 
 .empty-sub {
-  font-family: var(--mono);
+  font-family: var(--sans);
   font-size: 11px;
   color: var(--color-muted);
   max-width: 240px;

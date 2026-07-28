@@ -1,0 +1,41 @@
+@use '@angular/material' as mat;
+
+html {
+  @include mat.typography-hierarchy(
+    mat.define-theme(
+      (
+        color: (
+          primary: mat.$blue-palette,
+          tertiary: mat.$blue-palette,
+        ),
+        typography: (
+          plain-family: ('Inter', 'Helvetica Neue', Arial, sans-serif),
+          brand-family: ('Inter', 'Helvetica Neue', Arial, sans-serif),
+        ),
+      )
+    )
+  );
+
+  @include mat.all-component-themes(
+    mat.define-theme(
+      (
+        color: (
+          primary: mat.$blue-palette,
+          tertiary: mat.$blue-palette,
+        ),
+        typography: (
+          plain-family: ('Inter', 'Helvetica Neue', Arial, sans-serif),
+          brand-family: ('Inter', 'Helvetica Neue', Arial, sans-serif),
+        ),
+      )
+    )
+  );
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+}

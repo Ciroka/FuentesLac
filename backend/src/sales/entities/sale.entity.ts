@@ -8,7 +8,6 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-import { PaymentMethod } from '../../shared/enums/paymentMethod.enum';
 import { Client } from '../../clients/entities/client.entity';
 import { SalesDetail } from '../../sales-detail/entities/sales-detail.entity';
 
@@ -22,9 +21,6 @@ export class Sale {
 
   @Column({ default: 0 })
   total!: number;
-
-  @Column({ type: 'enum', enum: PaymentMethod, name: 'payment_method' })
-  paymentMethod!: PaymentMethod;
 
   @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.sale, {
     cascade: true,
