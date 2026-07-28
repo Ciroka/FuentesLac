@@ -33,7 +33,7 @@ export class Supplies implements OnInit {
   categorias: { id: number; name: string }[] = [];
   searchTerm = '';
   selectedCategoryId: number | null = null;
-  displayedColumns = ['name', 'category', 'supplier', 'currentStock', 'minStock', 'costPrice', 'status'];
+  displayedColumns = ['name', 'supplier', 'currentStock', 'minStock', 'costPrice', 'status'];
 
   ngOnInit(): void {
     this.suppliesService.findAll().subscribe({

@@ -22,7 +22,10 @@ export class SuppliesRepository implements ISuppliesRepository {
     name?: string,
     categoryId?: number,
   ): Promise<PaginatedResult<Supply>> {
-    const query = this.supplyRepository.createQueryBuilder('supply');
+    const query = this.supplyRepository
+      .createQueryBuilder('supply')
+      .leftJoinAndSelect('supply.supplier', 'supplier')
+      .leftJoinAndSelect('supply.category', 'category');
 
     if (name) {
       query.where('supply.name ILIKE :name', { name: `%${name}%` });
