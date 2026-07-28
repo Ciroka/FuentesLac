@@ -109,18 +109,65 @@
         }
       </div>
 
+      <div class="form-section">
+        <div class="section-label">Foto de la venta</div>
+
+        <input #photoInput type="file" hidden
+               accept="image/jpeg,image/png,image/webp"
+               (change)="onPhotoSelected($event)">
+
+        <div class="photo-uploader">
+          @if (photoPreview(); as preview) {
+            <div class="photo-preview">
+              <img [src]="preview" alt="Foto de la venta">
+              <button mat-icon-button type="button" class="photo-remove"
+                      (click)="clearPhoto()" aria-label="Quitar foto">
+                <mat-icon>close</mat-icon>
+              </button>
+            </div>
+          } @else {
+            <button type="button" class="photo-dropzone" (click)="photoInput.click()">
+              <mat-icon>add_a_photo</mat-icon>
+              <span>Agregar foto</span>
+            </button>
+          }
+
+          <div class="photo-info">
+            <span class="photo-hint">
+              Una foto por venta · JPG, PNG o WEBP · hasta {{ maxPhotoSizeMb }} MB
+            </span>
+            @if (photoPreview()) {
+              <button mat-stroked-button type="button" (click)="photoInput.click()">
+                <mat-icon>photo_library</mat-icon> Cambiar foto
+              </button>
+            }
+          </div>
+        </div>
+
+        @if (photoError()) {
+          <div class="photo-error">
+            <mat-icon>error_outline</mat-icon>
+            <span>{{ photoError() }}</span>
+          </div>
+        }
+      </div>
+
       <div class="form-total">
         <span>Total</span>
         <strong>{{ formatCurrency(total) }}</strong>
       </div>
 
       <div class="form-actions">
-        <button mat-stroked-button type="button" routerLink="/sales">Cancelar</button>
+        @if (createdSaleId()) {
+          <button mat-stroked-button type="button" (click)="goToSales()">Continuar sin foto</button>
+        } @else {
+          <button mat-stroked-button type="button" routerLink="/sales">Cancelar</button>
+        }
         <button mat-raised-button color="primary" type="button" [disabled]="!isValid() || submitting()" (click)="submit()">
           @if (submitting()) {
             <mat-spinner diameter="18" class="btn-spinner"></mat-spinner>
           }
-          Registrar venta
+          {{ createdSaleId() ? 'Reintentar foto' : 'Registrar venta' }}
         </button>
       </div>
 

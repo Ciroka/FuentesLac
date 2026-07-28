@@ -9,12 +9,14 @@ import { Sale } from './entities/sale.entity';
 import { SALES_REPOSITORY } from './repository/sales.repository.interface';
 import { SalesRepositoryImpl } from './repository/sales.repository';
 import { BatchModule } from 'src/batch';
+import { StorageModule } from 'src/storage';
 
 @Module({
   imports: [
     SalesDetailModule,
     ClientsModule,
     BatchModule,
+    StorageModule,
     TypeOrmModule.forFeature([Sale]),
   ],
   controllers: [SalesController],

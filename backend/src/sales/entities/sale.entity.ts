@@ -27,6 +27,9 @@ export class Sale {
   })
   details!: SalesDetail[];
 
+  @Column({ name: 'photo_key', type: 'varchar', nullable: true })
+  photoKey?: string | null;
+
   @Column({ name: 'client_id', nullable: true })
   clientId?: number;
 

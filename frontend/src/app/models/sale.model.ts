@@ -20,6 +20,8 @@ export interface Sale {
   total: number;
   clientId?: number;
   client?: { id: number; name: string; lastName: string };
+  /** URL lista para mostrar la foto de la venta (una por venta). */
+  photoUrl?: string | null;
   details?: SaleDetail[];
 }
 

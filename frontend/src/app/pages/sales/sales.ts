@@ -36,7 +36,7 @@ export class Sales implements OnInit {
   expandedIds = new Set<number>();
   loadingDetailId: number | null = null;
   displayedColumns = ['toggle', 'id', 'date', 'client', 'total'];
-  displayedDetailColumns = ['product', 'quantity', 'unitPrice', 'subtotal', 'weight', 'photo'];
+  displayedDetailColumns = ['product', 'quantity', 'unitPrice', 'subtotal', 'weight'];
 
   ngOnInit(): void {
     this.salesService.findAll().subscribe({

@@ -63,39 +63,52 @@
       <ng-container matColumnDef="expandedDetail">
         <td mat-cell *matCellDef="let venta" [attr.colspan]="displayedColumns.length" class="detail-cell">
           <div class="detail-panel" [class.detail-panel-open]="isExpanded(venta.id)">
-            @if (venta.details?.length) {
-              <table class="detail-table">
-                <thead>
-                  <tr>
-                    <th>Producto</th>
-                    <th class="num">Cantidad</th>
-                    <th class="num">P. Unit.</th>
-                    <th class="num">Subtotal</th>
-                    <th class="num">Peso</th>
-                    <th class="col-photo">Foto</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  @for (detail of venta.details; track detail.id) {
-                    <tr>
-                      <td><strong>{{ getProductName(detail) }}</strong></td>
-                      <td class="num">{{ detail.quantity | number }}</td>
-                      <td class="num">{{ detail.unitPrice | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
-                      <td class="num">{{ detail.subtotal | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
-                      <td class="num">{{ detail.weight ? (detail.weight | number:'1.2-2') + ' kg' : '—' }}</td>
-                      <td class="col-photo">
-                        <span class="photo-placeholder">
-                          <mat-icon class="photo-icon">photo_camera</mat-icon>
-                          <span>Sin foto</span>
-                        </span>
-                      </td>
-                    </tr>
-                  }
-                </tbody>
-              </table>
-            } @else {
-              <div class="detail-empty">Sin detalles</div>
-            }
+            <div class="detail-layout">
+              <div class="detail-main">
+                @if (venta.details?.length) {
+                  <table class="detail-table">
+                    <thead>
+                      <tr>
+                        <th>Producto</th>
+                        <th class="num">Cantidad</th>
+                        <th class="num">P. Unit.</th>
+                        <th class="num">Subtotal</th>
+                        <th class="num">Peso</th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      @for (detail of venta.details; track detail.id) {
+                        <tr>
+                          <td><strong>{{ getProductName(detail) }}</strong></td>
+                          <td class="num">{{ detail.quantity | number }}</td>
+                          <td class="num">{{ detail.unitPrice | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
+                          <td class="num">{{ detail.subtotal | currency:'ARS':'symbol-narrow':'1.0-0' }}</td>
+                          <td class="num">{{ detail.weight ? (detail.weight | number:'1.2-2') + ' kg' : '—' }}</td>
+                        </tr>
+                      }
+                    </tbody>
+                  </table>
+                } @else {
+                  <div class="detail-empty">Sin detalles</div>
+                }
+              </div>
+
+              <div class="detail-photo">
+                <div class="detail-photo-label">Foto</div>
+                @if (venta.photoUrl; as photoUrl) {
+                  <a [href]="photoUrl" target="_blank" rel="noopener"
+                     (click)="$event.stopPropagation()"
+                     matTooltip="Ver foto en tamaño completo">
+                    <img class="sale-photo" [src]="photoUrl" [alt]="'Foto de la venta ' + venta.id">
+                  </a>
+                } @else {
+                  <span class="photo-placeholder">
+                    <mat-icon class="photo-icon">photo_camera</mat-icon>
+                    <span>Sin foto</span>
+                  </span>
+                }
+              </div>
+            </div>
           </div>
         </td>
       </ng-container>

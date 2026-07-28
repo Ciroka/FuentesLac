@@ -19,5 +19,7 @@ export interface SaleResponse {
   date: Date;
   total: number;
   clientId?: number;
+  /** URL lista para mostrar la foto de la venta (firmada o pública). */
+  photoUrl?: string | null;
   details?: SaleDetailResponse[];
 }

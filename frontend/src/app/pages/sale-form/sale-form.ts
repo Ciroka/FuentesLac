@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, inject, signal } from '@angular/core';
+import { Component, OnInit, OnDestroy, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { Navbar } from '../../shared/navbar/navbar';
 import { CommonModule } from '@angular/common';
@@ -28,6 +28,9 @@ interface SaleItemRow {
   weight: number | null;
 }
 
+const MAX_PHOTO_SIZE_BYTES = 5 * 1024 * 1024;
+const ALLOWED_PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
+
 @Component({
   selector: 'app-sale-form',
   standalone: true,
@@ -40,7 +43,7 @@ interface SaleItemRow {
   templateUrl: './sale-form.html',
   styleUrl: './sale-form.scss',
 })
-export class SaleForm implements OnInit {
+export class SaleForm implements OnInit, OnDestroy {
   private salesService = inject(SalesService);
   private clientsService = inject(ClientsService);
   private productsService = inject(ProductsService);
@@ -56,6 +59,14 @@ export class SaleForm implements OnInit {
   selectedClientId: number | null = null;
   newClient: CreateClientRequest = { name: '', lastName: '', phone: '', cuit: '', email: '' };
   items: SaleItemRow[] = [this.emptyItem()];
+
+  photoFile: File | null = null;
+  photoPreview = signal<string | null>(null);
+  photoError = signal('');
+  readonly maxPhotoSizeMb = MAX_PHOTO_SIZE_BYTES / (1024 * 1024);
+
+  /** Id de la venta ya creada: evita duplicarla si falla la subida de la foto. */
+  createdSaleId = signal<number | null>(null);
 
   submitting = signal(false);
   errorMessage = signal('');
@@ -74,6 +85,50 @@ export class SaleForm implements OnInit {
       },
       error: (err) => console.error('Error al cargar datos para la venta:', err)
     });
+  }
+
+  ngOnDestroy(): void {
+    this.revokePreview();
+  }
+
+  onPhotoSelected(event: Event): void {
+    const input = event.target as HTMLInputElement;
+    const file = input.files?.[0] ?? null;
+    input.value = '';
+
+    if (!file) return;
+
+    if (!ALLOWED_PHOTO_TYPES.includes(file.type)) {
+      this.photoError.set('Formato no permitido. Usá JPG, PNG o WEBP.');
+      return;
+    }
+
+    if (file.size > MAX_PHOTO_SIZE_BYTES) {
+      this.photoError.set(`La foto no puede superar los ${this.maxPhotoSizeMb} MB.`);
+      return;
+    }
+
+    this.revokePreview();
+    this.photoError.set('');
+    this.photoFile = file;
+    this.photoPreview.set(URL.createObjectURL(file));
+    this.cdr.detectChanges();
+  }
+
+  clearPhoto(): void {
+    this.revokePreview();
+    this.photoFile = null;
+    this.photoPreview.set(null);
+    this.photoError.set('');
+  }
+
+  goToSales(): void {
+    void this.router.navigate(['/sales']);
+  }
+
+  private revokePreview(): void {
+    const preview = this.photoPreview();
+    if (preview) URL.revokeObjectURL(preview);
   }
 
   private emptyItem(): SaleItemRow {
@@ -141,7 +196,17 @@ export class SaleForm implements OnInit {
   }
 
   submit(): void {
-    if (!this.isValid() || this.submitting()) return;
+    if (this.submitting()) return;
+
+    const pendingSaleId = this.createdSaleId();
+    if (pendingSaleId !== null) {
+      this.submitting.set(true);
+      this.errorMessage.set('');
+      this.uploadPhotoAndFinish(pendingSaleId);
+      return;
+    }
+
+    if (!this.isValid()) return;
 
     this.submitting.set(true);
     this.errorMessage.set('');
@@ -165,8 +230,29 @@ export class SaleForm implements OnInit {
         weight: row.weight ?? undefined,
       })),
     }).subscribe({
-      next: () => this.router.navigate(['/sales']),
+      next: (sale) => {
+        this.createdSaleId.set(sale.id);
+        this.uploadPhotoAndFinish(sale.id);
+      },
       error: (err) => this.handleError(err)
+    });
+  }
+
+  private uploadPhotoAndFinish(saleId: number): void {
+    if (!this.photoFile) {
+      this.goToSales();
+      return;
+    }
+
+    this.salesService.uploadPhoto(saleId, this.photoFile).subscribe({
+      next: () => this.goToSales(),
+      error: () => {
+        this.submitting.set(false);
+        this.errorMessage.set(
+          `La venta #${saleId} se registró, pero no se pudo subir la foto. Reintentá o continuá sin foto.`
+        );
+        this.cdr.detectChanges();
+      }
     });
   }
 
