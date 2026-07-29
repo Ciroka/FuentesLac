@@ -6,7 +6,12 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 
-import { CreateOrderDto, UpdateOrderDto, QueryParamsOrders } from '../dto';
+import {
+  CreateOrderDto,
+  RegisterArrivalDto,
+  ArrivalDetailDto,
+  QueryParamsOrders,
+} from '../dto';
 import { ORDERS_REPOSITORY } from '../repository/orders.repository.interface';
 import type { IOrdersRepository } from '../repository/orders.repository.interface';
 import { Order } from '../entities/order.entity';
@@ -79,39 +84,78 @@ export class OrdersService {
     });
   }
 
-  async update(id: number, updateOrderDto: UpdateOrderDto): Promise<Order> {
+  async registerArrival(
+    id: number,
+    registerArrivalDto: RegisterArrivalDto,
+  ): Promise<Order> {
     return this.dataSource.transaction(async (manager) => {
       const orderRepo = manager.getRepository(Order);
       const order = await orderRepo.findOne({
         where: { id },
-        relations: {
-          ordersDetails: {
-            supply: true,
-          },
-        },
+        relations: { ordersDetails: { supply: true } },
       });
 
       if (!order) throw new NotFoundException('Order not found');
-      if (!updateOrderDto.details)
-        throw new BadRequestException('Missing details in request body');
-      for (const updateDtoDetail of updateOrderDto.details) {
+      if (order.status !== OrderStatus.PENDING)
+        throw new ConflictException(
+          'Only pending orders can register an arrival',
+        );
+
+      this.assertDetailsMatchOrder(order, registerArrivalDto.details);
+
+      if (registerArrivalDto.details.every((item) => item.quantity === 0))
+        throw new BadRequestException('At least one supply must have arrived');
+
+      let arrivalTotal = 0;
+
+      for (const item of registerArrivalDto.details) {
         const detail = order.ordersDetails.find(
-          (d) => d.supply.id === updateDtoDetail.supplyId,
-        );
-        if (!detail) throw new NotFoundException('Detail not found');
-        detail.arrivalQuantity += updateDtoDetail.quantity;
-        await this.suppliesService.increaseStock(
-          detail.supply.id,
-          updateDtoDetail.quantity,
-          manager,
-        );
-        detail.arrivalSubtotal =
-          detail.arrivalQuantity * Number(detail.unitPrice);
-        order.arrivalTotal += detail.arrivalSubtotal;
+          (d) => d.supply.id === item.supplyId,
+        )!;
+
+        detail.arrivalQuantity = item.quantity;
+        detail.arrivalSubtotal = item.quantity * Number(detail.unitPrice);
+        arrivalTotal += detail.arrivalSubtotal;
+
+        if (item.quantity > 0) {
+          await this.suppliesService.increaseStock(
+            item.supplyId,
+            item.quantity,
+            manager,
+          );
+        }
       }
+
+      order.arrivalTotal = arrivalTotal;
+      order.status = OrderStatus.RECEIVED;
 
       return orderRepo.save(order);
     });
+  }
+
+  /**
+   * Los insumos informados deben coincidir exactamente con las líneas del
+   * pedido: una línea que no llegó se envía en 0, no se omite. Así no hay
+   * ambigüedad entre "no llegó" y "no lo informé".
+   */
+  private assertDetailsMatchOrder(
+    order: Order,
+    details: ArrivalDetailDto[],
+  ): void {
+    const received = details.map((item) => item.supplyId);
+
+    if (new Set(received).size !== received.length)
+      throw new BadRequestException('Duplicated supply in details');
+
+    const ordered = order.ordersDetails.map((detail) => detail.supply.id);
+
+    if (
+      ordered.length !== received.length ||
+      ordered.some((supplyId) => !received.includes(supplyId))
+    )
+      throw new BadRequestException(
+        'Details must match the order lines exactly',
+      );
   }
 
   async cancel(id: number): Promise<Order> {
