@@ -3,6 +3,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { PaginatedResult } from '../../shared/pagination/pagination.type';
 import { OrderEnum } from '../../shared/enums/order.enum';
+import { OrderStatus } from '../../shared/enums/orderStatus.enum';
 import { IOrdersRepository } from './orders.repository.interface';
 import { Order } from '../entities/order.entity';
 
@@ -18,14 +19,20 @@ export class OrdersRepository implements IOrdersRepository {
     limit: number,
     order: OrderEnum,
     supplierId?: number,
+    status?: OrderStatus,
   ): Promise<PaginatedResult<Order>> {
     const query = this.orderRepository
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.ordersDetails', 'details')
+      .leftJoinAndSelect('details.supply', 'supply')
       .leftJoinAndSelect('order.supplier', 'supplier');
 
     if (supplierId) {
-      query.where('order.supplierId = :supplierId', { supplierId });
+      query.andWhere('order.supplierId = :supplierId', { supplierId });
+    }
+
+    if (status) {
+      query.andWhere('order.status = :status', { status });
     }
 
     query.orderBy('order.date', order);
@@ -53,19 +60,7 @@ export class OrdersRepository implements IOrdersRepository {
     });
   }
 
-  // async create(supplierId: number, total: number): Promise<Order> {
-  //   const order = this.orderRepository.create({
-  //     orderedTotal: total,
-  //     supplier: { id: supplierId } as Supplier,
-  //   });
-  //   return this.orderRepository.save(order);
-  // }
-
-  // async update(order: Order): Promise<Order> {
-  //   return this.orderRepository.save(order);
-  // }
-
-  async remove(order: Order): Promise<Order> {
-    return this.orderRepository.remove(order);
+  async save(order: Order): Promise<Order> {
+    return this.orderRepository.save(order);
   }
 }

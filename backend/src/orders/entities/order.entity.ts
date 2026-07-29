@@ -1,5 +1,6 @@
 import { OrdersDetail } from '../../orders-detail/entities/orders-detail.entity';
 import { Supplier } from '../../suppliers/entities/supplier.entity';
+import { OrderStatus } from '../../shared/enums/orderStatus.enum';
 import {
   Column,
   CreateDateColumn,
@@ -35,6 +36,13 @@ export class Order {
     name: 'arrival_total',
   })
   arrivalTotal: number = 0;
+
+  @Column({
+    type: 'enum',
+    enum: OrderStatus,
+    default: OrderStatus.PENDING,
+  })
+  status: OrderStatus = OrderStatus.PENDING;
 
   @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.order, {
     cascade: true,

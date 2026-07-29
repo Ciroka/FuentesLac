@@ -1,0 +1,111 @@
+.order-card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow);
+  padding: 14px 16px;
+  margin-bottom: 12px;
+
+  &.inactivo { opacity: 0.72; }
+}
+
+.order-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 10px;
+}
+
+.order-date {
+  color: var(--ink-dim);
+  font-size: 12px;
+  margin-left: 4px;
+}
+
+.chip-status {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 16px;
+}
+
+.chip-ok { background: var(--success-soft); color: var(--color-success); }
+.chip-warn { background: var(--warning-soft); color: var(--color-warning); }
+.chip-muted { background: var(--panel-2); color: var(--color-muted); }
+
+.order-line {
+  display: grid;
+  grid-template-columns: 1fr auto auto auto;
+  gap: 12px;
+  align-items: baseline;
+  font-size: 13px;
+  padding: 4px 0;
+  border-bottom: 1px solid var(--line);
+
+  &:last-child { border-bottom: none; }
+}
+
+.line-arrival {
+  color: var(--color-warning);
+  font-size: 11px;
+  margin-left: 6px;
+}
+
+.line-price, .line-subtotal { color: var(--ink-dim); font-size: 12px; }
+
+.order-foot {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-top: 10px;
+}
+
+.order-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.order-panel {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+
+.panel-title {
+  font-size: 12px;
+  font-weight: 600;
+  margin-bottom: 8px;
+}
+
+.panel-line {
+  display: grid;
+  grid-template-columns: 1fr auto 110px;
+  gap: 12px;
+  align-items: center;
+  font-size: 13px;
+}
+
+.panel-ordered { color: var(--ink-dim); font-size: 11px; }
+
+.panel-input {
+  width: 110px;
+
+  ::ng-deep .mat-mdc-form-field-subscript-wrapper { display: none; }
+}
+
+.panel-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.order-error {
+  margin-top: 10px;
+  color: var(--color-danger);
+  font-size: 12px;
+}

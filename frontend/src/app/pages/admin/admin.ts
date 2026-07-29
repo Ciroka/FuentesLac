@@ -15,7 +15,7 @@ import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 
 import { SuppliesService, CreateSupply } from '../../services/supplies.service';
 import { ProductsService, CreateProduct } from '../../services/products.service';
-import { CategoriesService } from '../../services/categories.service';
+import { CategoriesService, CreateCategory } from '../../services/categories.service';
 import { SuppliersService } from '../../services/suppliers.service';
 import { UsersService } from '../../services/users.service';
 import { AuthService } from '../../services/auth.service';
@@ -58,20 +58,26 @@ export class Admin implements OnInit {
 
   savingSupply = signal(false);
   savingProduct = signal(false);
+  savingCategory = signal(false);
   savingAccount = signal(false);
 
   newSupply: CreateSupply = { name: '', costPrice: 0, minStock: 0, currentStock: 0, isMilk: false };
   newProduct: CreateProduct = { name: '', costPrice: 0, marginPercent: 0.3, minStock: 0 };
+  newCategory: CreateCategory = { name: '', description: '' };
   newAccount = { name: '', email: '', password: '' };
 
   usersColumns = ['email', 'role', 'createdAt', 'actions'];
   auditColumns = ['createdAt', 'userEmail', 'action', 'resource', 'resourceId'];
 
   ngOnInit(): void {
-    this.categoriesService.findAll().subscribe(data => (this.categories = data));
+    this.loadCategories();
     this.suppliersService.findAll().subscribe(data => (this.suppliers = data));
     this.loadUsers();
     this.loadAuditLogs();
+  }
+
+  private loadCategories(): void {
+    this.categoriesService.findAll().subscribe(data => (this.categories = data));
   }
 
   private loadUsers(): void {
@@ -111,6 +117,27 @@ export class Admin implements OnInit {
       error: () => {
         this.savingProduct.set(false);
         this.snackBar.open('No se pudo crear el producto', 'Cerrar', { duration: 3000 });
+      },
+    });
+  }
+
+  createCategory(): void {
+    this.savingCategory.set(true);
+    const payload: CreateCategory = { name: this.newCategory.name };
+    if (this.newCategory.description?.trim()) {
+      payload.description = this.newCategory.description.trim();
+    }
+
+    this.categoriesService.create(payload).subscribe({
+      next: () => {
+        this.savingCategory.set(false);
+        this.snackBar.open('Categoría creada', 'Cerrar', { duration: 3000 });
+        this.newCategory = { name: '', description: '' };
+        this.loadCategories();
+      },
+      error: () => {
+        this.savingCategory.set(false);
+        this.snackBar.open('No se pudo crear la categoría', 'Cerrar', { duration: 3000 });
       },
     });
   }

@@ -12,7 +12,7 @@ import {
 import { OrdersService } from '../service/orders.service';
 import {
   CreateOrderDto,
-  UpdateOrderDto,
+  RegisterArrivalDto,
   QueryParamsOrders,
   OrderResponse,
 } from '../dto';
@@ -39,11 +39,16 @@ export class OrdersController {
     return this.ordersService.create(createOrderDto);
   }
 
-  @Patch(':id')
-  update(
+  @Patch(':id/arrival')
+  registerArrival(
     @Param('id', ParseIntPipe) id: number,
-    @Body() updateOrderDto: UpdateOrderDto,
+    @Body() registerArrivalDto: RegisterArrivalDto,
   ): Promise<OrderResponse> {
-    return this.ordersService.update(id, updateOrderDto);
+    return this.ordersService.registerArrival(id, registerArrivalDto);
+  }
+
+  @Patch(':id/cancel')
+  cancel(@Param('id', ParseIntPipe) id: number): Promise<OrderResponse> {
+    return this.ordersService.cancel(id);
   }
 }

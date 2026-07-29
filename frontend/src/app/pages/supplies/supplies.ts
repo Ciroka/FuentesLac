@@ -1,82 +1,86 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Navbar } from '../../shared/navbar/navbar';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
 import { SuppliesService } from '../../services/supplies.service';
+import { OrdersService } from '../../services/orders.service';
 import { Supply } from '../../models/supply.model';
-import { MatTableModule } from '@angular/material/table';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
+import { Order } from '../../models/order.model';
+import { MatTabsModule } from '@angular/material/tabs';
 import { MatIconModule } from '@angular/material/icon';
-import { MatSelectModule } from '@angular/material/select';
-import { MatOptionModule } from '@angular/material/core';
-import { MatChipsModule } from '@angular/material/chips';
 import { MatButtonModule } from '@angular/material/button';
+import { SuppliesTable } from './components/supplies-table/supplies-table';
+import { OrdersList } from './components/orders-list/orders-list';
 
 @Component({
   selector: 'app-supplies',
   standalone: true,
   imports: [
-    Navbar, CommonModule, FormsModule, RouterLink,
-    MatTableModule, MatFormFieldModule, MatInputModule, MatIconModule,
-    MatSelectModule, MatOptionModule, MatChipsModule, MatButtonModule
+    Navbar, CommonModule, RouterLink,
+    MatTabsModule, MatIconModule, MatButtonModule,
+    SuppliesTable, OrdersList
   ],
   templateUrl: './supplies.html',
   styleUrl: './supplies.scss',
 })
 export class Supplies implements OnInit {
   private suppliesService = inject(SuppliesService);
+  private ordersService = inject(OrdersService);
   private cdr = inject(ChangeDetectorRef);
 
-  insumos: Supply[] = [];
-  categorias: { id: number; name: string }[] = [];
-  searchTerm = '';
-  selectedCategoryId: number | null = null;
-  displayedColumns = ['name', 'supplier', 'currentStock', 'minStock', 'costPrice', 'status'];
+  insumos = signal<Supply[]>([]);
+  pedidos = signal<Order[]>([]);
+  errorMessage = signal('');
 
   ngOnInit(): void {
-    this.suppliesService.findAll().subscribe({
-      next: (data) => {
-        this.insumos = data;
-        this.categorias = this.extraerCategorias(data);
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Error al traer insumos:', err)
+    this.cargarTodo();
+  }
+
+  /**
+   * Registrar una llegada cambia el stock de insumos y el estado del pedido,
+   * así que las dos listas se recargan juntas desde acá. Cada rama tiene su
+   * propio catchError: si una falla, la otra igual se muestra y se avisa
+   * puntualmente qué parte no se pudo cargar, en vez de dejar todo en blanco.
+   */
+  cargarTodo(): void {
+    let insumosConError = false;
+    let pedidosConError = false;
+
+    forkJoin({
+      insumos: this.suppliesService.findAll().pipe(
+        catchError((err) => {
+          console.error('Error al cargar insumos:', err);
+          insumosConError = true;
+          return of<Supply[]>([]);
+        })
+      ),
+      pedidos: this.ordersService.findAll().pipe(
+        catchError((err) => {
+          console.error('Error al cargar pedidos:', err);
+          pedidosConError = true;
+          return of<Order[]>([]);
+        })
+      ),
+    }).subscribe(({ insumos, pedidos }) => {
+      this.insumos.set(insumos);
+      this.pedidos.set(pedidos);
+      this.errorMessage.set(this.armarMensajeError(insumosConError, pedidosConError));
+      this.cdr.detectChanges();
     });
   }
 
-  get filteredInsumos(): Supply[] {
-    return this.insumos.filter(insumo => {
-      const matchName = !this.searchTerm ||
-        insumo.name.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchCategory = this.selectedCategoryId === null ||
-        insumo.category?.id === this.selectedCategoryId;
-      return matchName && matchCategory;
-    });
-  }
-
-  extraerCategorias(insumos: Supply[]): { id: number; name: string }[] {
-    const map = new Map<number, string>();
-    insumos.forEach(i => {
-      if (i.category) map.set(i.category.id, i.category.name);
-    });
-    return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
-  }
-
-  getStockPercent(insumo: Supply): number {
-    return Math.min((insumo.currentStock / insumo.minStock) * 100, 100);
-  }
-
-  getEstado(insumo: Supply): { color: string; label: string; chipClass: string } {
-    const ratio = insumo.currentStock / insumo.minStock;
-
-    if (ratio < 1) {
-      return { color: 'var(--color-danger)', label: 'CRÍTICO', chipClass: 'chip-danger' };
-    } else if (ratio < 1.2) {
-      return { color: 'var(--color-warning)', label: 'BAJO', chipClass: 'chip-warn' };
-    } else {
-      return { color: 'var(--color-success)', label: 'OK', chipClass: 'chip-ok' };
+  private armarMensajeError(insumosConError: boolean, pedidosConError: boolean): string {
+    if (insumosConError && pedidosConError) {
+      return 'No se pudieron cargar los insumos ni los pedidos.';
     }
+    if (insumosConError) {
+      return 'No se pudieron cargar los insumos. Los pedidos se muestran igual.';
+    }
+    if (pedidosConError) {
+      return 'No se pudieron cargar los pedidos. Los insumos se muestran igual.';
+    }
+    return '';
   }
 }

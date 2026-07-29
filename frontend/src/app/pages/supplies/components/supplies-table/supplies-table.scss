@@ -1,0 +1,77 @@
+.search-row {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+  flex-wrap: wrap;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.category-field {
+  min-width: 200px;
+}
+
+.stock-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  justify-content: flex-end;
+}
+
+.stockbar {
+  width: 60px;
+  height: 6px;
+  background: var(--line);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.stockbar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+.stock-num {
+  font-family: var(--sans);
+  font-size: 12px;
+  min-width: 30px;
+  text-align: right;
+}
+
+.chip-status {
+  display: inline-block;
+  font-family: var(--sans);
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  padding: 3px 10px;
+  border-radius: 16px;
+}
+
+.chip-ok {
+  background: var(--success-soft);
+  color: var(--color-success);
+}
+
+.chip-warn {
+  background: var(--warning-soft);
+  color: var(--color-warning);
+}
+
+.chip-danger {
+  background: var(--danger-soft);
+  color: var(--color-danger);
+}
+
+.num {
+  text-align: right;
+}
+
+.status-col {
+  text-align: right;
+}
