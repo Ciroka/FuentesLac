@@ -1,0 +1,114 @@
+<h2>¿Cómo se ve el tab "Pedidos"?</h2>
+<p class="subtitle">Un pedido tiene varias líneas de insumo. La pregunta es dónde se ven esas líneas y dónde viven las acciones (editar cantidades, borrar, registrar llegada). Hacé click en la opción que más te cierre.</p>
+
+<style>
+  .fl-tabs { display:flex; gap:0; border-bottom:2px solid rgba(128,128,128,.3); margin-bottom:14px; }
+  .fl-tab { padding:8px 18px; font-size:13px; font-weight:600; letter-spacing:.3px; opacity:.55; }
+  .fl-tab.on { opacity:1; border-bottom:3px solid #3f7fd6; }
+  .fl-table { width:100%; border-collapse:collapse; font-size:12px; }
+  .fl-table th { text-align:left; font-size:10px; text-transform:uppercase; letter-spacing:.6px; opacity:.6; padding:7px 8px; border-bottom:1px solid rgba(128,128,128,.28); }
+  .fl-table td { padding:8px; border-bottom:1px solid rgba(128,128,128,.16); vertical-align:middle; }
+  .fl-num { text-align:right; }
+  .fl-chip { display:inline-block; padding:2px 9px; border-radius:11px; font-size:9.5px; font-weight:700; letter-spacing:.5px; }
+  .fl-chip.pend { background:rgba(230,160,30,.20); color:#c98209; }
+  .fl-chip.conf { background:rgba(45,170,95,.20); color:#1e8a4d; }
+  .fl-act { display:inline-flex; width:24px; height:24px; align-items:center; justify-content:center; border-radius:5px; border:1px solid rgba(128,128,128,.35); font-size:12px; margin-right:4px; }
+  .fl-btn { display:inline-block; padding:5px 11px; border-radius:5px; background:#3f7fd6; color:#fff; font-size:11px; font-weight:600; }
+  .fl-sub { background:rgba(128,128,128,.09); }
+  .fl-sub td { font-size:11px; padding:5px 8px 5px 26px; border-bottom:none; opacity:.85; }
+  .fl-card { border:1px solid rgba(128,128,128,.3); border-radius:8px; padding:11px 13px; margin-bottom:9px; }
+  .fl-cardhead { display:flex; justify-content:space-between; align-items:center; margin-bottom:8px; }
+  .fl-line { display:flex; justify-content:space-between; font-size:11px; padding:3px 0; opacity:.85; }
+  .fl-modal { border:1px solid rgba(128,128,128,.45); border-radius:8px; padding:12px; box-shadow:0 6px 20px rgba(0,0,0,.28); margin:10px 14px; }
+  .fl-dim { opacity:.35; pointer-events:none; }
+</style>
+
+<div class="options">
+
+  <div class="option" data-choice="expandible" onclick="toggleSelect(this)">
+    <div class="letter">A</div>
+    <div class="content">
+      <h3>Fila expandible</h3>
+      <p>Tabla compacta de pedidos; hacés click en la fila y se despliegan las líneas de insumo abajo. Las acciones viven en la fila.</p>
+      <div class="mockup" style="margin-top:10px">
+        <div class="mockup-header">Insumos → tab Pedidos</div>
+        <div class="mockup-body">
+          <div class="fl-tabs"><div class="fl-tab">INSUMOS</div><div class="fl-tab on">PEDIDOS</div></div>
+          <table class="fl-table">
+            <tr><th></th><th>Fecha</th><th>Proveedor</th><th class="fl-num">Total</th><th>Estado</th><th>Acciones</th></tr>
+            <tr>
+              <td>▾</td><td>28/07</td><td>Lácteos del Sur</td><td class="fl-num">$142.500</td>
+              <td><span class="fl-chip pend">PENDIENTE</span></td>
+              <td><span class="fl-act">✎</span><span class="fl-act">🗑</span><span class="fl-btn">Registrar llegada</span></td>
+            </tr>
+            <tr class="fl-sub"><td colspan="6">Leche entera 20 L &nbsp;·&nbsp; $2.100 c/u &nbsp;·&nbsp; $42.000</td></tr>
+            <tr class="fl-sub"><td colspan="6">Fermento láctico 5 kg &nbsp;·&nbsp; $20.100 c/u &nbsp;·&nbsp; $100.500</td></tr>
+            <tr>
+              <td>▸</td><td>21/07</td><td>Envases Nova</td><td class="fl-num">$38.900</td>
+              <td><span class="fl-chip conf">CONFIRMADO</span></td>
+              <td style="opacity:.45">—</td>
+            </tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="dialogo" onclick="toggleSelect(this)">
+    <div class="letter">B</div>
+    <div class="content">
+      <h3>Tabla + diálogo</h3>
+      <p>La tabla muestra solo el resumen (fecha, proveedor, total, ítems). Para ver o editar las líneas abrís un diálogo, igual que "registrar llegada".</p>
+      <div class="mockup" style="margin-top:10px">
+        <div class="mockup-header">Insumos → tab Pedidos</div>
+        <div class="mockup-body">
+          <div class="fl-tabs"><div class="fl-tab">INSUMOS</div><div class="fl-tab on">PEDIDOS</div></div>
+          <table class="fl-table fl-dim">
+            <tr><th>Fecha</th><th>Proveedor</th><th class="fl-num">Ítems</th><th class="fl-num">Total</th><th>Estado</th><th></th></tr>
+            <tr><td>28/07</td><td>Lácteos del Sur</td><td class="fl-num">2</td><td class="fl-num">$142.500</td><td><span class="fl-chip pend">PENDIENTE</span></td><td><span class="fl-act">⋮</span></td></tr>
+            <tr><td>21/07</td><td>Envases Nova</td><td class="fl-num">1</td><td class="fl-num">$38.900</td><td><span class="fl-chip conf">CONFIRMADO</span></td><td><span class="fl-act">⋮</span></td></tr>
+          </table>
+          <div class="fl-modal">
+            <div class="fl-cardhead"><strong style="font-size:12px">Editar pedido · Lácteos del Sur</strong><span style="opacity:.5">✕</span></div>
+            <div class="fl-line"><span>Leche entera</span><span><input class="mock-input" style="width:52px;padding:2px 5px;font-size:11px" value="20"> L</span></div>
+            <div class="fl-line"><span>Fermento láctico</span><span><input class="mock-input" style="width:52px;padding:2px 5px;font-size:11px" value="5"> kg</span></div>
+            <div style="text-align:right;margin-top:10px"><span class="fl-btn">Guardar</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="option" data-choice="tarjetas" onclick="toggleSelect(this)">
+    <div class="letter">C</div>
+    <div class="content">
+      <h3>Tarjetas</h3>
+      <p>Cada pedido es una tarjeta con sus líneas siempre visibles. Nada que expandir, pero ocupa mucho más alto de pantalla y se despega del estilo de tabla del resto de la app.</p>
+      <div class="mockup" style="margin-top:10px">
+        <div class="mockup-header">Insumos → tab Pedidos</div>
+        <div class="mockup-body">
+          <div class="fl-tabs"><div class="fl-tab">INSUMOS</div><div class="fl-tab on">PEDIDOS</div></div>
+          <div class="fl-card">
+            <div class="fl-cardhead">
+              <div><strong style="font-size:12px">Lácteos del Sur</strong> <span style="opacity:.55;font-size:11px">· 28/07</span></div>
+              <span class="fl-chip pend">PENDIENTE</span>
+            </div>
+            <div class="fl-line"><span>Leche entera</span><span>20 L · $42.000</span></div>
+            <div class="fl-line"><span>Fermento láctico</span><span>5 kg · $100.500</span></div>
+            <div class="fl-cardhead" style="margin:9px 0 0"><strong style="font-size:12px">$142.500</strong>
+              <div><span class="fl-act">✎</span><span class="fl-act">🗑</span><span class="fl-btn">Registrar llegada</span></div>
+            </div>
+          </div>
+          <div class="fl-card" style="opacity:.6">
+            <div class="fl-cardhead">
+              <div><strong style="font-size:12px">Envases Nova</strong> <span style="opacity:.55;font-size:11px">· 21/07</span></div>
+              <span class="fl-chip conf">CONFIRMADO</span>
+            </div>
+            <div class="fl-line"><span>Pote 500cc</span><span>500 u · $38.900</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div>
