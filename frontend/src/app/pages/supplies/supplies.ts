@@ -1,6 +1,7 @@
 import { Component, OnInit, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
-import { forkJoin } from 'rxjs';
+import { forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { Navbar } from '../../shared/navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { SuppliesService } from '../../services/supplies.service';
@@ -31,6 +32,7 @@ export class Supplies implements OnInit {
 
   insumos = signal<Supply[]>([]);
   pedidos = signal<Order[]>([]);
+  errorMessage = signal('');
 
   ngOnInit(): void {
     this.cargarTodo();
@@ -38,19 +40,47 @@ export class Supplies implements OnInit {
 
   /**
    * Registrar una llegada cambia el stock de insumos y el estado del pedido,
-   * así que las dos listas se recargan juntas desde acá.
+   * así que las dos listas se recargan juntas desde acá. Cada rama tiene su
+   * propio catchError: si una falla, la otra igual se muestra y se avisa
+   * puntualmente qué parte no se pudo cargar, en vez de dejar todo en blanco.
    */
   cargarTodo(): void {
+    let insumosConError = false;
+    let pedidosConError = false;
+
     forkJoin({
-      insumos: this.suppliesService.findAll(),
-      pedidos: this.ordersService.findAll(),
-    }).subscribe({
-      next: ({ insumos, pedidos }) => {
-        this.insumos.set(insumos);
-        this.pedidos.set(pedidos);
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Error al cargar insumos y pedidos:', err)
+      insumos: this.suppliesService.findAll().pipe(
+        catchError((err) => {
+          console.error('Error al cargar insumos:', err);
+          insumosConError = true;
+          return of<Supply[]>([]);
+        })
+      ),
+      pedidos: this.ordersService.findAll().pipe(
+        catchError((err) => {
+          console.error('Error al cargar pedidos:', err);
+          pedidosConError = true;
+          return of<Order[]>([]);
+        })
+      ),
+    }).subscribe(({ insumos, pedidos }) => {
+      this.insumos.set(insumos);
+      this.pedidos.set(pedidos);
+      this.errorMessage.set(this.armarMensajeError(insumosConError, pedidosConError));
+      this.cdr.detectChanges();
     });
+  }
+
+  private armarMensajeError(insumosConError: boolean, pedidosConError: boolean): string {
+    if (insumosConError && pedidosConError) {
+      return 'No se pudieron cargar los insumos ni los pedidos.';
+    }
+    if (insumosConError) {
+      return 'No se pudieron cargar los insumos. Los pedidos se muestran igual.';
+    }
+    if (pedidosConError) {
+      return 'No se pudieron cargar los pedidos. Los insumos se muestran igual.';
+    }
+    return '';
   }
 }

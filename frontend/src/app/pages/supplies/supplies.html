@@ -9,6 +9,10 @@
     </button>
   </div>
 
+  @if (errorMessage()) {
+    <div class="supplies-error">{{ errorMessage() }}</div>
+  }
+
   <mat-tab-group>
     <mat-tab label="Insumos">
       <app-supplies-table [supplies]="insumos()"></app-supplies-table>
