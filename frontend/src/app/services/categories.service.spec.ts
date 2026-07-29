@@ -29,4 +29,16 @@ describe('CategoriesService', () => {
 
     expect(result).toEqual([{ id: 1, name: 'Lácteos' }]);
   });
+
+  it('create posts the new category', () => {
+    let result: unknown;
+    service.create({ name: 'Quesos', description: 'Duros y blandos' }).subscribe(res => (result = res));
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/categories`);
+    expect(req.request.method).toBe('POST');
+    expect(req.request.body).toEqual({ name: 'Quesos', description: 'Duros y blandos' });
+    req.flush({ id: 2, name: 'Quesos', description: 'Duros y blandos' });
+
+    expect(result).toEqual({ id: 2, name: 'Quesos', description: 'Duros y blandos' });
+  });
 });

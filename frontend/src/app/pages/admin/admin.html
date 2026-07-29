@@ -107,6 +107,32 @@
 
     <mat-tab>
       <ng-template mat-tab-label>
+        <mat-icon>label</mat-icon>
+        <span>Categorías</span>
+      </ng-template>
+
+      <div class="admin-panel">
+        <span class="section-label">Nueva categoría</span>
+        <form class="admin-form" (ngSubmit)="createCategory()" #categoryForm="ngForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre</mat-label>
+            <input matInput [(ngModel)]="newCategory.name" name="categoryName" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Descripción</mat-label>
+            <input matInput [(ngModel)]="newCategory.description" name="categoryDescription" />
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="categoryForm.invalid || savingCategory()">
+            <mat-icon>add</mat-icon> Crear categoría
+          </button>
+        </form>
+      </div>
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
         <mat-icon>group</mat-icon>
         <span>Cuentas</span>
       </ng-template>
