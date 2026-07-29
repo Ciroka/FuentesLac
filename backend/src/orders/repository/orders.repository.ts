@@ -53,19 +53,7 @@ export class OrdersRepository implements IOrdersRepository {
     });
   }
 
-  // async create(supplierId: number, total: number): Promise<Order> {
-  //   const order = this.orderRepository.create({
-  //     orderedTotal: total,
-  //     supplier: { id: supplierId } as Supplier,
-  //   });
-  //   return this.orderRepository.save(order);
-  // }
-
-  // async update(order: Order): Promise<Order> {
-  //   return this.orderRepository.save(order);
-  // }
-
-  async remove(order: Order): Promise<Order> {
-    return this.orderRepository.remove(order);
+  async save(order: Order): Promise<Order> {
+    return this.orderRepository.save(order);
   }
 }

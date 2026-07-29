@@ -46,4 +46,9 @@ export class OrdersController {
   ): Promise<OrderResponse> {
     return this.ordersService.update(id, updateOrderDto);
   }
+
+  @Patch(':id/cancel')
+  cancel(@Param('id', ParseIntPipe) id: number): Promise<OrderResponse> {
+    return this.ordersService.cancel(id);
+  }
 }

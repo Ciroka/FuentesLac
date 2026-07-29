@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   Inject,
   Injectable,
   NotFoundException,
@@ -14,6 +15,7 @@ import { DataSource } from 'typeorm';
 import { SuppliesService } from 'src/supplies/service/supplies.service';
 import { Supply } from 'src/supplies';
 import { Supplier } from 'src/suppliers';
+import { OrderStatus } from 'src/shared/enums/orderStatus.enum';
 
 @Injectable()
 export class OrdersService {
@@ -112,8 +114,13 @@ export class OrdersService {
     });
   }
 
-  // async remove(id: number): Promise<Order> {
-  //   const order = await this.findOne(id);
-  //   return this.ordersRepository.remove(order);
-  // } creo que no se va a usar
+  async cancel(id: number): Promise<Order> {
+    const order = await this.ordersRepository.findOneById(id);
+    if (!order) throw new NotFoundException('Order not found');
+    if (order.status !== OrderStatus.PENDING)
+      throw new ConflictException('Only pending orders can be cancelled');
+
+    order.status = OrderStatus.CANCELLED;
+    return this.ordersRepository.save(order);
+  }
 }
