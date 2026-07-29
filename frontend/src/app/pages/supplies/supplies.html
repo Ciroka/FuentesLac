@@ -14,11 +14,7 @@
       <app-supplies-table [supplies]="insumos()"></app-supplies-table>
     </mat-tab>
     <mat-tab label="Pedidos">
-      <div class="empty-state">
-        <mat-icon>local_shipping</mat-icon>
-        <div class="empty-state-title">Sin pedidos</div>
-        <div class="empty-state-sub">Todavía no registraste ningún pedido a proveedores.</div>
-      </div>
+      <app-orders-list [orders]="pedidos()" (changed)="cargarTodo()"></app-orders-list>
     </mat-tab>
   </mat-tab-group>
 
