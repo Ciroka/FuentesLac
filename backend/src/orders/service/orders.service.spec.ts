@@ -234,5 +234,48 @@ describe('OrdersService', () => {
       ).rejects.toThrow(BadRequestException);
       expect(suppliesService.increaseStock).not.toHaveBeenCalled();
     });
+
+    // Este fixture arranca con arrivalQuantity/arrivalSubtotal/arrivalTotal
+    // distintos de cero: es el único caso que distingue "asignar" (=) de
+    // "acumular" (+=). Ese estado no es alcanzable en producción (el 409
+    // impide una segunda llegada sobre el mismo pedido), pero es necesario
+    // acá para blindar la regresión del bug original de `update`.
+    it('asigna en vez de acumular sobre valores de llegada previos', async () => {
+      const order = {
+        id: 1,
+        status: OrderStatus.PENDING,
+        arrivalTotal: 999,
+        ordersDetails: [
+          {
+            id: 10,
+            supply: { id: 5 },
+            unitPrice: '100.00',
+            orderedQuantity: 20,
+            arrivalQuantity: 5,
+            arrivalSubtotal: 500,
+          },
+          {
+            id: 11,
+            supply: { id: 6 },
+            unitPrice: '50.00',
+            orderedQuantity: 4,
+            arrivalQuantity: 2,
+            arrivalSubtotal: 100,
+          },
+        ],
+      } as unknown as Order;
+      orderRepo.findOne.mockResolvedValue(order);
+
+      const result = await service.registerArrival(1, {
+        details: [
+          { supplyId: 5, quantity: 18 },
+          { supplyId: 6, quantity: 4 },
+        ],
+      });
+
+      expect(result.ordersDetails[0].arrivalQuantity).toBe(18);
+      expect(result.ordersDetails[0].arrivalSubtotal).toBe(1800);
+      expect(result.arrivalTotal).toBe(2000);
+    });
   });
 });
