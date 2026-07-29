@@ -32,8 +32,14 @@ export class OrdersService {
   ) {}
 
   async findAll(params: QueryParamsOrders): Promise<PaginatedResult<Order>> {
-    const { page, limit, order, supplierId } = params;
-    return this.ordersRepository.findAll(page, limit, order, supplierId);
+    const { page, limit, order, supplierId, status } = params;
+    return this.ordersRepository.findAll(
+      page,
+      limit,
+      order,
+      supplierId,
+      status,
+    );
   }
 
   async findOne(id: number): Promise<Order> {
