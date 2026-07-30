@@ -1,0 +1,61 @@
+.profile-grid {
+  align-items: start;
+}
+
+.profile-card {
+  .section-label {
+    display: block;
+    margin-bottom: 16px;
+  }
+}
+
+.profile-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+}
+
+.profile-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  dt {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-dim);
+
+    mat-icon {
+      font-size: 16px;
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button {
+    align-self: flex-start;
+    margin-top: 8px;
+  }
+}

@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { BadRequestException, Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { randomUUID } from 'crypto';
 import {
@@ -45,7 +45,12 @@ export class StorageService {
     folder: string,
     name?: string,
   ): Promise<string> {
-    const extension = EXTENSION_BY_MIME[file.mimetype] ?? 'bin';
+    const extension = EXTENSION_BY_MIME[file.mimetype];
+    if (!extension) {
+      throw new BadRequestException(
+        `Tipo de archivo no soportado: ${file.mimetype}`,
+      );
+    }
     const key = `${folder}/${name ?? randomUUID()}-${randomUUID()}.${extension}`;
 
     await this.client.send(

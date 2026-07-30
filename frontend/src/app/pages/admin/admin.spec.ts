@@ -28,7 +28,7 @@ describe('Admin', () => {
   it('should create and load categories, suppliers, users and audit logs on init', () => {
     httpMock.expectOne(`${environment.apiUrl}/categories?limit=1000`).flush({ items: [], total: 0, page: 1, limit: 1000 });
     httpMock.expectOne(`${environment.apiUrl}/suppliers?limit=1000`).flush({ items: [], total: 0, page: 1, limit: 1000 });
-    httpMock.expectOne(`${environment.apiUrl}/users?limit=1000`).flush({ items: [], total: 0, page: 1, limit: 1000 });
+    httpMock.expectOne(`${environment.apiUrl}/users?page=1&limit=10`).flush({ items: [], total: 0, page: 1, limit: 10 });
     httpMock.expectOne(`${environment.apiUrl}/audit-logs?page=1&limit=20`).flush({ items: [], total: 0, page: 1, limit: 20 });
 
     expect(component).toBeTruthy();

@@ -1,9 +1,11 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { Navbar } from '../../shared/navbar/navbar';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { ProductsService } from '../../services/products.service';
+import { CategoriesService } from '../../services/categories.service';
 import { Product } from '../../models/product.model';
+import { Category } from '../../models/category.model';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
@@ -12,6 +14,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { MatOptionModule } from '@angular/material/core';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatProgressBarModule } from '@angular/material/progress-bar';
+import { MatButtonModule } from '@angular/material/button';
 
 @Component({
   selector: 'app-products',
@@ -19,47 +22,57 @@ import { MatProgressBarModule } from '@angular/material/progress-bar';
   imports: [
     Navbar, CommonModule, FormsModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
-    MatSelectModule, MatOptionModule, MatChipsModule, MatProgressBarModule
+    MatSelectModule, MatOptionModule, MatChipsModule, MatProgressBarModule,
+    MatButtonModule
   ],
   templateUrl: './products.html',
   styleUrl: './products.scss',
 })
 export class Products implements OnInit {
   private productsService = inject(ProductsService);
-  private cdr = inject(ChangeDetectorRef);
+  private categoriesService = inject(CategoriesService);
 
-  productos: Product[] = [];
-  categorias: { id: number; name: string }[] = [];
+  readonly limit = 10;
+
+  productos = signal<Product[]>([]);
+  categorias: Category[] = [];
+  page = signal(1);
+  total = signal(0);
   searchTerm = '';
   selectedCategoryId: number | null = null;
 
   ngOnInit(): void {
-    this.productsService.findAllWithStock().subscribe({
-      next: (data) => {
-        this.productos = data;
-        this.categorias = this.extraerCategorias(data);
-        this.cdr.detectChanges();
-      },
-      error: (err) => console.error('Error al traer productos:', err)
-    });
+    this.categoriesService.findAll(1000, 'products').subscribe(data => (this.categorias = data));
+    this.loadProducts();
   }
 
-  get filteredProducts(): Product[] {
-    return this.productos.filter(product => {
-      const matchName = !this.searchTerm ||
-        product.name.toLowerCase().includes(this.searchTerm.toLowerCase());
-      const matchCategory = this.selectedCategoryId === null ||
-        product.category?.id === this.selectedCategoryId;
-      return matchName && matchCategory;
-    });
+  loadProducts(): void {
+    this.productsService
+      .findPageWithStock(this.page(), this.limit, this.searchTerm || undefined, this.selectedCategoryId)
+      .subscribe({
+        next: (res) => {
+          this.productos.set(res.items);
+          this.total.set(res.total);
+        },
+        error: (err) => console.error('Error al traer productos:', err)
+      });
   }
 
-  extraerCategorias(productos: Product[]): { id: number; name: string }[] {
-    const map = new Map<number, string>();
-    productos.forEach(p => {
-      if (p.category) map.set(p.category.id, p.category.name);
-    });
-    return Array.from(map.entries()).map(([id, name]) => ({ id, name }));
+  onFilterChange(): void {
+    this.page.set(1);
+    this.loadProducts();
+  }
+
+  nextPage(): void {
+    if (this.page() * this.limit >= this.total()) return;
+    this.page.update(p => p + 1);
+    this.loadProducts();
+  }
+
+  prevPage(): void {
+    if (this.page() <= 1) return;
+    this.page.update(p => p - 1);
+    this.loadProducts();
   }
 
   getStockPercent(producto: Product): number {

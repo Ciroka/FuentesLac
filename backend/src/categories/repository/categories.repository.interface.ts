@@ -13,6 +13,7 @@ export interface ICategoryRepository {
     order: OrderEnum,
     sortBy?: SortByCategory,
     name?: string,
+    usedBy?: 'products' | 'supplies',
   ): Promise<PaginatedResult<Category>>;
   findOneById(id: number): Promise<Category | null>;
   create(input: CreateCategoryDto): Promise<Category>;

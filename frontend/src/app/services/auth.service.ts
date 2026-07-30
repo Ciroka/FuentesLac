@@ -68,6 +68,14 @@ export class AuthService {
     this._currentUser.set(null);
   }
 
+  changePassword(currentPassword: string, newPassword: string): Observable<{ message: string }> {
+    return this.http.patch<{ message: string }>(
+      `${this.api}/me/password`,
+      { currentPassword, newPassword },
+      { withCredentials: true },
+    );
+  }
+
   private onLoggedOut(): void {
     this._currentUser.set(null);
     this.router.navigate(['/login']);

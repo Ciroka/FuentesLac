@@ -1,6 +1,6 @@
 <div><app-navbar></app-navbar></div>
 
-<main class="contenido">
+<main class="contenido page-enter">
 
   <div class="view-header">
     <h2>Clientes</h2>
@@ -8,11 +8,11 @@
 
   <mat-form-field appearance="outline" class="search-field">
     <mat-label>Buscar cliente</mat-label>
-    <input matInput [(ngModel)]="searchTerm" placeholder="Nombre, CUIT o email...">
+    <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onSearchChange()" placeholder="Nombre del cliente...">
     <mat-icon matPrefix>search</mat-icon>
   </mat-form-field>
 
-  @if (filteredClientes.length === 0) {
+  @if (clientes().length === 0) {
     <div class="empty-state">
       <mat-icon>search_off</mat-icon>
       <div class="empty-state-title">Sin resultados</div>
@@ -20,7 +20,7 @@
     </div>
   } @else {
   <div class="mat-elevation-z2 table-container">
-    <table mat-table [dataSource]="filteredClientes">
+    <table mat-table [dataSource]="clientes()">
       <ng-container matColumnDef="name">
         <th mat-header-cell *matHeaderCellDef>Nombre</th>
         <td mat-cell *matCellDef="let c"><strong>{{ c.name }}</strong></td>
@@ -49,6 +49,12 @@
       <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
       <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
     </table>
+  </div>
+
+  <div class="list-pagination">
+    <button mat-stroked-button (click)="prevPage()" [disabled]="page() <= 1">Anterior</button>
+    <span class="list-page-label">Página {{ page() }}</span>
+    <button mat-stroked-button (click)="nextPage()" [disabled]="page() * limit >= total()">Siguiente</button>
   </div>
   }
 

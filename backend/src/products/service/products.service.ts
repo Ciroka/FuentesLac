@@ -23,8 +23,15 @@ export class ProductsService {
   async findAll(
     params: QueryParamsProducts,
   ): Promise<PaginatedResult<Product>> {
-    const { page, limit, order, sortBy, name } = params;
-    return this.productsRepository.findAll(page, limit, order, sortBy, name);
+    const { page, limit, order, sortBy, name, categoryId } = params;
+    return this.productsRepository.findAll(
+      page,
+      limit,
+      order,
+      sortBy,
+      name,
+      categoryId,
+    );
   }
 
   async findOne(id: number, manager?: EntityManager): Promise<Product> {

@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Category } from '../models/category.model';
 import { environment } from '../../environments/environment';
@@ -14,9 +14,12 @@ export class CategoriesService {
   private api = `${environment.apiUrl}/categories`;
   private readonly http = inject(HttpClient);
 
-  findAll(limit = 1000): Observable<Category[]> {
+  findAll(limit = 1000, usedBy?: 'products' | 'supplies'): Observable<Category[]> {
+    let params = new HttpParams().set('limit', limit);
+    if (usedBy) params = params.set('usedBy', usedBy);
+
     return this.http
-      .get<{ items: Category[] }>(`${this.api}?limit=${limit}`)
+      .get<{ items: Category[] }>(this.api, { params })
       .pipe(map(res => res.items));
   }
 

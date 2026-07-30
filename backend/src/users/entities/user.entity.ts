@@ -8,7 +8,7 @@ import {
 
 import { UserRole } from '../../shared/enums';
 
-@Entity('user')
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id!: string;

@@ -31,6 +31,34 @@
   --transition: 150ms ease;
 }
 
+:root[data-theme="dark"] {
+  --bg: #14171a;
+  --panel: #1c2024;
+  --panel-2: #24292e;
+  --line: #333a41;
+  --ink: #e6e9ec;
+  --ink-dim: #929ba5;
+
+  --color-success: #4fae82;
+  --color-warning: #d9a24f;
+  --color-danger: #e2685a;
+  --color-muted: #929ba5;
+
+  --success-soft: rgba(79,174,130,0.16);
+  --warning-soft: rgba(217,162,79,0.16);
+  --danger-soft: rgba(226,104,90,0.16);
+
+  --card-track: #2c333a;
+  --today-highlight: rgba(90,158,201,0.10);
+
+  --accent: #5a9ec9;
+  --accent-soft: rgba(90,158,201,0.16);
+  --accent-dark: #8ec2e6;
+
+  --shadow: 0 1px 2px rgba(0,0,0,.24);
+  --shadow-md: 0 2px 6px rgba(0,0,0,.32);
+}
+
 * {
   -webkit-tap-highlight-color: transparent;
   box-sizing: border-box;
@@ -200,7 +228,31 @@ td {
 }
 
 .page-enter {
-  animation: fadeIn .25s ease-out;
+  animation: fadeIn 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+// Cascada corta para grids de cards (dashboard, productos) — 40ms entre
+// ítems, tope en el 8vo para no alargar la espera en grillas grandes.
+.stagger-grid > * {
+  opacity: 0;
+  animation: fadeIn 300ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+.stagger-grid > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-grid > *:nth-child(2) { animation-delay: 40ms; }
+.stagger-grid > *:nth-child(3) { animation-delay: 80ms; }
+.stagger-grid > *:nth-child(4) { animation-delay: 120ms; }
+.stagger-grid > *:nth-child(5) { animation-delay: 160ms; }
+.stagger-grid > *:nth-child(6) { animation-delay: 200ms; }
+.stagger-grid > *:nth-child(7) { animation-delay: 240ms; }
+.stagger-grid > *:nth-child(n+8) { animation-delay: 280ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .stagger-grid > * {
+    animation-duration: 1ms;
+    animation-delay: 0ms !important;
+    transform: none;
+  }
 }
 
 @media (max-width: 1024px) {
@@ -214,23 +266,65 @@ td {
   .contenido {
     margin-left: 0 !important;
     margin-right: 0 !important;
+    margin-top: 12px;
+  }
+  // Tables are `table-layout: fixed` with no-wrap cells, so on narrow
+  // screens they need horizontal scroll instead of the desktop
+  // `overflow: hidden` (used there only to clip square corners to the
+  // container's border-radius).
+  .table-container {
+    overflow-x: auto;
   }
 }
 
+// Los botones de Material usan sus propios tokens M3 (derivados de
+// mat.$blue-palette en theme.scss), que no son exactamente el mismo azul que
+// --accent. Sin fijar también el color de texto/label acá, un botón puede
+// terminar con el fondo de --accent pero el texto en el azul nativo de M3 (o
+// viceversa), lo que se ve como dos azules distintos o poco contraste.
 .mat-mdc-raised-button:not(:disabled) {
   box-shadow: none !important;
+  transition: background-color 150ms ease, transform 150ms ease !important;
 }
 
 .mat-mdc-raised-button.mat-primary:not(:disabled) {
   background-color: var(--accent) !important;
+  color: #fff !important;
 }
 
 .mat-mdc-raised-button.mat-primary:hover:not(:disabled) {
   background-color: var(--accent-dark) !important;
 }
 
+.mat-mdc-raised-button.mat-primary:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.mat-mdc-raised-button:disabled {
+  opacity: 0.5;
+}
+
 .mat-mdc-outlined-button {
   border-color: var(--line) !important;
+  color: var(--accent) !important;
+  transition: background-color 150ms ease, transform 150ms ease !important;
+}
+
+.mat-mdc-outlined-button:hover:not(:disabled) {
+  background-color: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+}
+
+.mat-mdc-outlined-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.mat-mdc-icon-button:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.mat-mdc-icon-button {
+  transition: transform 150ms ease !important;
 }
 
 mat-card.mat-mdc-card {
@@ -274,6 +368,19 @@ tbody tr:hover td {
   font-size: 14px;
   font-weight: 600;
   color: var(--ink);
+}
+
+.list-pagination {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 14px 0 4px;
+}
+
+.list-page-label {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--ink-dim);
 }
 
 .empty-state-sub {

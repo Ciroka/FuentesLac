@@ -8,6 +8,7 @@ export type Payload = {
 export type AuthResult = {
   user: {
     id: string;
+    name: string;
     email: string;
     role: UserRole;
     createdAt: Date;

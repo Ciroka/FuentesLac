@@ -60,6 +60,10 @@ export const routes: Routes = [
         canActivate: [roleGuard(UserRole.ADMIN)],
         loadComponent: () => import('./pages/admin/admin').then((m) => m.Admin),
       },
+      {
+        path: 'profile',
+        loadComponent: () => import('./pages/profile/profile').then((m) => m.Profile),
+      },
     ],
   },
   {

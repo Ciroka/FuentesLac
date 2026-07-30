@@ -22,8 +22,9 @@ export class CategoriesRepository implements ICategoryRepository {
     order: OrderEnum,
     sortBy?: SortByCategory,
     name?: string,
+    usedBy?: 'products' | 'supplies',
   ): Promise<PaginatedResult<Category>> {
-    const query = this.queryBuilder(sortBy, name, order);
+    const query = this.queryBuilder(sortBy, name, order, usedBy);
     const offset = (page - 1) * limit;
 
     const [categories, total] = await query
@@ -57,11 +58,18 @@ export class CategoriesRepository implements ICategoryRepository {
     sortBy?: SortByCategory,
     name?: string,
     order: OrderEnum = OrderEnum.ASC,
+    usedBy?: 'products' | 'supplies',
   ) {
     const query = this.categoriesRepository.createQueryBuilder('category');
 
+    if (usedBy === 'products') {
+      query.innerJoin('category.products', 'product').distinct(true);
+    } else if (usedBy === 'supplies') {
+      query.innerJoin('category.supplies', 'supply').distinct(true);
+    }
+
     if (name) {
-      query.where('category.name ILIKE :name', { name: `%${name}%` });
+      query.andWhere('category.name ILIKE :name', { name: `%${name}%` });
     }
 
     if (sortBy) {

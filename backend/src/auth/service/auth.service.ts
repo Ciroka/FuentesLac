@@ -58,6 +58,7 @@ export class AuthService {
     return {
       user: {
         id: user.id,
+        name: user.name,
         email: user.email,
         role: user.role,
         createdAt: user.createdAt,
@@ -128,6 +129,7 @@ export class AuthService {
       const user = await this.usersService.findOneById(userId);
       return {
         id: user.id,
+        name: user.name,
         email: user.email,
         role: user.role,
         createdAt: user.createdAt,
@@ -142,7 +144,7 @@ export class AuthService {
 
     if (user) {
       const code = randomInt(100000, 999999).toString();
-      const codeHash = await bcrypt.hash(code, 10);
+      const codeHash = this.hashToken(code);
       const resetCodePasswordExpires = new Date(Date.now() + 15 * 60 * 1000);
 
       user.codeHashResetPassword = codeHash;
@@ -157,7 +159,9 @@ export class AuthService {
     token: string,
     password: string,
   ): Promise<UserMessageResponse> {
-    const user = await this.usersService.findOneByResetPasswordToken(token);
+    const user = await this.usersService.findOneByResetPasswordToken(
+      this.hashToken(token),
+    );
 
     if (
       !user ||
@@ -187,6 +191,7 @@ export class AuthService {
     return {
       user: {
         id: user.id,
+        name: user.name,
         email: user.email,
         role: user.role,
         createdAt: user.createdAt,

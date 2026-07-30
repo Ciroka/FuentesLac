@@ -11,7 +11,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { MatIconModule } from '@angular/material/icon';
 import { MatTableModule } from '@angular/material/table';
 import { MatCheckboxModule } from '@angular/material/checkbox';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { toast } from 'ngx-sonner';
 
 import { SuppliesService, CreateSupply } from '../../services/supplies.service';
 import { ProductsService, CreateProduct } from '../../services/products.service';
@@ -31,7 +31,7 @@ import { AuditLog } from '../../models/audit-log.model';
   imports: [
     CommonModule, FormsModule, Navbar,
     MatTabsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule,
-    MatButtonModule, MatIconModule, MatTableModule, MatCheckboxModule, MatSnackBarModule,
+    MatButtonModule, MatIconModule, MatTableModule, MatCheckboxModule,
   ],
   templateUrl: './admin.html',
   styleUrl: './admin.scss',
@@ -44,13 +44,15 @@ export class Admin implements OnInit {
   private readonly usersService = inject(UsersService);
   private readonly authService = inject(AuthService);
   private readonly auditLogService = inject(AuditLogService);
-  private readonly snackBar = inject(MatSnackBar);
 
   readonly UserRole = UserRole;
 
   categories: Category[] = [];
   suppliers: Supplier[] = [];
   users = signal<AuthUser[]>([]);
+  usersPage = signal(1);
+  usersTotal = signal(0);
+  usersLimit = 10;
   auditLogs = signal<AuditLog[]>([]);
   auditPage = signal(1);
   auditTotal = signal(0);
@@ -81,7 +83,22 @@ export class Admin implements OnInit {
   }
 
   private loadUsers(): void {
-    this.usersService.findAll().subscribe(data => this.users.set(data));
+    this.usersService.findPage(this.usersPage(), this.usersLimit).subscribe(res => {
+      this.users.set(res.items);
+      this.usersTotal.set(res.total);
+    });
+  }
+
+  nextUsersPage(): void {
+    if (this.usersPage() * this.usersLimit >= this.usersTotal()) return;
+    this.usersPage.update(p => p + 1);
+    this.loadUsers();
+  }
+
+  prevUsersPage(): void {
+    if (this.usersPage() <= 1) return;
+    this.usersPage.update(p => p - 1);
+    this.loadUsers();
   }
 
   private loadAuditLogs(): void {
@@ -96,12 +113,12 @@ export class Admin implements OnInit {
     this.suppliesService.create(this.newSupply).subscribe({
       next: () => {
         this.savingSupply.set(false);
-        this.snackBar.open('Insumo creado', 'Cerrar', { duration: 3000 });
+        toast.success('Insumo creado');
         this.newSupply = { name: '', costPrice: 0, minStock: 0, currentStock: 0, isMilk: false };
       },
       error: () => {
         this.savingSupply.set(false);
-        this.snackBar.open('No se pudo crear el insumo', 'Cerrar', { duration: 3000 });
+        toast.error('No se pudo crear el insumo');
       },
     });
   }
@@ -111,12 +128,12 @@ export class Admin implements OnInit {
     this.productsService.create(this.newProduct).subscribe({
       next: () => {
         this.savingProduct.set(false);
-        this.snackBar.open('Producto creado', 'Cerrar', { duration: 3000 });
+        toast.success('Producto creado');
         this.newProduct = { name: '', costPrice: 0, marginPercent: 0.3, minStock: 0 };
       },
       error: () => {
         this.savingProduct.set(false);
-        this.snackBar.open('No se pudo crear el producto', 'Cerrar', { duration: 3000 });
+        toast.error('No se pudo crear el producto');
       },
     });
   }
@@ -131,13 +148,13 @@ export class Admin implements OnInit {
     this.categoriesService.create(payload).subscribe({
       next: () => {
         this.savingCategory.set(false);
-        this.snackBar.open('Categoría creada', 'Cerrar', { duration: 3000 });
+        toast.success('Categoría creada');
         this.newCategory = { name: '', description: '' };
         this.loadCategories();
       },
       error: () => {
         this.savingCategory.set(false);
-        this.snackBar.open('No se pudo crear la categoría', 'Cerrar', { duration: 3000 });
+        toast.error('No se pudo crear la categoría');
       },
     });
   }
@@ -149,13 +166,13 @@ export class Admin implements OnInit {
       .subscribe({
         next: () => {
           this.savingAccount.set(false);
-          this.snackBar.open('Cuenta creada', 'Cerrar', { duration: 3000 });
+          toast.success('Cuenta creada');
           this.newAccount = { name: '', email: '', password: '' };
           this.loadUsers();
         },
         error: () => {
           this.savingAccount.set(false);
-          this.snackBar.open('No se pudo crear la cuenta', 'Cerrar', { duration: 3000 });
+          toast.error('No se pudo crear la cuenta');
         },
       });
   }
@@ -163,20 +180,20 @@ export class Admin implements OnInit {
   changeRole(user: AuthUser, role: UserRole): void {
     this.usersService.updateRole(user.id, role).subscribe({
       next: () => {
-        this.snackBar.open('Rol actualizado', 'Cerrar', { duration: 3000 });
+        toast.success('Rol actualizado');
         this.loadUsers();
       },
-      error: () => this.snackBar.open('No se pudo actualizar el rol', 'Cerrar', { duration: 3000 }),
+      error: () => toast.error('No se pudo actualizar el rol'),
     });
   }
 
   removeUser(user: AuthUser): void {
     this.usersService.remove(user.id).subscribe({
       next: () => {
-        this.snackBar.open('Cuenta eliminada', 'Cerrar', { duration: 3000 });
+        toast.success('Cuenta eliminada');
         this.loadUsers();
       },
-      error: () => this.snackBar.open('No se pudo eliminar la cuenta', 'Cerrar', { duration: 3000 }),
+      error: () => toast.error('No se pudo eliminar la cuenta'),
     });
   }
 

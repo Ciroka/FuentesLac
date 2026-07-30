@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Navbar } from '../../shared/navbar/navbar';
 import { CommonModule } from '@angular/common';
@@ -31,7 +31,11 @@ export class Sales implements OnInit {
   private salesDetailService = inject(SalesDetailService);
   private cdr = inject(ChangeDetectorRef);
 
+  readonly limit = 10;
+
   ventas: Sale[] = [];
+  page = signal(1);
+  total = signal(0);
   searchTerm = '';
   expandedIds = new Set<number>();
   loadingDetailId: number | null = null;
@@ -39,15 +43,33 @@ export class Sales implements OnInit {
   displayedDetailColumns = ['product', 'quantity', 'unitPrice', 'subtotal', 'weight'];
 
   ngOnInit(): void {
-    this.salesService.findAll().subscribe({
-      next: (data) => {
-        this.ventas = data;
+    this.loadVentas();
+  }
+
+  loadVentas(): void {
+    this.salesService.findPage(this.page(), this.limit).subscribe({
+      next: (res) => {
+        this.ventas = res.items;
+        this.total.set(res.total);
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error al traer ventas:', err)
     });
   }
 
+  nextPage(): void {
+    if (this.page() * this.limit >= this.total()) return;
+    this.page.update(p => p + 1);
+    this.loadVentas();
+  }
+
+  prevPage(): void {
+    if (this.page() <= 1) return;
+    this.page.update(p => p - 1);
+    this.loadVentas();
+  }
+
+  /** Filtra solo dentro de la página actual: el backend no soporta búsqueda por nombre de cliente. */
   get filteredVentas(): Sale[] {
     if (!this.searchTerm) return this.ventas;
     const term = this.searchTerm.toLowerCase();

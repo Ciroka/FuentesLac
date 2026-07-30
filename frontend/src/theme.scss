@@ -32,6 +32,20 @@ html {
   );
 }
 
+:root[data-theme='dark'] {
+  @include mat.all-component-colors(
+    mat.define-theme(
+      (
+        color: (
+          theme-type: dark,
+          primary: mat.$blue-palette,
+          tertiary: mat.$blue-palette,
+        ),
+      )
+    )
+  );
+}
+
 html, body {
   height: 100%;
 }

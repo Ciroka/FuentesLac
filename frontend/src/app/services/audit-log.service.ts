@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { AuditLog } from '../models/audit-log.model';
 import { environment } from '../../environments/environment';
@@ -17,6 +17,9 @@ export class AuditLogService {
   private readonly http = inject(HttpClient);
 
   findAll(page = 1, limit = 20): Observable<PaginatedAuditLog> {
-    return this.http.get<PaginatedAuditLog>(`${this.api}?page=${page}&limit=${limit}`);
+    const params = new HttpParams()
+      .set('page', page)
+      .set('limit', limit);
+    return this.http.get<PaginatedAuditLog>(this.api, { params });
   }
 }

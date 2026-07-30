@@ -1,8 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Production, CreateProductionRequest } from '../models/production.model';
 import { environment } from '../../environments/environment';
+
+interface PaginatedProduction {
+  items: Production[];
+  total: number;
+  page: number;
+  limit: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +22,11 @@ export class ProductionService {
     return this.http.get<{ items: Production[] }>(`${this.api}?limit=${limit}`).pipe(
       map(res => res.items)
     );
+  }
+
+  findPage(page = 1, limit = 10): Observable<PaginatedProduction> {
+    const params = new HttpParams().set('page', page).set('limit', limit);
+    return this.http.get<PaginatedProduction>(this.api, { params });
   }
 
   create(production: CreateProductionRequest): Observable<Production> {

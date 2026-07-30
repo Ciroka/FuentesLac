@@ -201,6 +201,12 @@
             <tr mat-row *matRowDef="let row; columns: usersColumns;"></tr>
           </table>
         </div>
+
+        <div class="list-pagination">
+          <button mat-stroked-button (click)="prevUsersPage()" [disabled]="usersPage() <= 1">Anterior</button>
+          <span class="list-page-label">Página {{ usersPage() }}</span>
+          <button mat-stroked-button (click)="nextUsersPage()" [disabled]="usersPage() * usersLimit >= usersTotal()">Siguiente</button>
+        </div>
       } @else {
         <div class="empty-state">
           <mat-icon>group_off</mat-icon>

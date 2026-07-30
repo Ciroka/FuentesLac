@@ -1,8 +1,54 @@
-.login-container {
+:host {
+  --ease-out: cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.login-page {
+  display: flex;
+  min-height: 100dvh;
+}
+
+.login-branding {
+  flex: 1 1 45%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+  padding: 3rem;
+}
+
+.branding-content {
+  text-align: center;
+  color: #fff;
+  max-width: 360px;
+  animation: fadeInUp 500ms var(--ease-out) both;
+
+  h1 {
+    font-family: var(--sans);
+    font-size: 2rem;
+    font-weight: 700;
+    margin: 1.5rem 0 0.5rem;
+  }
+
+  p {
+    font-family: var(--sans);
+    font-size: 0.95rem;
+    opacity: 0.85;
+    margin: 0;
+  }
+}
+
+.branding-logo {
+  width: 140px;
+  height: 140px;
+  object-fit: contain;
+  filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.2));
+}
+
+.login-form-panel {
+  flex: 1 1 55%;
   display: flex;
   justify-content: center;
   align-items: center;
-  min-height: 100vh;
   padding: 1rem;
 }
 
@@ -10,6 +56,8 @@
   max-width: 420px;
   width: 100%;
   padding: 1rem;
+  animation: fadeInUp 450ms var(--ease-out) both;
+  animation-delay: 60ms;
 }
 
 .login-header {
@@ -25,15 +73,18 @@
 }
 
 .login-icon {
-  font-size: 48px;
-  width: 48px;
-  height: 48px;
-  color: var(--accent);
+  width: 56px;
+  height: 56px;
+  object-fit: contain;
 }
 
 .full-width {
   width: 100%;
 }
+
+.stagger-1 { animation: fadeInUp 400ms var(--ease-out) both; animation-delay: 100ms; }
+.stagger-2 { animation: fadeInUp 400ms var(--ease-out) both; animation-delay: 150ms; }
+.stagger-3 { animation: fadeInUp 400ms var(--ease-out) both; animation-delay: 200ms; }
 
 .login-btn {
   height: 48px;
@@ -43,6 +94,15 @@
 
 .btn-spinner {
   display: inline-block;
+}
+
+.password-toggle {
+  color: var(--ink-dim);
+  transition: color 150ms ease;
+
+  &:hover {
+    color: var(--accent);
+  }
 }
 
 .login-error {
@@ -55,6 +115,7 @@
   background: var(--danger-soft);
   color: var(--color-danger);
   font-size: 0.875rem;
+  animation: fadeInUp 250ms var(--ease-out) both;
 }
 
 .login-footer {
@@ -68,5 +129,40 @@
     &:hover {
       color: var(--accent);
     }
+  }
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .branding-content,
+  .login-card,
+  .stagger-1,
+  .stagger-2,
+  .stagger-3,
+  .login-error {
+    animation-duration: 1ms;
+    animation-delay: 0ms;
+    transform: none;
+  }
+}
+
+@media (max-width: 768px) {
+  .login-branding {
+    display: none;
+  }
+
+  .login-form-panel {
+    flex: 1 1 100%;
+    padding: 1rem;
   }
 }

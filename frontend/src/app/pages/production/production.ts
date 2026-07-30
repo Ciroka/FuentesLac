@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectorRef, inject } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef, inject, signal } from '@angular/core';
 import { RouterLink } from '@angular/router';
 import { Navbar } from '../../shared/navbar/navbar';
 import { CommonModule } from '@angular/common';
@@ -27,21 +27,43 @@ export class Production implements OnInit {
   private productionService = inject(ProductionService);
   private cdr = inject(ChangeDetectorRef);
 
+  readonly limit = 10;
+
   producciones: ProductionRecord[] = [];
+  page = signal(1);
+  total = signal(0);
   searchTerm = '';
   expandedIds = new Set<number>();
   displayedColumns = ['toggle', 'id', 'date', 'products', 'totalQuantity'];
 
   ngOnInit(): void {
-    this.productionService.findAll().subscribe({
-      next: (data) => {
-        this.producciones = data;
+    this.loadProducciones();
+  }
+
+  loadProducciones(): void {
+    this.productionService.findPage(this.page(), this.limit).subscribe({
+      next: (res) => {
+        this.producciones = res.items;
+        this.total.set(res.total);
         this.cdr.detectChanges();
       },
       error: (err) => console.error('Error al traer producción:', err)
     });
   }
 
+  nextPage(): void {
+    if (this.page() * this.limit >= this.total()) return;
+    this.page.update(p => p + 1);
+    this.loadProducciones();
+  }
+
+  prevPage(): void {
+    if (this.page() <= 1) return;
+    this.page.update(p => p - 1);
+    this.loadProducciones();
+  }
+
+  /** Filtra solo dentro de la página actual: el backend no soporta búsqueda por producto. */
   get filteredProducciones(): ProductionRecord[] {
     if (!this.searchTerm) return this.producciones;
     const term = this.searchTerm.toLowerCase();

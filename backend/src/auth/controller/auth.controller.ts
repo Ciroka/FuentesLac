@@ -1,4 +1,13 @@
-import { Body, Controller, Get, Post, Req, Request, Res } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Post,
+  Req,
+  Request,
+  Res,
+} from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import type { Request as ExpressRequest, Response } from 'express';
 
@@ -12,7 +21,9 @@ import {
   UserRegisterResponse,
   UserMessageResponse,
 } from '../dto';
+import { UserChangePasswordDto } from 'src/users/dto';
 import { AuthService } from '../service/auth.service';
+import { UsersService } from 'src/users/service/users.service';
 import { Public } from 'src/shared/decorators/public.decorator';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { UserRole } from 'src/shared/enums';
@@ -27,6 +38,7 @@ export class AuthController {
   constructor(
     private readonly authService: AuthService,
     private readonly configService: ConfigService,
+    private readonly usersService: UsersService,
   ) {}
 
   @Get('me')
@@ -88,11 +100,20 @@ export class AuthController {
     return this.authService.forgotPassword(dto.email);
   }
 
+  @Public()
   @Post('reset-password')
   async resetPassword(
     @Body() dto: UserResetPasswordRequest,
   ): Promise<UserMessageResponse> {
     return this.authService.resetPassword(dto.token, dto.password);
+  }
+
+  @Patch('me/password')
+  async changePassword(
+    @Request() req: AuthenticatedRequest,
+    @Body() dto: UserChangePasswordDto,
+  ): Promise<UserMessageResponse> {
+    return this.usersService.updatePassword(req.user.sub, dto);
   }
 
   private setAuthCookies(

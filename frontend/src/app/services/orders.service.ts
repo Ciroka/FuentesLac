@@ -1,8 +1,15 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, map } from 'rxjs';
 import { Order, CreateOrderRequest, RegisterArrivalRequest } from '../models/order.model';
 import { environment } from '../../environments/environment';
+
+interface PaginatedOrders {
+  items: Order[];
+  total: number;
+  page: number;
+  limit: number;
+}
 
 @Injectable({
   providedIn: 'root'
@@ -15,6 +22,13 @@ export class OrdersService {
   findAll(limit = 1000): Observable<Order[]> {
     return this.http.get<{ items: Order[] }>(`${this.api}?limit=${limit}&order=DESC`).pipe(
       map(res => res.items.map(order => this.toNumbers(order)))
+    );
+  }
+
+  findPage(page = 1, limit = 10): Observable<PaginatedOrders> {
+    const params = new HttpParams().set('page', page).set('limit', limit).set('order', 'DESC');
+    return this.http.get<PaginatedOrders>(this.api, { params }).pipe(
+      map(res => ({ ...res, items: res.items.map(order => this.toNumbers(order)) }))
     );
   }
 

@@ -1,6 +1,6 @@
 <div><app-navbar></app-navbar></div>
 
-<main class="contenido">
+<main class="contenido page-enter">
 
   <div class="view-header">
     <h2>Productos</h2>
@@ -9,13 +9,13 @@
   <div class="search-row">
     <mat-form-field appearance="outline" class="search-field">
       <mat-label>Buscar producto</mat-label>
-      <input matInput [(ngModel)]="searchTerm" placeholder="Nombre del producto...">
+      <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onFilterChange()" placeholder="Nombre del producto...">
       <mat-icon matPrefix>search</mat-icon>
     </mat-form-field>
 
     <mat-form-field appearance="outline" class="category-field">
       <mat-label>Categoría</mat-label>
-      <mat-select [(ngModel)]="selectedCategoryId">
+      <mat-select [(ngModel)]="selectedCategoryId" (ngModelChange)="onFilterChange()">
         <mat-option [value]="null">Todas las categorías</mat-option>
         @for (cat of categorias; track cat.id) {
           <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
@@ -24,15 +24,15 @@
     </mat-form-field>
   </div>
 
-  @if (filteredProducts.length === 0) {
+  @if (productos().length === 0) {
     <div class="empty-state">
       <mat-icon>search_off</mat-icon>
       <div class="empty-state-title">Sin resultados</div>
       <div class="empty-state-sub">No hay productos que coincidan con la búsqueda o la categoría seleccionada.</div>
     </div>
   } @else {
-    <div class="grid grid-3">
-      @for (producto of filteredProducts; track producto.id) {
+    <div class="grid grid-3 stagger-grid">
+      @for (producto of productos(); track producto.id) {
         <mat-card class="prod-card">
           <mat-card-content>
             <div class="prod-card-top">
@@ -65,6 +65,12 @@
           </mat-card-content>
         </mat-card>
       }
+    </div>
+
+    <div class="list-pagination">
+      <button mat-stroked-button (click)="prevPage()" [disabled]="page() <= 1">Anterior</button>
+      <span class="list-page-label">Página {{ page() }}</span>
+      <button mat-stroked-button (click)="nextPage()" [disabled]="page() * limit >= total()">Siguiente</button>
     </div>
   }
 

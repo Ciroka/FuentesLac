@@ -1,5 +1,5 @@
 import { Injectable, inject } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, forkJoin, map, catchError, of, switchMap } from 'rxjs';
 import { Product } from '../models/product.model';
 import { environment } from '../../environments/environment';
@@ -10,6 +10,13 @@ interface StockStatus {
   minStock: number;
   totalStock: number;
   isLowStock: boolean;
+}
+
+interface PaginatedProducts {
+  items: Product[];
+  total: number;
+  page: number;
+  limit: number;
 }
 
 export interface CreateProduct {
@@ -51,6 +58,36 @@ export class ProductsService {
         );
 
         return forkJoin(requests);
+      })
+    );
+  }
+
+  findPageWithStock(
+    page = 1,
+    limit = 10,
+    name?: string,
+    categoryId?: number | null,
+  ): Observable<PaginatedProducts> {
+    let params = new HttpParams().set('page', page).set('limit', limit);
+    if (name) params = params.set('name', name);
+    if (categoryId != null) params = params.set('categoryId', categoryId);
+
+    return this.http.get<PaginatedProducts>(this.api, { params }).pipe(
+      switchMap(res => {
+        if (res.items.length === 0) return of(res);
+
+        const requests = res.items.map(p =>
+          this.http.get<StockStatus>(`${this.api}/${p.id}/stock-status`).pipe(
+            map(status => ({
+              ...p,
+              totalStock: status.totalStock,
+              isLowStock: status.isLowStock,
+            } as Product)),
+            catchError(() => of({ ...p, totalStock: 0, isLowStock: true } as Product))
+          )
+        );
+
+        return forkJoin(requests).pipe(map(items => ({ ...res, items })));
       })
     );
   }

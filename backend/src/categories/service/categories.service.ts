@@ -24,8 +24,15 @@ export class CategoriesService {
   async findAll(
     params: QueryParamsCategories,
   ): Promise<PaginatedResult<Category>> {
-    const { page, limit, order, sortBy, name } = params;
-    return this.categoriesRepository.findAll(page, limit, order, sortBy, name);
+    const { page, limit, order, sortBy, name, usedBy } = params;
+    return this.categoriesRepository.findAll(
+      page,
+      limit,
+      order,
+      sortBy,
+      name,
+      usedBy,
+    );
   }
 
   async findOneById(id: number): Promise<Category> {

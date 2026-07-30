@@ -25,6 +25,12 @@
   height: 28px;
 }
 
+// The whole row toggles the detail panel, not just the button — make that
+// affordance visible.
+.table-container tbody tr:not(.detail-row) {
+  cursor: pointer;
+}
+
 .expanded-row td {
   border-bottom-color: transparent !important;
 }

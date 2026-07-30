@@ -1,12 +1,12 @@
 services:
-  stockAIDB:
+  fuente_lac:
     image: postgres:16-alpine
     env_file:
       - .env
     ports:
       - 5434:5432
     volumes:
-      - stockAIDB:/var/lib/postgresql/data
+      - fuente_lac:/var/lib/postgresql/data
     
 volumes: 
-  stockAIDB:
+  fuente_lac:

@@ -1,5 +1,5 @@
 <app-navbar></app-navbar>
-<main class="contenido">
+<main class="contenido page-enter">
 
   @if (loading()) {
     <div class="loading-state">
@@ -20,7 +20,7 @@
 
   @if (summary(); as s) {
 
-    <div class="grid grid-4">
+    <div class="grid grid-4 stagger-grid">
       <app-kpi-card
         label="Producción hoy"
         [value]="s.todayProduction.totalQuantity + ' u'"

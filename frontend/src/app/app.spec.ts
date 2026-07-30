@@ -4,6 +4,21 @@ import { App } from './app';
 
 describe('App', () => {
   beforeEach(async () => {
+    // jsdom no implementa matchMedia; ngx-sonner lo usa para detectar el
+    // esquema de color preferido del SO al construirse.
+    if (!window.matchMedia) {
+      window.matchMedia = ((query: string) => ({
+        matches: false,
+        media: query,
+        onchange: null,
+        addListener: () => undefined,
+        removeListener: () => undefined,
+        addEventListener: () => undefined,
+        removeEventListener: () => undefined,
+        dispatchEvent: () => false,
+      })) as unknown as typeof window.matchMedia;
+    }
+
     await TestBed.configureTestingModule({
       imports: [App],
       providers: [provideRouter([])],

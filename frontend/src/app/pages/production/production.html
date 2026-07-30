@@ -1,6 +1,6 @@
 <div><app-navbar></app-navbar></div>
 
-<main class="contenido">
+<main class="contenido page-enter">
 
   <div class="view-header view-header-row">
     <h2>Producción</h2>
@@ -93,6 +93,12 @@
             class="detail-row"
             [class.detail-row-visible]="isExpanded(row.id)"></tr>
       </table>
+    </div>
+
+    <div class="list-pagination">
+      <button mat-stroked-button (click)="prevPage()" [disabled]="page() <= 1">Anterior</button>
+      <span class="list-page-label">Página {{ page() }}</span>
+      <button mat-stroked-button (click)="nextPage()" [disabled]="page() * limit >= total()">Siguiente</button>
     </div>
   }
 

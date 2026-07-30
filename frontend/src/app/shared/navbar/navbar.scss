@@ -139,15 +139,7 @@
 .brand-mark {
     width: 38px;
     height: 38px;
-    border-radius: var(--radius-sm);
-    background: var(--accent);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-family: var(--sans);
-    font-weight: 700;
-    font-size: 15px;
-    color: #fff;
+    object-fit: contain;
     flex-shrink: 0;
 }
 
@@ -175,6 +167,20 @@
     align-items: center;
     gap: 10px;
     margin-right: 16px;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease;
+
+    &:hover {
+        background: var(--accent-soft);
+
+        .user-email,
+        .user-role {
+            color: var(--accent-dark);
+        }
+    }
 }
 
 .user-email {
@@ -192,7 +198,8 @@
     letter-spacing: 0.5px;
 }
 
-.logout-btn {
+.logout-btn,
+.theme-toggle-btn {
     display: flex;
     align-items: center;
     justify-content: center;
@@ -210,19 +217,101 @@
         width: 18px;
         height: 18px;
     }
+}
 
-    &:hover {
-        color: var(--color-danger);
-        border-color: var(--color-danger);
-        background: var(--danger-soft);
+.logout-btn:hover {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+    background: var(--danger-soft);
+}
+
+.theme-toggle-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.hamburger-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+    color: var(--ink-dim);
+    margin-right: auto;
+
+    mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
     }
+}
+
+.sidebar-backdrop {
+    display: none;
 }
 
 @media (max-width: 768px) {
     .sidebar {
-        display: none;
+        transform: translateX(-100%);
+        width: 240px;
+
+        &:hover {
+            width: 240px;
+        }
+
+        .sidebar-header div:not(.brand-mark),
+        .menu-section h4,
+        .sidebar-links li a span {
+            opacity: 1;
+        }
+
+        .sidebar-links li a {
+            justify-content: flex-start;
+
+            span {
+                max-width: 200px;
+            }
+        }
+
+        &.sidebar-open {
+            transform: translateX(0);
+        }
     }
+
+    .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        padding: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 99;
+        cursor: pointer;
+    }
+
+    .hamburger-btn {
+        display: flex;
+    }
+
     .topbar {
         margin-left: 0;
+    }
+
+    .user-email {
+        display: none;
+    }
+
+    // 44x44 minimum touch target on mobile (WCAG/Material touch guidance).
+    .hamburger-btn,
+    .theme-toggle-btn,
+    .logout-btn {
+        min-width: 44px;
+        min-height: 44px;
     }
 }

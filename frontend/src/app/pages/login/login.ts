@@ -1,6 +1,6 @@
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatFormField, MatLabel, MatPrefix, MatSuffix } from '@angular/material/form-field';
@@ -12,7 +12,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-login',
   imports: [
-    FormsModule, MatCard, MatCardContent, MatFormField, MatLabel, MatPrefix, MatSuffix,
+    FormsModule, RouterLink, MatCard, MatCardContent, MatFormField, MatLabel, MatPrefix, MatSuffix,
     MatInput, MatIcon, MatButton, MatProgressSpinner
   ],
   templateUrl: './login.html',
