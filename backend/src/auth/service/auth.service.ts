@@ -7,7 +7,8 @@ import {
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
-import { IsNull, Repository } from 'typeorm';
+import { Cron, CronExpression } from '@nestjs/schedule';
+import { IsNull, LessThan, Repository } from 'typeorm';
 import { UsersService } from 'src/users/service/users.service';
 import { UserRegisterRequest } from '../dto/request/user-register-request.dto';
 import * as bcrypt from 'bcrypt';
@@ -221,5 +222,10 @@ export class AuthService {
 
   private hashToken(rawToken: string): string {
     return createHash('sha256').update(rawToken).digest('hex');
+  }
+
+  @Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)
+  async purgeExpiredRefreshTokens(): Promise<void> {
+    await this.refreshTokenRepo.delete({ expiresAt: LessThan(new Date()) });
   }
 }

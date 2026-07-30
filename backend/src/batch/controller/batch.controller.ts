@@ -29,6 +29,7 @@ export class BatchController {
     return toBatchResponse(batch);
   }
 
+  @Roles(UserRole.ADMIN)
   @Post()
   async create(@Body() dto: CreateBatchDto): Promise<BatchResponse> {
     const input: Partial<Batch> = {
@@ -41,6 +42,7 @@ export class BatchController {
     return toBatchResponse(batch);
   }
 
+  @Roles(UserRole.ADMIN)
   @Post(':id/recalculate-yield')
   async recalculate(
     @Param('id', ParseIntPipe) id: number,

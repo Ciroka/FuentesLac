@@ -85,6 +85,7 @@ export class UserRepository implements IUsersRepository {
     return this.usersRepository
       .createQueryBuilder('u')
       .addSelect('u.codeHashResetPassword')
+      .addSelect('u.resetCodePasswordExpires')
       .where('u.code_hash_reset_password = :resetPasswordToken', {
         resetPasswordToken,
       })

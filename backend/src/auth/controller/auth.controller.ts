@@ -9,6 +9,7 @@ import {
   Res,
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
+import { Throttle } from '@nestjs/throttler';
 import type { Request as ExpressRequest, Response } from 'express';
 
 import {
@@ -55,6 +56,7 @@ export class AuthController {
   }
 
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('login')
   async login(
     @Body() userLogin: UserLoginRequest,
@@ -93,6 +95,7 @@ export class AuthController {
   }
 
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('forgot-password')
   async forgotPassword(
     @Body() dto: UserEmailRequest,
@@ -101,6 +104,7 @@ export class AuthController {
   }
 
   @Public()
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Post('reset-password')
   async resetPassword(
     @Body() dto: UserResetPasswordRequest,
@@ -108,6 +112,7 @@ export class AuthController {
     return this.authService.resetPassword(dto.token, dto.password);
   }
 
+  @Throttle({ default: { limit: 5, ttl: 60000 } })
   @Patch('me/password')
   async changePassword(
     @Request() req: AuthenticatedRequest,

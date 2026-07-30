@@ -1,3 +1,4 @@
+import { EntityManager } from 'typeorm';
 import { OrderEnum } from '../../shared/enums/order.enum';
 import { PaginatedResult } from '../../shared/pagination/pagination.type';
 import { CreateSaleDto } from '../dto';
@@ -15,5 +16,5 @@ export interface SalesRepository {
   findOneById(id: number): Promise<Sale | null>;
   create(input: CreateSaleDto): Promise<Sale>;
   update(sale: Sale): Promise<Sale>;
-  remove(sale: Sale): Promise<Sale>;
+  remove(sale: Sale, manager?: EntityManager): Promise<Sale>;
 }

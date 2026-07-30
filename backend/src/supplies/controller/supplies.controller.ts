@@ -21,13 +21,11 @@ import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 import { Supply } from '../entities/supply.entity';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { UserRole } from 'src/shared/enums';
-import { Public } from 'src/shared/decorators/public.decorator';
 
 @Controller('supplies')
 export class SuppliesController {
   constructor(private readonly suppliesService: SuppliesService) {}
 
-  @Public()
   @Get()
   findAll(
     @Query() params: QueryParamsSupplies,
@@ -35,7 +33,6 @@ export class SuppliesController {
     return this.suppliesService.findAll(params);
   }
 
-  @Public()
   @Get(':id')
   findOne(@Param('id', ParseIntPipe) id: number): Promise<SupplyResponse> {
     return this.suppliesService.findOne(id);

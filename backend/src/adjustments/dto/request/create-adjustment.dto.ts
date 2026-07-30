@@ -1,9 +1,9 @@
-import { IsEnum, IsNumber, IsPositive } from 'class-validator';
+import { IsEnum, IsNumber, NotEquals } from 'class-validator';
 import { AdjustmentType } from '../../../shared/enums/adjustmentType.enum';
 
 export class CreateAdjustmentDto {
   @IsNumber()
-  @IsPositive()
+  @NotEquals(0)
   stockChange!: number;
 
   @IsEnum(AdjustmentType)

@@ -36,6 +36,7 @@ export class SuppliesXproductionDetailController {
     return this.suppliesXproductionDetailService.findOne(id);
   }
 
+  @Roles(UserRole.ADMIN)
   @Post()
   create(
     @Body()
@@ -46,6 +47,7 @@ export class SuppliesXproductionDetailController {
     );
   }
 
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,

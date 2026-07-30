@@ -35,16 +35,18 @@ export const authInterceptor: HttpInterceptorFn = (req, next) => {
       }
 
       if (skipRefresh) {
+        const hadSession = authService.currentUser() !== null;
         authService.clearSession();
-        router.navigate(['/login']);
+        if (hadSession) router.navigate(['/login']);
         return throwError(() => err);
       }
 
       return getSharedRefresh(authService).pipe(
         switchMap(() => next(reqWithCredentials)),
         catchError(refreshErr => {
+          const hadSession = authService.currentUser() !== null;
           authService.clearSession();
-          router.navigate(['/login']);
+          if (hadSession) router.navigate(['/login']);
           return throwError(() => refreshErr);
         }),
       );

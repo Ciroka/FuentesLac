@@ -188,14 +188,18 @@ export class DashboardService {
         };
       }),
     );
-    return stocks.sort(
-      (a, b) => a.totalStock / a.minStock - b.totalStock / b.minStock,
-    );
+    return stocks.sort((a, b) => this.stockRatio(a) - this.stockRatio(b));
   }
 
-  private findLowestStock(products: ProductStock[]): ProductStock {
+  /** minStock 0 no debe romper el orden ni el cálculo (Infinity/NaN). */
+  private stockRatio(product: ProductStock): number {
+    return product.minStock > 0 ? product.totalStock / product.minStock : 1;
+  }
+
+  private findLowestStock(products: ProductStock[]): ProductStock | null {
+    if (products.length === 0) return null;
     return products.reduce((min, p) =>
-      p.totalStock / p.minStock < min.totalStock / min.minStock ? p : min,
+      this.stockRatio(p) < this.stockRatio(min) ? p : min,
     );
   }
 
@@ -259,7 +263,7 @@ export class DashboardService {
 
   private startOfDay(date: Date): Date {
     const d = new Date(date);
-    d.setHours(0, 0, 0, 0);
+    d.setUTCHours(0, 0, 0, 0);
     return d;
   }
 

@@ -7,6 +7,7 @@ import { BatchService } from 'src/batch/service/batch.service';
 import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 import { DataSource } from 'typeorm';
 import { Batch } from 'src/batch/entities/batch.entity';
+import { AdjustmentType } from 'src/shared/enums/adjustmentType.enum';
 
 @Injectable()
 export class AdjustmentsService {
@@ -36,12 +37,16 @@ export class AdjustmentsService {
   ): Promise<Adjustment> {
     return this.dataSource.transaction(async (manager) => {
       const adjustmentRepo = manager.getRepository(Adjustment);
+      const amount = Math.abs(createAdjustmentDto.stockChange);
+      const isIncrease =
+        createAdjustmentDto.adjustmentType === AdjustmentType.ADJUST &&
+        createAdjustmentDto.stockChange > 0;
 
-      await this.batchService.decreaseStock(
-        batchId,
-        createAdjustmentDto.stockChange,
-        manager,
-      );
+      if (isIncrease) {
+        await this.batchService.increaseStock(batchId, amount, manager);
+      } else {
+        await this.batchService.decreaseStock(batchId, amount, manager);
+      }
 
       const adjustment = await adjustmentRepo.save(
         adjustmentRepo.create({
@@ -63,11 +68,24 @@ export class AdjustmentsService {
       });
       if (!adjustment) throw new NotFoundException('Adjustment not found');
 
-      await this.batchService.increaseStock(
-        adjustment.batchId!,
-        adjustment.stockChange,
-        manager,
-      );
+      const amount = Math.abs(adjustment.stockChange);
+      const wasIncrease =
+        adjustment.adjustmentType === AdjustmentType.ADJUST &&
+        adjustment.stockChange > 0;
+
+      if (wasIncrease) {
+        await this.batchService.decreaseStock(
+          adjustment.batchId!,
+          amount,
+          manager,
+        );
+      } else {
+        await this.batchService.increaseStock(
+          adjustment.batchId!,
+          amount,
+          manager,
+        );
+      }
 
       return adjustmentRepo.remove(adjustment);
     });

@@ -69,13 +69,14 @@ export class SuppliesRepository implements ISuppliesRepository {
       ? manager.getRepository(Supply)
       : this.supplyRepository;
 
-    await repo
+    const result = await repo
       .createQueryBuilder()
       .update(Supply)
       .set({ currentStock: () => `current_stock - :amount` })
       .where('id = :id AND current_stock >= :amount', { id, amount })
       .execute();
 
+    if (!result.affected) return null;
     return repo.findOneBy({ id });
   }
 
@@ -88,13 +89,14 @@ export class SuppliesRepository implements ISuppliesRepository {
       ? manager.getRepository(Supply)
       : this.supplyRepository;
 
-    await repo
+    const result = await repo
       .createQueryBuilder()
       .update(Supply)
       .set({ currentStock: () => `current_stock + :amount` })
       .where('id = :id', { id, amount })
       .execute();
 
+    if (!result.affected) return null;
     return repo.findOneBy({ id });
   }
 

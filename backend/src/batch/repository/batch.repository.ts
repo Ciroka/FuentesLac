@@ -45,13 +45,14 @@ export class BatchRepository implements IBatchRepository {
   ): Promise<Batch | null> {
     const repo = manager ? manager.getRepository(Batch) : this.batchRepository;
 
-    await repo
+    const result = await repo
       .createQueryBuilder()
       .update(Batch)
       .set({ currentStock: () => `current_stock - :amount` })
       .where('id = :id AND current_stock >= :amount', { id, amount })
       .execute();
 
+    if (!result.affected) return null;
     return repo.findOneBy({ id });
   }
 
@@ -62,13 +63,14 @@ export class BatchRepository implements IBatchRepository {
   ): Promise<Batch | null> {
     const repo = manager ? manager.getRepository(Batch) : this.batchRepository;
 
-    await repo
+    const result = await repo
       .createQueryBuilder()
       .update(Batch)
       .set({ currentStock: () => `current_stock + :amount` })
       .where('id = :id', { id, amount })
       .execute();
 
+    if (!result.affected) return null;
     return repo.findOneBy({ id });
   }
   async sumStockByProductId(productId: number): Promise<number> {

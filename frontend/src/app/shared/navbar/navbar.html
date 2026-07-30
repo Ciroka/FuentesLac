@@ -80,6 +80,7 @@
         <mat-icon>{{ isDarkTheme() ? 'light_mode' : 'dark_mode' }}</mat-icon>
     </button>
     <a class="user-info" routerLink="/profile" title="Ver mi perfil">
+        <span class="user-avatar" aria-hidden="true">{{ userInitial() }}</span>
         <span class="user-email">{{ userName() }}</span>
         <span class="user-role">{{ userRole() }}</span>
     </a>

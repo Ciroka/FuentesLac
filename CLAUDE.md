@@ -30,7 +30,7 @@ Frontend (`cd frontend`):
 - `npm run lint` / `ng lint` — ESLint (angular-eslint).
 - `ng generate component path/name` — scaffold a new standalone component consistent with existing structure.
 
-CI (`.github/workflows/ci.yml`) runs, per app: `npm ci`, `npm run lint`, then build (`npm run build` for backend, `npm run build -- --configuration production` for frontend). Commits are linted via commitlint (`@commitlint/config-conventional`) through a Husky pre-commit hook that lints both apps.
+CI (`.github/workflows/ci.yml`) runs, per app: `npm ci`, `npm run lint`, `npm run test`, then build (`npm run build` for backend, `npm run build -- --configuration production` for frontend). Commits are linted via commitlint (`@commitlint/config-conventional`) through a Husky pre-commit hook that lints both apps.
 
 ## Backend architecture (`backend/src`)
 
@@ -53,17 +53,24 @@ Cross-cutting pieces live in `shared/`:
 
 The `dashboard` module aggregates data from other services rather than owning its own entity; it uses a strategy pattern (`strategies/action-generator.interface.ts`, `produce-action.generator.ts`, `purchase-action.generator.ts`, `composite-action.generator.ts`) to build the list of suggested actions shown on the frontend home dashboard — add new suggestion types as a new `ActionGenerator` rather than branching inside the composite.
 
-`app.module.ts` is the single place where all feature modules and the TypeORM entity list are registered — new domains must be added there. `main.ts` applies global `ValidationPipe` (whitelist + forbid unknown props + transform), `helmet()`, and CORS restricted to `CORS_ORIGIN` (defaults to the Angular dev server).
+`app.module.ts` is the single place where all feature modules and the TypeORM entity list are registered — new domains must be added there. It also validates required env vars (currently `NODE_ENV`) through a Joi schema passed to `ConfigModule.forRoot`, and registers `ScheduleModule.forRoot()` for cron jobs (e.g. `AuthService.purgeExpiredRefreshTokens` runs `@Cron(CronExpression.EVERY_DAY_AT_MIDNIGHT)`). `main.ts` applies global `ValidationPipe` (whitelist + forbid unknown props + transform), `helmet()`, `cookieParser()`, and CORS restricted to `CORS_ORIGIN` (defaults to the Angular dev server) with `credentials: true`.
+
+Auth uses httpOnly cookies, not a bearer header: `JwtStrategy` (`auth/strategies/jwt.strategy.ts`) reads the JWT from `req.cookies.access_token`; refresh tokens are persisted in `auth/entities/refresh-token.entity.ts` and rotated via `POST /auth/refresh`. Sensitive auth endpoints (`login`, `forgot-password`, `reset-password`, `me/password`) carry an explicit `@Throttle({ default: { limit: 5, ttl: 60000 } })` tighter than the global `ThrottlerModule` default.
+
+Stock-mutating writes (`supplies`, `batch` repositories) use a guarded conditional SQL `UPDATE ... WHERE id = :id AND current_stock >= :amount`, not a read-modify-write — the repository returns `null` when the `WHERE` clause matches zero rows (insufficient stock), and the corresponding service (`SuppliesService`/`BatchService`) turns that into a `BadRequestException`. This makes the check atomic under concurrent writes; don't reintroduce a `findOne` guard before the update. Services that touch multiple stock rows in one business operation (`production`, `sales`, `orders`, `adjustments`) wrap the whole `create`/`delete` in `this.dataSource.transaction(async (manager) => { ... })` and thread that `manager` through every downstream repository/service call so a partial failure rolls back everything — see `TRANSACCIONES.md` for per-domain flow diagrams.
+
+`audit-log/interceptors/audit-log.interceptor.ts` records `POST`/`PATCH`/`DELETE` requests (plus login/logout) via `AuditLogService`; it's applied per-module, not globally, so check existing controllers before assuming a new endpoint is audited automatically.
 
 ## Frontend architecture (`frontend/src/app`)
 
 Angular 21, standalone components (no NgModules), lazy-loaded routes (`app.routes.ts`, all pages loaded via `loadComponent`). Angular Material + ng2-charts/chart.js for the dashboard visualizations.
 
-- `pages/<feature>/` — one folder per routed page (`.ts`/`.html`/`.scss`/`.spec.ts`), e.g. `products`, `sales`, `supplies`, `clients`, `production`, `login`.
+- `pages/<feature>/` — one folder per routed page (`.ts`/`.html`/`.scss`/`.spec.ts`), e.g. `products`, `sales`, `supplies`, `clients`, `production`, `login`, `forgot-password`, `reset-password`.
 - `dashboard/` — the home dashboard page plus its `components/` (kpi-card, action-list, weekly-chart, product-stock-bars, top-selling-list) — each a small standalone component consuming data shaped by `models/dashboard.model.ts`.
 - `services/` — one Angular service per backend domain (e.g. `products.service.ts`, `sales.service.ts`, `clients.service.ts`), injected with `inject(HttpClient)`, built off `environment.apiUrl` (`environments/environment.ts`). Some services compose multiple backend calls client-side (e.g. `ProductsService.findAllWithStock` fans out per-product `stock-status` requests via `forkJoin` and swallows individual failures with `catchError`).
 - `models/` — TypeScript interfaces mirroring backend response DTOs.
-- `interceptors/auth.interceptor.ts` — attaches the JWT bearer token to every request and forces logout on `401`; registered in `app.config.ts` via `provideHttpClient(withInterceptors([authInterceptor]))`.
+- `guards/` — `auth.guard.ts` (require session), `guest.guard.ts` (require *no* session, used on `login`/`forgot-password`/`reset-password`), `role.guard.ts(role)` (require a specific `UserRole`, used e.g. on the admin-only user management route) — composed in `app.routes.ts` via `canActivate`/`canActivateChild`.
+- `interceptors/auth.interceptor.ts` — auth is cookie-based, not a bearer token: every request is cloned with `withCredentials: true` so the httpOnly `access_token` cookie rides along. On a `401` it transparently calls `AuthService.refreshToken()` (deduped across concurrent requests via a shared `Observable`) and retries the original request once; if the refresh itself fails, it clears the session and redirects to `/login`. Registered in `app.config.ts` via `provideHttpClient(withInterceptors([authInterceptor]))`.
 - `shared/navbar/` — shared layout component used across authenticated pages.
 
 When adding a new backend domain that needs a UI, follow the existing pattern: a model in `models/`, a service in `services/` hitting `${environment.apiUrl}/<resource>`, and a page in `pages/<resource>/` registered as a lazy route in `app.routes.ts`.

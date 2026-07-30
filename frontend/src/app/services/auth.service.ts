@@ -76,6 +76,14 @@ export class AuthService {
     );
   }
 
+  forgotPassword(email: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.api}/forgot-password`, { email });
+  }
+
+  resetPassword(token: string, password: string): Observable<{ message: string }> {
+    return this.http.post<{ message: string }>(`${this.api}/reset-password`, { token, password });
+  }
+
   private onLoggedOut(): void {
     this._currentUser.set(null);
     this.router.navigate(['/login']);

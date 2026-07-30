@@ -1,4 +1,9 @@
-import { Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 
 import { CreateSaleDto, UpdateSaleDto, QueryParamsSales } from '../dto';
 import { SALES_REPOSITORY } from '../repository/sales.repository.interface';
@@ -113,7 +118,18 @@ export class SalesService {
     id: number,
     updateSaleDto: UpdateSaleDto,
   ): Promise<SaleWithPhoto> {
+    if (updateSaleDto.details) {
+      throw new BadRequestException(
+        'No se pueden editar los renglones de una venta ya creada.',
+      );
+    }
+
     const sale = await this.findSaleOrFail(id);
+
+    if (updateSaleDto.clientId !== undefined) {
+      sale.client = await this.clientsService.findOne(updateSaleDto.clientId);
+    }
+
     return this.toResponse(await this.salesRepository.update(sale));
   }
 
@@ -121,7 +137,24 @@ export class SalesService {
     const sale = await this.findSaleOrFail(id);
     const photoKey = sale.photoKey;
 
-    const removed = await this.salesRepository.remove(sale);
+    const removed = await this.dataSource.transaction(async (manager) => {
+      for (const detail of sale.details) {
+        await this.batchService.increaseStock(
+          detail.batchId,
+          detail.quantity,
+          manager,
+        );
+        if (detail.weight) {
+          await this.batchService.subtractSoldWeight(
+            detail.batchId,
+            detail.weight,
+            manager,
+          );
+        }
+      }
+
+      return this.salesRepository.remove(sale, manager);
+    });
 
     if (photoKey) {
       await this.storageService.remove(photoKey);

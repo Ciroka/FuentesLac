@@ -1,4 +1,5 @@
 import {
+  ConflictException,
   ForbiddenException,
   Inject,
   Injectable,
@@ -120,7 +121,12 @@ export class UsersService {
       throw new UnauthorizedException('Credenciales inválidas');
     }
 
-    user.email = dto.newEmail;
+    const newEmail = dto.newEmail.trim().toLowerCase();
+    if (newEmail !== user.email && (await this.existsByEmail(newEmail))) {
+      throw new ConflictException('Email already exists.');
+    }
+
+    user.email = newEmail;
     await this.usersRepository.update(user);
 
     return { message: 'Email updated' };
@@ -135,7 +141,9 @@ export class UsersService {
     await this.usersRepository.update(user);
   }
 
-  async remove(id: string): Promise<User> {
+  async remove(currentUserId: string, id: string): Promise<User> {
+    if (currentUserId === id)
+      throw new ForbiddenException('No podés eliminar tu propia cuenta.');
     const user = await this.findOneById(id);
     await this.usersRepository.softDelete(user);
     return user;

@@ -2,9 +2,12 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ThrottlerModule } from '@nestjs/throttler';
-import { APP_GUARD } from '@nestjs/core';
+import { ScheduleModule } from '@nestjs/schedule';
+import * as Joi from 'joi';
+import { APP_FILTER, APP_GUARD } from '@nestjs/core';
 import { JwtAuthGuard } from './shared/guards/jwt-auth.guard';
 import { RolesGuard } from './shared/guards/roles.guard';
+import { QueryFailedFilter } from './shared/filters/query-failed.filter';
 import { ThrottlerGuard } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -35,7 +38,15 @@ import { AuditLogModule, AuditLog } from './audit-log';
 
 @Module({
   imports: [
-    ConfigModule.forRoot({ isGlobal: true }),
+    ConfigModule.forRoot({
+      isGlobal: true,
+      validationSchema: Joi.object({
+        NODE_ENV: Joi.string()
+          .valid('development', 'production', 'test')
+          .required(),
+      }).unknown(true),
+    }),
+    ScheduleModule.forRoot(),
     ThrottlerModule.forRoot([
       {
         ttl: 60000,
@@ -66,7 +77,7 @@ import { AuditLogModule, AuditLog } from './audit-log';
         username: config.getOrThrow('POSTGRES_USER'),
         password: config.getOrThrow('POSTGRES_PASSWORD'),
         database: config.getOrThrow('POSTGRES_DB'),
-        synchronize: config.get('NODE_ENV') !== 'production',
+        synchronize: config.get('NODE_ENV') === 'development',
         entities: [
           User,
           Supplier,
@@ -100,6 +111,7 @@ import { AuditLogModule, AuditLog } from './audit-log';
     { provide: APP_GUARD, useClass: ThrottlerGuard },
     { provide: APP_GUARD, useClass: JwtAuthGuard },
     { provide: APP_GUARD, useClass: RolesGuard },
+    { provide: APP_FILTER, useClass: QueryFailedFilter },
   ],
 })
 export class AppModule {}

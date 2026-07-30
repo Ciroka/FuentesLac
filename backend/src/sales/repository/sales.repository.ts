@@ -1,4 +1,4 @@
-import { Repository, DeepPartial } from 'typeorm';
+import { EntityManager, Repository, DeepPartial } from 'typeorm';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 
@@ -61,7 +61,8 @@ export class SalesRepositoryImpl implements SalesRepository {
     return this.saleRepository.save(sale);
   }
 
-  async remove(sale: Sale): Promise<Sale> {
-    return this.saleRepository.remove(sale);
+  async remove(sale: Sale, manager?: EntityManager): Promise<Sale> {
+    const repo = manager ? manager.getRepository(Sale) : this.saleRepository;
+    return repo.remove(sale);
   }
 }

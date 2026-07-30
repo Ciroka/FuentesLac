@@ -1,6 +1,6 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { Navbar } from '../../shared/navbar/navbar';
 import { MatTabsModule } from '@angular/material/tabs';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -108,13 +108,14 @@ export class Admin implements OnInit {
     });
   }
 
-  createSupply(): void {
+  createSupply(form: NgForm): void {
     this.savingSupply.set(true);
     this.suppliesService.create(this.newSupply).subscribe({
       next: () => {
         this.savingSupply.set(false);
         toast.success('Insumo creado');
         this.newSupply = { name: '', costPrice: 0, minStock: 0, currentStock: 0, isMilk: false };
+        form.resetForm(this.newSupply);
       },
       error: () => {
         this.savingSupply.set(false);
@@ -123,13 +124,14 @@ export class Admin implements OnInit {
     });
   }
 
-  createProduct(): void {
+  createProduct(form: NgForm): void {
     this.savingProduct.set(true);
     this.productsService.create(this.newProduct).subscribe({
       next: () => {
         this.savingProduct.set(false);
         toast.success('Producto creado');
         this.newProduct = { name: '', costPrice: 0, marginPercent: 0.3, minStock: 0 };
+        form.resetForm(this.newProduct);
       },
       error: () => {
         this.savingProduct.set(false);
@@ -138,7 +140,7 @@ export class Admin implements OnInit {
     });
   }
 
-  createCategory(): void {
+  createCategory(form: NgForm): void {
     this.savingCategory.set(true);
     const payload: CreateCategory = { name: this.newCategory.name };
     if (this.newCategory.description?.trim()) {
@@ -150,6 +152,7 @@ export class Admin implements OnInit {
         this.savingCategory.set(false);
         toast.success('Categoría creada');
         this.newCategory = { name: '', description: '' };
+        form.resetForm(this.newCategory);
         this.loadCategories();
       },
       error: () => {
@@ -159,7 +162,7 @@ export class Admin implements OnInit {
     });
   }
 
-  createAccount(): void {
+  createAccount(form: NgForm): void {
     this.savingAccount.set(true);
     this.authService
       .register(this.newAccount.name, this.newAccount.email, this.newAccount.password)
@@ -168,6 +171,7 @@ export class Admin implements OnInit {
           this.savingAccount.set(false);
           toast.success('Cuenta creada');
           this.newAccount = { name: '', email: '', password: '' };
+          form.resetForm(this.newAccount);
           this.loadUsers();
         },
         error: () => {

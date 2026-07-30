@@ -8,11 +8,12 @@ import type { AuthenticatedRequest } from 'src/auth/dto/request/user-request.dto
 
 describe('UsersController', () => {
   let controller: UsersController;
-  let usersService: { updateRole: jest.Mock };
+  let usersService: { updateRole: jest.Mock; remove: jest.Mock };
 
   beforeEach(async () => {
     usersService = {
       updateRole: jest.fn().mockResolvedValue({ id: 'target-id' }),
+      remove: jest.fn().mockResolvedValue({ id: 'target-id' }),
     };
 
     const module: TestingModule = await Test.createTestingModule({
@@ -43,5 +44,13 @@ describe('UsersController', () => {
         role: UserRole.ADMIN,
       },
     );
+  });
+
+  it('delegates user removal to the service with the acting user id', async () => {
+    const req = { user: { sub: 'admin-id' } } as AuthenticatedRequest;
+
+    await controller.remove(req, 'target-id');
+
+    expect(usersService.remove).toHaveBeenCalledWith('admin-id', 'target-id');
   });
 });

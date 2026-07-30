@@ -19,6 +19,7 @@ export class Navbar implements OnInit, OnDestroy {
   currentTime = signal(this.formatDate(new Date()));
   userName = computed(() => this.authService.currentUser()?.email ?? '');
   userRole = computed(() => this.authService.currentUser()?.role ?? '');
+  userInitial = computed(() => (this.authService.currentUser()?.name ?? '?').charAt(0).toUpperCase());
   isAdmin = this.authService.isAdmin;
   isDarkTheme = computed(() => this.themeService.theme() === 'dark');
   mobileMenuOpen = signal(false);

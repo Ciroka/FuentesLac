@@ -1,7 +1,7 @@
 import { Component, inject, signal } from '@angular/core';
 import { Navbar } from '../../shared/navbar/navbar';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
+import { FormsModule, NgForm } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
 import { MatCardModule } from '@angular/material/card';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -35,7 +35,7 @@ export class Profile {
     return this.confirmPassword.length > 0 && this.newPassword !== this.confirmPassword;
   }
 
-  changePassword(): void {
+  changePassword(form: NgForm): void {
     if (this.passwordsMismatch || !this.currentPassword || this.newPassword.length < 8) return;
 
     this.saving.set(true);
@@ -43,9 +43,7 @@ export class Profile {
       next: () => {
         this.saving.set(false);
         toast.success('Contraseña actualizada');
-        this.currentPassword = '';
-        this.newPassword = '';
-        this.confirmPassword = '';
+        form.resetForm();
       },
       error: () => {
         this.saving.set(false);

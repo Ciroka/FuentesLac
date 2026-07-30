@@ -78,6 +78,8 @@
             justify-content: center;
             font-size: 2rem;
             flex-shrink: 0;
+            border-radius: 50%;
+            transition: background-color 0.15s ease, color 0.15s ease;
         }
 
         span {
@@ -99,6 +101,11 @@
     li.active a {
         color: var(--accent);
         background: var(--accent-soft);
+
+        mat-icon {
+            background-color: var(--accent);
+            color: #fff;
+        }
     }
 
     .main-links {
@@ -181,6 +188,21 @@
             color: var(--accent-dark);
         }
     }
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
 }
 
 .user-email {
@@ -313,5 +335,15 @@
     .logout-btn {
         min-width: 44px;
         min-height: 44px;
+    }
+}
+
+// El reloj es decorativo, no esencial: en anchos muy chicos (teléfonos viejos/pequeños)
+// el contenido del topbar no entra y justify-content:flex-end empuja el hamburger-btn
+// fuera de la pantalla (x negativo) en vez de recortar el reloj. Lo sacamos antes de
+// que eso pase.
+@media (max-width: 400px) {
+    .topbar-clock {
+        display: none;
     }
 }

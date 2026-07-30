@@ -19,7 +19,7 @@ export class Sale {
   @CreateDateColumn()
   date!: Date;
 
-  @Column({ default: 0 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   total!: number;
 
   @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.sale, {

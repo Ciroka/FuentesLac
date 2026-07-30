@@ -14,7 +14,7 @@
 
       <div class="admin-panel">
         <span class="section-label">Nuevo insumo</span>
-        <form class="admin-form" (ngSubmit)="createSupply()" #supplyForm="ngForm">
+        <form class="admin-form" (ngSubmit)="createSupply(supplyForm)" #supplyForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
             <input matInput [(ngModel)]="newSupply.name" name="supplyName" required />
@@ -37,8 +37,7 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Proveedor</mat-label>
-            <mat-select [(ngModel)]="newSupply.supplierId" name="supplySupplierId">
-              <mat-option [value]="undefined">Sin proveedor</mat-option>
+            <mat-select [(ngModel)]="newSupply.supplierId" name="supplySupplierId" required>
               @for (sup of suppliers; track sup.id) {
                 <mat-option [value]="sup.id">{{ sup.name }}</mat-option>
               }
@@ -62,7 +61,7 @@
 
       <div class="admin-panel">
         <span class="section-label">Nuevo producto</span>
-        <form class="admin-form" (ngSubmit)="createProduct()" #productForm="ngForm">
+        <form class="admin-form" (ngSubmit)="createProduct(productForm)" #productForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
             <input matInput [(ngModel)]="newProduct.name" name="productName" required />
@@ -113,7 +112,7 @@
 
       <div class="admin-panel">
         <span class="section-label">Nueva categoría</span>
-        <form class="admin-form" (ngSubmit)="createCategory()" #categoryForm="ngForm">
+        <form class="admin-form" (ngSubmit)="createCategory(categoryForm)" #categoryForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
             <input matInput [(ngModel)]="newCategory.name" name="categoryName" required />
@@ -139,7 +138,7 @@
 
       <div class="admin-panel">
         <span class="section-label">Nueva cuenta</span>
-        <form class="admin-form" (ngSubmit)="createAccount()" #accountForm="ngForm">
+        <form class="admin-form" (ngSubmit)="createAccount(accountForm)" #accountForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
             <input matInput [(ngModel)]="newAccount.name" name="accountName" required />

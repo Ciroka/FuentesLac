@@ -43,7 +43,10 @@ export class UsersController {
   }
 
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<UserResponse> {
-    return this.usersService.remove(id);
+  remove(
+    @Request() req: AuthenticatedRequest,
+    @Param('id') id: string,
+  ): Promise<UserResponse> {
+    return this.usersService.remove(req.user.sub, id);
   }
 }

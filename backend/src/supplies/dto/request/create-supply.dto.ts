@@ -1,5 +1,6 @@
 import {
   IsInt,
+  IsNotEmpty,
   IsNumber,
   IsOptional,
   IsPositive,
@@ -28,8 +29,8 @@ export class CreateSupplyDto {
   minStock!: number;
 
   @IsInt()
-  @IsOptional()
-  supplierId?: number;
+  @IsNotEmpty()
+  supplierId!: number;
 
   @IsInt()
   @IsOptional()

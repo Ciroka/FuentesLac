@@ -12,3 +12,4 @@ backend/test/
 /.claude
 /CLAUDE.md
 /.superpowers
+/.playwright-mcp

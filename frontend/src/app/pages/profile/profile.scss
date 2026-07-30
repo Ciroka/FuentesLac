@@ -24,15 +24,46 @@
   dt {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
     font-family: var(--sans);
     font-size: 12px;
     color: var(--ink-dim);
 
-    mat-icon {
+    .icon-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
       font-size: 16px;
-      width: 16px;
-      height: 16px;
+
+      &.mat-icon {
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+      }
+    }
+
+    .icon-accent {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .icon-success {
+      background: var(--success-soft);
+      color: var(--color-success);
+    }
+
+    .icon-warning {
+      background: var(--warning-soft);
+      color: var(--color-warning);
+    }
+
+    .icon-muted {
+      background: var(--panel-2);
+      color: var(--ink-dim);
     }
   }
 

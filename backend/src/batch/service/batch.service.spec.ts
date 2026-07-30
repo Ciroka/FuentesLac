@@ -1,16 +1,27 @@
 import { Test, TestingModule } from '@nestjs/testing';
+import { BadRequestException } from '@nestjs/common';
 import { BatchService } from './batch.service';
 import { BATCH_REPOSITORY } from '../repository/batch.repository.interface';
 import { SalesDetailService } from 'src/sales-detail/service/sales-detail.service';
+import { Batch } from '../entities/batch.entity';
 
 describe('BatchService', () => {
   let service: BatchService;
+  let batchRepository: {
+    decreaseStockAtomic: jest.Mock;
+    increaseStockAtomic: jest.Mock;
+  };
 
   beforeEach(async () => {
+    batchRepository = {
+      decreaseStockAtomic: jest.fn(),
+      increaseStockAtomic: jest.fn(),
+    };
+
     const module: TestingModule = await Test.createTestingModule({
       providers: [
         BatchService,
-        { provide: BATCH_REPOSITORY, useValue: {} },
+        { provide: BATCH_REPOSITORY, useValue: batchRepository },
         { provide: SalesDetailService, useValue: {} },
       ],
     }).compile();
@@ -20,5 +31,39 @@ describe('BatchService', () => {
 
   it('should be defined', () => {
     expect(service).toBeDefined();
+  });
+
+  describe('decreaseStock', () => {
+    it('returns the updated batch when the atomic update affects a row', async () => {
+      const updated = { id: 1, currentStock: 5 } as Batch;
+      batchRepository.decreaseStockAtomic.mockResolvedValue(updated);
+
+      await expect(service.decreaseStock(1, 5)).resolves.toBe(updated);
+    });
+
+    it('throws when the atomic update affects no rows (insufficient stock)', async () => {
+      batchRepository.decreaseStockAtomic.mockResolvedValue(null);
+
+      await expect(service.decreaseStock(1, 5)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
+  });
+
+  describe('increaseStock', () => {
+    it('returns the updated batch when the atomic update affects a row', async () => {
+      const updated = { id: 1, currentStock: 15 } as Batch;
+      batchRepository.increaseStockAtomic.mockResolvedValue(updated);
+
+      await expect(service.increaseStock(1, 5)).resolves.toBe(updated);
+    });
+
+    it('throws when the atomic update affects no rows', async () => {
+      batchRepository.increaseStockAtomic.mockResolvedValue(null);
+
+      await expect(service.increaseStock(1, 5)).rejects.toThrow(
+        BadRequestException,
+      );
+    });
   });
 });

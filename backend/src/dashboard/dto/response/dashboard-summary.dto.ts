@@ -33,7 +33,7 @@ export interface DashboardSummary {
   todayProduction: TodayProduction;
   todaySales: TodaySales;
   criticalSupplies: CriticalSupply[];
-  lowestStockProduct: ProductStock;
+  lowestStockProduct: ProductStock | null;
   productionVsSales: ProductionVsSales;
   suggestedActions: DashboardAction[];
   productStocks: ProductStock[];

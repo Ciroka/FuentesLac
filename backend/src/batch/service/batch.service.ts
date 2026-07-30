@@ -37,13 +37,12 @@ export class BatchService {
     stock: number,
     manager?: EntityManager,
   ): Promise<Batch> {
-    const batch = await this.findOne(id, manager);
     const updated = await this.batchRepository.decreaseStockAtomic(
       id,
       stock,
       manager,
     );
-    if (!updated || updated.currentStock >= batch.currentStock) {
+    if (!updated) {
       throw new BadRequestException('Insufficient current stock');
     }
     return updated;
@@ -54,13 +53,12 @@ export class BatchService {
     stock: number,
     manager?: EntityManager,
   ): Promise<Batch> {
-    const batch = await this.findOne(id, manager);
     const updated = await this.batchRepository.increaseStockAtomic(
       id,
       stock,
       manager,
     );
-    if (!updated || updated.currentStock < batch.currentStock) {
+    if (!updated) {
       throw new BadRequestException('Stock could not update');
     }
     return updated;

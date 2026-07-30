@@ -67,13 +67,12 @@ export class SuppliesService {
     stock: number,
     manager?: EntityManager,
   ): Promise<Supply> {
-    const supply = await this.findOne(id, manager);
     const updated = await this.suppliesRepository.decreaseStockAtomic(
       id,
       stock,
       manager,
     );
-    if (!updated || updated.currentStock >= supply.currentStock) {
+    if (!updated) {
       throw new BadRequestException('Insufficient current stock');
     }
     return updated;
@@ -84,13 +83,12 @@ export class SuppliesService {
     stock: number,
     manager?: EntityManager,
   ): Promise<Supply> {
-    const supply = await this.findOne(id, manager);
     const updated = await this.suppliesRepository.increaseStockAtomic(
       id,
       stock,
       manager,
     );
-    if (!updated || updated.currentStock < supply.currentStock) {
+    if (!updated) {
       throw new BadRequestException('Stock could not update');
     }
     return updated;

@@ -71,8 +71,10 @@ export class ProductionService {
           {
             productId: product.id,
             milkLitersUsed: milkLitersUsed || undefined,
-            clientBatchDate: item.clientBatchDate,
-          } as any,
+            clientBatchDate: item.clientBatchDate
+              ? new Date(item.clientBatchDate)
+              : undefined,
+          },
           manager,
         );
         await this.batchService.increaseStock(batch.id, item.quantity, manager);
