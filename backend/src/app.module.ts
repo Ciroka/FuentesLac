@@ -77,6 +77,7 @@ import { AuditLogModule, AuditLog } from './audit-log';
         username: config.getOrThrow('POSTGRES_USER'),
         password: config.getOrThrow('POSTGRES_PASSWORD'),
         database: config.getOrThrow('POSTGRES_DB'),
+        ssl: config.get('POSTGRES_SSL') === 'true',
         synchronize: config.get('NODE_ENV') === 'development',
         entities: [
           User,

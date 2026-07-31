@@ -138,14 +138,14 @@ export class AuthController {
     res.cookie(ACCESS_TOKEN_COOKIE, accessToken, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: isProduction ? 'none' : 'lax',
       maxAge: accessExpiresSec * 1000,
     });
 
     res.cookie(REFRESH_TOKEN_COOKIE, refreshToken, {
       httpOnly: true,
       secure: isProduction,
-      sameSite: 'lax',
+      sameSite: isProduction ? 'none' : 'lax',
       path: REFRESH_TOKEN_PATH,
       maxAge: refreshExpiresDays * 24 * 60 * 60 * 1000,
     });
