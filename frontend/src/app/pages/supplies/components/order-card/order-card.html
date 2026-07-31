@@ -1,0 +1,81 @@
+<div class="order-card" [class.inactivo]="!esPendiente">
+
+  <div class="order-head">
+    <div>
+      <strong>{{ order().supplier?.name }}</strong>
+      <span class="order-date">· {{ order().date | date:'dd/MM/yyyy' }}</span>
+    </div>
+    <span class="chip-status" [ngClass]="estadoChip.chipClass">{{ estadoChip.label }}</span>
+  </div>
+
+  <div class="order-lines">
+    @for (detail of order().ordersDetails; track detail.id) {
+      <div class="order-line">
+        <span class="line-name">{{ detail.supply?.name }}</span>
+        <span class="line-qty">
+          {{ detail.orderedQuantity | number }}
+          @if (esRecibido && detail.arrivalQuantity !== detail.orderedQuantity) {
+            <span class="line-arrival">llegó {{ detail.arrivalQuantity | number }}</span>
+          }
+        </span>
+        <span class="line-price">{{ detail.unitPrice | currency:'ARS':'symbol-narrow':'1.0-0' }}</span>
+        <span class="line-subtotal">{{ detail.orderedSubtotal | currency:'ARS':'symbol-narrow':'1.0-0' }}</span>
+      </div>
+    }
+  </div>
+
+  <div class="order-foot">
+    <strong>{{ order().orderedTotal | currency:'ARS':'symbol-narrow':'1.0-0' }}</strong>
+
+    @if (esPendiente && modo() === 'ver') {
+      <div class="order-actions">
+        <button mat-stroked-button (click)="pedirCancelacion()">
+          <mat-icon>close</mat-icon> Cancelar
+        </button>
+        <button mat-raised-button color="primary" (click)="abrirLlegada()">
+          <mat-icon>inventory</mat-icon> Registrar llegada
+        </button>
+      </div>
+    }
+  </div>
+
+  @if (modo() === 'llegada') {
+    <div class="order-panel">
+      <div class="panel-title">Cantidades que llegaron</div>
+      @for (cantidad of cantidades; track cantidad.supplyId) {
+        <div class="panel-line">
+          <span>{{ cantidad.supplyName }}</span>
+          <span class="panel-ordered">pedido: {{ cantidad.orderedQuantity | number }}</span>
+          <mat-form-field appearance="outline" class="panel-input">
+            <input matInput type="number" min="0" [(ngModel)]="cantidad.quantity" placeholder="0">
+          </mat-form-field>
+        </div>
+      }
+      <div class="panel-actions">
+        <button mat-button (click)="cerrar()">Volver</button>
+        <button mat-raised-button color="primary"
+                [disabled]="!llegadaValida || guardando()"
+                (click)="confirmarLlegada()">
+          Guardar
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (modo() === 'cancelar') {
+    <div class="order-panel">
+      <div class="panel-title">¿Cancelar este pedido?</div>
+      <div class="panel-actions">
+        <button mat-button (click)="cerrar()">No</button>
+        <button mat-raised-button color="warn" [disabled]="guardando()" (click)="confirmarCancelacion()">
+          Sí, cancelar
+        </button>
+      </div>
+    </div>
+  }
+
+  @if (errorMessage()) {
+    <div class="order-error">{{ errorMessage() }}</div>
+  }
+
+</div>

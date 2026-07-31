@@ -1,21 +1,33 @@
-import { Product } from 'src/products/entities/product.entity';
-import { AdjustmentType } from 'src/shared/enums/adjustmentType.enum';
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  Entity,
+  JoinColumn,
+  ManyToOne,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
+import { Batch } from '../../batch/entities/batch.entity';
+import { AdjustmentType } from '../../shared/enums/adjustmentType.enum';
+
+@Entity('adjustments')
 export class Adjustment {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @Column({ name: 'stock_change' })
   stockChange!: number;
 
-  @Column({ type: 'enum', enum: AdjustmentType })
+  @Column({ type: 'enum', enum: AdjustmentType, name: 'adjustment_type' })
   adjustmentType!: AdjustmentType;
 
-  @Column()
+  @CreateDateColumn()
   date!: Date;
 
-  @ManyToOne(() => Product, (product) => product.adjustments)
-  product!: Product;
+  @Column({ name: 'batch_id', nullable: true })
+  batchId?: number;
+
+  @ManyToOne(() => Batch)
+  @JoinColumn({ name: 'batch_id' })
+  batch?: Batch;
 }

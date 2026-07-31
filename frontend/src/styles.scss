@@ -1,1 +1,395 @@
-/* You can add global styles to this file, and also import other style files */
+:root {
+  --bg: #f4f6f8;
+  --panel: #ffffff;
+  --panel-2: #eef1f4;
+  --line: #dde3e8;
+  --ink: #1c2733;
+  --ink-dim: #64748b;
+
+  --color-success: #2f7d5c;
+  --color-warning: #b9781f;
+  --color-danger: #b3402c;
+  --color-muted: #64748b;
+
+  --success-soft: #e1f0e8;
+  --warning-soft: #f6e9d6;
+  --danger-soft: #f7e2dd;
+
+  --card-track: #e4e8ec;
+  --today-highlight: rgba(47,102,144,0.06);
+
+  --accent: #2f6690;
+  --accent-soft: #dce8f0;
+  --accent-dark: #1f4a68;
+
+  --sans: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+
+  --radius: 8px;
+  --radius-sm: 6px;
+  --shadow: 0 1px 2px rgba(0,0,0,.04);
+  --shadow-md: 0 1px 3px rgba(0,0,0,.06);
+  --transition: 150ms ease;
+}
+
+:root[data-theme="dark"] {
+  --bg: #14171a;
+  --panel: #1c2024;
+  --panel-2: #24292e;
+  --line: #333a41;
+  --ink: #e6e9ec;
+  --ink-dim: #929ba5;
+
+  --color-success: #4fae82;
+  --color-warning: #d9a24f;
+  --color-danger: #e2685a;
+  --color-muted: #929ba5;
+
+  --success-soft: rgba(79,174,130,0.16);
+  --warning-soft: rgba(217,162,79,0.16);
+  --danger-soft: rgba(226,104,90,0.16);
+
+  --card-track: #2c333a;
+  --today-highlight: rgba(90,158,201,0.10);
+
+  --accent: #5a9ec9;
+  --accent-soft: rgba(90,158,201,0.16);
+  --accent-dark: #8ec2e6;
+
+  --shadow: 0 1px 2px rgba(0,0,0,.24);
+  --shadow-md: 0 2px 6px rgba(0,0,0,.32);
+}
+
+* {
+  -webkit-tap-highlight-color: transparent;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: var(--bg);
+  min-height: 100vh;
+  font-family: var(--sans);
+  color: var(--ink);
+  -webkit-font-smoothing: antialiased;
+}
+
+*:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+  transition: color var(--transition);
+}
+
+a:hover {
+  color: var(--accent-dark);
+  text-decoration: underline;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  table-layout: fixed;
+}
+
+thead {
+  display: table-header-group;
+  vertical-align: middle;
+  unicode-bidi: isolate;
+  border-color: inherit;
+}
+
+tbody {
+  display: table-row-group;
+  vertical-align: middle;
+  unicode-bidi: isolate;
+  border-color: inherit;
+}
+
+tr {
+  display: table-row;
+  vertical-align: inherit;
+  unicode-bidi: isolate;
+  border-color: inherit;
+}
+
+th {
+  text-align: left;
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 10.5px;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 9px 10px;
+  border-bottom: 1.5px solid var(--line);
+}
+
+.num {
+  font-family: var(--sans);
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+td {
+  padding: 10px 10px;
+  border-bottom: 1px solid var(--line);
+  color: var(--ink);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.contenido {
+  margin-top: 20px;
+  margin-left: 150px;
+  margin-right: 50px;
+  transition: margin-left 0.4s ease;
+}
+
+.view-header h2 {
+  font-family: var(--sans);
+  font-size: 22px;
+  font-weight: 700;
+  letter-spacing: -0.2px;
+  margin-bottom: 14px;
+}
+
+.search-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 14px;
+  flex-wrap: wrap;
+}
+
+.grid {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+// minmax(0, 1fr) en vez de 1fr a secas: un track `1fr` no se achica por debajo
+// del ancho mínimo de su contenido (texto sin wrap, charts, etc.), lo que
+// desborda la página entera en mobile aunque el grid ya esté en 1 columna.
+// minmax(0, 1fr) permite que el track se achique de verdad.
+.grid-2 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+.grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+.grid-4 { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+
+.table-container {
+  overflow: hidden;
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-md);
+}
+
+.table-container table {
+  border-radius: var(--radius);
+}
+
+.table-container table thead tr:first-child th:first-child {
+  border-top-left-radius: var(--radius);
+}
+
+.table-container table thead tr:first-child th:last-child {
+  border-top-right-radius: var(--radius);
+}
+
+.table-scroll {
+  max-height: calc(100vh - 180px);
+  overflow-y: auto;
+  overflow-x: auto;
+}
+
+.table-label {
+  font-family: var(--sans);
+  font-weight: 600;
+  text-transform: uppercase;
+  font-size: 14.5px;
+  color: var(--ink-dim);
+}
+
+.section-header {
+  margin-bottom: 14px;
+}
+
+.section-label {
+  font-family: var(--sans);
+  font-weight: 600;
+  font-size: 10.5px;
+  color: var(--ink-dim);
+  text-transform: uppercase;
+  letter-spacing: 0.8px;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.page-enter {
+  animation: fadeIn 300ms cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+// Cascada corta para grids de cards (dashboard, productos) — 40ms entre
+// ítems, tope en el 8vo para no alargar la espera en grillas grandes.
+.stagger-grid > * {
+  opacity: 0;
+  animation: fadeIn 300ms cubic-bezier(0.23, 1, 0.32, 1) both;
+}
+.stagger-grid > *:nth-child(1) { animation-delay: 0ms; }
+.stagger-grid > *:nth-child(2) { animation-delay: 40ms; }
+.stagger-grid > *:nth-child(3) { animation-delay: 80ms; }
+.stagger-grid > *:nth-child(4) { animation-delay: 120ms; }
+.stagger-grid > *:nth-child(5) { animation-delay: 160ms; }
+.stagger-grid > *:nth-child(6) { animation-delay: 200ms; }
+.stagger-grid > *:nth-child(7) { animation-delay: 240ms; }
+.stagger-grid > *:nth-child(n+8) { animation-delay: 280ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .page-enter,
+  .stagger-grid > * {
+    animation-duration: 1ms;
+    animation-delay: 0ms !important;
+    transform: none;
+  }
+}
+
+@media (max-width: 1024px) {
+  .grid-4 { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 768px) {
+  .grid-4 { grid-template-columns: minmax(0, 1fr); }
+  .grid-2 { grid-template-columns: minmax(0, 1fr); }
+  .grid-3 { grid-template-columns: minmax(0, 1fr); }
+  .contenido {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
+    margin-top: 12px;
+  }
+  // Tables are `table-layout: fixed` with no-wrap cells, so on narrow
+  // screens they need horizontal scroll instead of the desktop
+  // `overflow: hidden` (used there only to clip square corners to the
+  // container's border-radius).
+  .table-container {
+    overflow-x: auto;
+  }
+}
+
+// Los botones de Material usan sus propios tokens M3 (derivados de
+// mat.$blue-palette en theme.scss), que no son exactamente el mismo azul que
+// --accent. Sin fijar también el color de texto/label acá, un botón puede
+// terminar con el fondo de --accent pero el texto en el azul nativo de M3 (o
+// viceversa), lo que se ve como dos azules distintos o poco contraste.
+.mat-mdc-raised-button:not(:disabled) {
+  box-shadow: none !important;
+  transition: background-color 150ms ease, transform 150ms ease !important;
+}
+
+.mat-mdc-raised-button.mat-primary:not(:disabled) {
+  background-color: var(--accent) !important;
+  color: #fff !important;
+}
+
+.mat-mdc-raised-button.mat-primary:hover:not(:disabled) {
+  background-color: var(--accent-dark) !important;
+}
+
+.mat-mdc-raised-button.mat-primary:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.mat-mdc-raised-button:disabled {
+  opacity: 0.5;
+}
+
+.mat-mdc-outlined-button {
+  border-color: var(--line) !important;
+  color: var(--accent) !important;
+  transition: background-color 150ms ease, transform 150ms ease !important;
+}
+
+.mat-mdc-outlined-button:hover:not(:disabled) {
+  background-color: var(--accent-soft) !important;
+  border-color: var(--accent) !important;
+}
+
+.mat-mdc-outlined-button:active:not(:disabled) {
+  transform: scale(0.97);
+}
+
+.mat-mdc-icon-button:active:not(:disabled) {
+  transform: scale(0.92);
+}
+
+.mat-mdc-icon-button {
+  transition: transform 150ms ease !important;
+}
+
+mat-card.mat-mdc-card {
+  background-color: var(--panel) !important;
+  border-radius: var(--radius);
+  border: 1px solid var(--line);
+  box-shadow: var(--shadow) !important;
+}
+
+.mat-mdc-form-field .mat-mdc-text-field-wrapper,
+.mat-mdc-table,
+.mat-mdc-header-row,
+.mat-mdc-row {
+  background-color: var(--panel) !important;
+}
+
+tbody tr:hover td {
+  background: var(--panel-2);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 48px 16px;
+  gap: 8px;
+  text-align: center;
+  color: var(--ink-dim);
+}
+
+.empty-state mat-icon {
+  font-size: 32px;
+  width: 32px;
+  height: 32px;
+  opacity: 0.5;
+}
+
+.empty-state-title {
+  font-family: var(--sans);
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--ink);
+}
+
+.list-pagination {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 14px 0 4px;
+}
+
+.list-page-label {
+  font-family: var(--sans);
+  font-size: 12.5px;
+  color: var(--ink-dim);
+}
+
+.empty-state-sub {
+  font-family: var(--sans);
+  font-size: 12px;
+  color: var(--ink-dim);
+  max-width: 280px;
+}

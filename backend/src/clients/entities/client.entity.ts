@@ -1,7 +1,14 @@
-import { Sale } from 'src/sales/entities/sale.entity';
-import { Column, Entity, OneToMany, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  DeleteDateColumn,
+  Entity,
+  OneToMany,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
+import { Sale } from '../../sales/entities/sale.entity';
+
+@Entity('clients')
 export class Client {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -9,7 +16,7 @@ export class Client {
   @Column()
   name!: string;
 
-  @Column()
+  @Column({ name: 'last_name' })
   lastName!: string;
 
   @Column()
@@ -23,4 +30,7 @@ export class Client {
 
   @OneToMany(() => Sale, (sales) => sales.client)
   sales!: Sale[];
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt?: Date;
 }

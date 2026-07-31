@@ -3,43 +3,48 @@ import {
   Get,
   Post,
   Body,
-  Patch,
   Param,
   Delete,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { AdjustmentsService } from '../service/adjustments.service';
-import { CreateAdjustmentDto } from '../dto/create-adjustment.dto';
-import { UpdateAdjustmentDto } from '../dto/update-adjustment.dto';
+import {
+  CreateAdjustmentDto,
+  QueryParamsAdjustments,
+  AdjustmentResponse,
+} from '../dto';
+import { PaginatedResult } from 'src/shared/pagination/pagination.type';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('adjustments')
 export class AdjustmentsController {
   constructor(private readonly adjustmentsService: AdjustmentsService) {}
 
-  @Post()
-  create(@Body() createAdjustmentDto: CreateAdjustmentDto) {
-    return this.adjustmentsService.create(createAdjustmentDto);
-  }
-
   @Get()
-  findAll() {
-    return this.adjustmentsService.findAll();
+  findAll(
+    @Query() params: QueryParamsAdjustments,
+  ): Promise<PaginatedResult<AdjustmentResponse>> {
+    return this.adjustmentsService.findAll(params);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.adjustmentsService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<AdjustmentResponse> {
+    return this.adjustmentsService.findOneById(id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateAdjustmentDto: UpdateAdjustmentDto,
-  ) {
-    return this.adjustmentsService.update(+id, updateAdjustmentDto);
+  @Post(':batchId')
+  create(
+    @Param('batchId', ParseIntPipe) batchId: number,
+    @Body() createAdjustmentDto: CreateAdjustmentDto,
+  ): Promise<AdjustmentResponse> {
+    return this.adjustmentsService.create(batchId, createAdjustmentDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.adjustmentsService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<AdjustmentResponse> {
+    return this.adjustmentsService.remove(id);
   }
 }

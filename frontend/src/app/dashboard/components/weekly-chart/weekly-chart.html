@@ -1,0 +1,15 @@
+@if (isEmpty()) {
+  <div class="chart-empty">
+    <mat-icon class="chart-empty-icon">bar_chart</mat-icon>
+    <div class="chart-empty-title">Todavía no hay producción esta semana</div>
+    <div class="chart-empty-sub">Los datos de producción aparecerán acá al registrar producción</div>
+  </div>
+} @else {
+  <div class="chart-container">
+    <canvas baseChart
+      [data]="chartData()"
+      [options]="chartOptions"
+      [type]="'bar'">
+    </canvas>
+  </div>
+}

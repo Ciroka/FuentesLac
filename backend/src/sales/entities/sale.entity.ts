@@ -1,31 +1,39 @@
-import { Client } from 'src/clients/entities/client.entity';
-import { SalesDetail } from 'src/sales-detail/entities/sales-detail.entity';
-import { PaymentMethod } from 'src/shared/enums/paymentMethod..enum';
 import {
   Column,
+  CreateDateColumn,
   Entity,
+  JoinColumn,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+import { Client } from '../../clients/entities/client.entity';
+import { SalesDetail } from '../../sales-detail/entities/sales-detail.entity';
+
+@Entity('sales')
 export class Sale {
   @PrimaryGeneratedColumn()
   id!: number;
 
-  @Column()
+  @CreateDateColumn()
   date!: Date;
 
-  @Column()
+  @Column({ type: 'decimal', precision: 10, scale: 2, default: 0 })
   total!: number;
 
-  @Column({ type: 'enum', enum: PaymentMethod })
-  paymentMethod!: PaymentMethod;
-
-  @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.sale)
+  @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.sale, {
+    cascade: true,
+  })
   details!: SalesDetail[];
 
+  @Column({ name: 'photo_key', type: 'varchar', nullable: true })
+  photoKey?: string | null;
+
+  @Column({ name: 'client_id', nullable: true })
+  clientId?: number;
+
   @ManyToOne(() => Client, (client) => client.sales, { nullable: true })
-  client!: Client;
+  @JoinColumn({ name: 'client_id' })
+  client?: Client;
 }

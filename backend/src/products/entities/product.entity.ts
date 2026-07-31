@@ -1,8 +1,3 @@
-import { Adjustment } from 'src/adjustments/entities/adjustment.entity';
-import { Category } from 'src/categories/entities/category.entity';
-import { OrdersDetail } from 'src/orders-detail/entities/orders-detail.entity';
-import { SalesDetail } from 'src/sales-detail/entities/sales-detail.entity';
-import { Supplier } from 'src/suppliers/entities/supplier.entity';
 import {
   Column,
   Entity,
@@ -13,7 +8,12 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+import { Category } from '../../categories/entities/category.entity';
+import { Supplier } from '../../suppliers/entities/supplier.entity';
+import { ProductionDetail } from 'src/production-detail/entities/production-detail.entity';
+import { Batch } from 'src/batch/entities/batch.entity';
+
+@Entity('products')
 export class Product {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -21,37 +21,36 @@ export class Product {
   @Column()
   name!: string;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'sale_price' })
   salePrice!: number;
 
-  @Column({ type: 'decimal', precision: 10, scale: 2 })
+  @Column({ type: 'decimal', precision: 10, scale: 2, name: 'cost_price' })
   costPrice!: number;
 
-  @Column({ type: 'decimal', precision: 5, scale: 2 })
+  @Column({ type: 'decimal', precision: 5, scale: 2, name: 'margin_percent' })
   marginPercent!: number;
 
-  @Column({ default: 0 })
-  currentStock!: number;
-
-  @Column({ default: 0 })
+  @Column({ default: 0, name: 'min_stock' })
   minStock!: number;
 
   @Column({ name: 'category_id', nullable: true })
   categoryId?: number;
 
-  @ManyToOne(() => Category, { onDelete: 'RESTRICT' })
+  @ManyToOne(() => Category, (category) => category.products, {
+    onDelete: 'RESTRICT',
+  })
   @JoinColumn({ name: 'category_id' })
   category?: Category;
 
   @ManyToMany(() => Supplier, (suppliers) => suppliers.products)
   suppliers!: Supplier[];
 
-  @OneToMany(() => SalesDetail, (salesDetails) => salesDetails.product)
-  salesDetails!: SalesDetail[];
+  @OneToMany(() => Batch, (batch) => batch.product)
+  batches!: Batch[];
 
-  @OneToMany(() => OrdersDetail, (ordersDetails) => ordersDetails.product)
-  ordersDetails!: OrdersDetail[];
-
-  @OneToMany(() => Adjustment, (adjustments) => adjustments.product)
-  adjustments!: Adjustment[];
+  @OneToMany(
+    () => ProductionDetail,
+    (productionDetails) => productionDetails.product,
+  )
+  productionDetails!: ProductionDetail[];
 }

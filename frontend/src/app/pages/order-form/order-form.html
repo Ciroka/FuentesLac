@@ -1,0 +1,82 @@
+<div><app-navbar></app-navbar></div>
+
+<main class="contenido page-enter">
+
+  <div class="view-header">
+    <h2>Registrar pedido de insumos</h2>
+  </div>
+
+  @if (errorMessage()) {
+    <div class="form-error">
+      <mat-icon>error_outline</mat-icon>
+      <span>{{ errorMessage() }}</span>
+    </div>
+  }
+
+  <mat-card class="form-card">
+    <mat-card-content>
+
+      <div class="form-section">
+        <div class="section-label">Proveedor</div>
+        <mat-form-field appearance="outline" class="full-width">
+          <mat-label>Seleccionar proveedor</mat-label>
+          <mat-select [(ngModel)]="supplierId">
+            @for (s of suppliers; track s.id) {
+              <mat-option [value]="s.id">{{ s.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      <div class="form-section">
+        <div class="section-header">
+          <div class="section-label">Insumos a pedir</div>
+          <button mat-stroked-button type="button" (click)="addLine()">
+            <mat-icon>add</mat-icon> Agregar insumo
+          </button>
+        </div>
+
+        @for (row of lines; track $index; let i = $index) {
+          <div class="item-row">
+            <mat-form-field appearance="outline" class="item-supply">
+              <mat-label>Insumo</mat-label>
+              <mat-select [(ngModel)]="row.supplyId">
+                @for (s of suppliesForSupplier; track s.id) {
+                  <mat-option [value]="s.id">{{ s.name }}</mat-option>
+                }
+              </mat-select>
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="item-qty">
+              <mat-label>Cantidad</mat-label>
+              <input matInput type="number" min="1" [(ngModel)]="row.quantity">
+            </mat-form-field>
+
+            <div class="item-subtotal">{{ formatCurrency(rowSubtotal(row)) }}</div>
+
+            <button mat-icon-button type="button" (click)="removeLine(i)" [disabled]="lines.length === 1" aria-label="Quitar insumo">
+              <mat-icon>delete</mat-icon>
+            </button>
+          </div>
+        }
+      </div>
+
+      <div class="form-total">
+        <span>Total estimado</span>
+        <strong>{{ formatCurrency(total) }}</strong>
+      </div>
+
+      <div class="form-actions">
+        <button mat-stroked-button type="button" routerLink="/supplies">Cancelar</button>
+        <button mat-raised-button color="primary" type="button" [disabled]="!isValid() || submitting()" (click)="submit()">
+          @if (submitting()) {
+            <mat-spinner diameter="18" class="btn-spinner"></mat-spinner>
+          }
+          Registrar pedido
+        </button>
+      </div>
+
+    </mat-card-content>
+  </mat-card>
+
+</main>

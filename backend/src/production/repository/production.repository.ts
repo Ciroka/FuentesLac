@@ -1,0 +1,58 @@
+import { Repository } from 'typeorm';
+import { Injectable } from '@nestjs/common';
+import { InjectRepository } from '@nestjs/typeorm';
+
+import { PaginatedResult } from '../../shared/pagination/pagination.type';
+import { OrderEnum } from '../../shared/enums/order.enum';
+import { ProductionRepository } from './production.repository.interface';
+import { Production } from '../entities/production.entity';
+
+@Injectable()
+export class ProductionRepositoryImpl implements ProductionRepository {
+  constructor(
+    @InjectRepository(Production)
+    private readonly productionRepository: Repository<Production>,
+  ) {}
+
+  async findAll(
+    page: number,
+    limit: number,
+    order: OrderEnum,
+  ): Promise<PaginatedResult<Production>> {
+    const offset = (page - 1) * limit;
+
+    const [items, total] = await this.productionRepository
+      .createQueryBuilder('production')
+      .leftJoinAndSelect('production.details', 'details')
+      .leftJoinAndSelect('details.product', 'product')
+      .leftJoinAndSelect('details.supplyXDetail', 'supplyXDetail')
+      .leftJoinAndSelect('supplyXDetail.supply', 'supply')
+      .orderBy('production.productionDate', order)
+      .take(limit)
+      .skip(offset)
+      .getManyAndCount();
+
+    return { items, total, page, limit };
+  }
+
+  async findOneById(id: number): Promise<Production | null> {
+    return this.productionRepository.findOne({
+      where: { id },
+      relations: {
+        details: { product: true, supplyXDetail: { supply: true } },
+      },
+    });
+  }
+
+  async create(input: Partial<Production>): Promise<Production> {
+    return this.productionRepository.save(input);
+  }
+
+  async update(production: Production): Promise<Production> {
+    return this.productionRepository.save(production);
+  }
+
+  async remove(production: Production): Promise<Production> {
+    return this.productionRepository.remove(production);
+  }
+}

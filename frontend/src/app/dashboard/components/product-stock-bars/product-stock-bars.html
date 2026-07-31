@@ -1,0 +1,26 @@
+<div class="stock-bars">
+  @for (product of products(); track product.id) {
+    <div class="stock-row"
+         [attr.aria-label]="product.name + ': stock ' + product.totalStock + ', mínimo ' + product.minStock + ' — ' + (product.status === 'ok' ? 'normal' : product.status === 'warn' ? 'ajustado' : 'bajo')">
+      <div class="stock-info">
+        <span class="stock-name">{{ product.name }}</span>
+        <span class="stock-ratio">{{ product.totalStock }} / {{ product.minStock }}</span>
+      </div>
+      <div class="stock-bar-container">
+        <div
+          class="stock-bar"
+          [class.ok]="product.status === 'ok'"
+          [class.warn]="product.status === 'warn'"
+          [class.critical]="product.status === 'critical'"
+          [style.width.%]="barWidth(product)"
+        ></div>
+        <div class="stock-min-marker" [style.left.%]="minMarkerPercent()"></div>
+      </div>
+      @if (product.status !== 'ok') {
+        <span class="chip-status" [ngClass]="getStatusClass(product.status)">
+          {{ getStatusLabel(product.status) }}
+        </span>
+      }
+    </div>
+  }
+</div>

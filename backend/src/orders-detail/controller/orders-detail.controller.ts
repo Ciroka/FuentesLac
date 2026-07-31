@@ -1,45 +1,28 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Delete, ParseIntPipe } from '@nestjs/common';
 import { OrdersDetailService } from '../service/orders-detail.service';
-import { CreateOrdersDetailDto } from '../dto/create-orders-detail.dto';
-import { UpdateOrdersDetailDto } from '../dto/update-orders-detail.dto';
+import { OrdersDetailResponse } from '../dto';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('orders-detail')
 export class OrdersDetailController {
   constructor(private readonly ordersDetailService: OrdersDetailService) {}
 
-  @Post()
-  create(@Body() createOrdersDetailDto: CreateOrdersDetailDto) {
-    return this.ordersDetailService.create(createOrdersDetailDto);
-  }
-
   @Get()
-  findAll() {
+  findAll(): Promise<OrdersDetailResponse[]> {
     return this.ordersDetailService.findAll();
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ordersDetailService.findOne(+id);
+  findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<OrdersDetailResponse> {
+    return this.ordersDetailService.findOne(id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateOrdersDetailDto: UpdateOrdersDetailDto,
-  ) {
-    return this.ordersDetailService.update(+id, updateOrdersDetailDto);
-  }
-
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ordersDetailService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<OrdersDetailResponse> {
+    return this.ordersDetailService.remove(id);
   }
 }

@@ -6,40 +6,55 @@ import {
   Patch,
   Param,
   Delete,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
+
 import { SuppliersService } from '../service/suppliers.service';
-import { CreateSupplierDto } from '../dto/create-supplier.dto';
-import { UpdateSupplierDto } from '../dto/update-supplier.dto';
+import {
+  CreateSupplierDto,
+  UpdateSupplierDto,
+  QueryParamsSuppliers,
+  SupplierResponse,
+} from '../dto';
+import { PaginatedResult } from 'src/shared/pagination/pagination.type';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('suppliers')
 export class SuppliersController {
   constructor(private readonly suppliersService: SuppliersService) {}
 
-  @Post()
-  create(@Body() createSupplierDto: CreateSupplierDto) {
-    return this.suppliersService.create(createSupplierDto);
-  }
-
   @Get()
-  findAll() {
-    return this.suppliersService.findAll();
+  findAll(
+    @Query() params: QueryParamsSuppliers,
+  ): Promise<PaginatedResult<SupplierResponse>> {
+    return this.suppliersService.findAll(params);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.suppliersService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<SupplierResponse> {
+    return this.suppliersService.findOne(id);
+  }
+
+  @Post()
+  create(
+    @Body() createSupplierDto: CreateSupplierDto,
+  ): Promise<SupplierResponse> {
+    return this.suppliersService.create(createSupplierDto);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateSupplierDto: UpdateSupplierDto,
-  ) {
-    return this.suppliersService.update(+id, updateSupplierDto);
+  ): Promise<SupplierResponse> {
+    return this.suppliersService.update(id, updateSupplierDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.suppliersService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<SupplierResponse> {
+    return this.suppliersService.remove(id);
   }
 }

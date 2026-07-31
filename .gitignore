@@ -8,3 +8,8 @@ dist/
 backend/test/
 *.env
 !.env.example
+/docs
+/.claude
+/CLAUDE.md
+/.superpowers
+/.playwright-mcp

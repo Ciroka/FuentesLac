@@ -1,0 +1,349 @@
+.sidebar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 100%; width: 85px;
+    z-index: 100;
+    display: flex; overflow: hidden;
+    flex-direction: column;
+    background: var(--panel);
+    border-right: 1px solid var(--line);
+    padding-top: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 25px;
+    border-bottom-right-radius: 20px;
+    transition: width 0.4s ease;
+
+    .sidebar-header {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+
+        div:not(.brand-mark) {
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+
+            h2 {
+                font-family: var(--sans);
+                font-size: 20px;
+                font-weight: 700;
+                letter-spacing: 0.2px;
+                color: var(--ink);
+            }
+        }
+    }
+
+    .menu-section {
+        margin-top: 15px;
+        flex: 1;
+        display: flex;
+        flex-direction: column;
+        min-height: 0;
+        h4 {
+            white-space: nowrap;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            font-family: var(--sans);
+            font-weight: 600;
+            font-size: 10px;
+            color: var(--ink-dim);
+            text-transform: uppercase;
+            letter-spacing: 1.2px;
+        }
+    }
+
+    .sidebar-links {
+        list-style: none;
+        padding: 0;
+        margin: 0;
+
+    li a {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 10px;
+        text-decoration: none;
+        color: var(--ink-dim);
+        white-space: nowrap;
+        border-radius: var(--radius-sm);
+        padding: 6px 8px;
+        transition: all 0.15s ease;
+
+        mat-icon {
+            width: 38px;
+            height: 38px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            flex-shrink: 0;
+            border-radius: 50%;
+            transition: background-color 0.15s ease, color 0.15s ease;
+        }
+
+        span {
+            opacity: 0;
+            max-width: 0;
+            overflow: hidden;
+            transition: opacity 0.2s ease;
+            font-weight: 500;
+            font-size: 0.9rem;
+        }
+
+        &:hover {
+            color: var(--accent);
+            background: var(--accent-soft);
+        }
+        }
+    }
+
+    li.active a {
+        color: var(--accent);
+        background: var(--accent-soft);
+
+        mat-icon {
+            background-color: var(--accent);
+            color: #fff;
+        }
+    }
+
+    .main-links {
+        display: flex;
+        flex-direction: column;
+        justify-content: space-evenly;
+        min-height: 50%;
+    }
+
+    .bottom-links {
+        margin-top: auto;
+    }
+
+    &:hover {
+        width: 260px;
+
+        .sidebar-header div:not(.brand-mark),
+        .menu-section h4,
+        .sidebar-links li a span {
+            opacity: 1;
+        }
+
+        .sidebar-links li a {
+            justify-content: flex-start;
+
+            span {
+                max-width: 200px;
+            }
+        }
+
+        .sidebar-links li.active a {
+            border-left: 3px solid var(--accent);
+            padding-left: 5px;
+        }
+    }
+}
+
+.brand-mark {
+    width: 38px;
+    height: 38px;
+    object-fit: contain;
+    flex-shrink: 0;
+}
+
+.topbar {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    padding: 12px 30px;
+    border-bottom: 1px solid var(--line);
+    background: var(--panel);
+    flex: 0 0 auto;
+    margin-left: 85px;
+}
+
+.topbar-clock {
+    font-size: 15px;
+    font-family: var(--sans);
+    font-variant-numeric: tabular-nums;
+    margin-left: 16px;
+    color: var(--ink-dim);
+}
+
+.user-info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-right: 16px;
+    padding: 6px 10px;
+    border-radius: var(--radius-sm);
+    cursor: pointer;
+    text-decoration: none;
+    transition: background 0.15s ease;
+
+    &:hover {
+        background: var(--accent-soft);
+
+        .user-email,
+        .user-role {
+            color: var(--accent-dark);
+        }
+    }
+}
+
+.user-avatar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: var(--accent);
+    color: #fff;
+    font-family: var(--sans);
+    font-size: 12px;
+    font-weight: 700;
+    flex-shrink: 0;
+}
+
+.user-email {
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-dim);
+}
+
+.user-role {
+    font-family: var(--sans);
+    font-weight: 600;
+    font-size: 10px;
+    color: var(--ink-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.logout-btn,
+.theme-toggle-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+    color: var(--ink-dim);
+    margin-left: 12px;
+    transition: all 0.15s ease;
+
+    mat-icon {
+        font-size: 18px;
+        width: 18px;
+        height: 18px;
+    }
+}
+
+.logout-btn:hover {
+    color: var(--color-danger);
+    border-color: var(--color-danger);
+    background: var(--danger-soft);
+}
+
+.theme-toggle-btn:hover {
+    color: var(--accent);
+    border-color: var(--accent);
+    background: var(--accent-soft);
+}
+
+.hamburger-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    background: none;
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    padding: 6px;
+    cursor: pointer;
+    color: var(--ink-dim);
+    margin-right: auto;
+
+    mat-icon {
+        font-size: 20px;
+        width: 20px;
+        height: 20px;
+    }
+}
+
+.sidebar-backdrop {
+    display: none;
+}
+
+@media (max-width: 768px) {
+    .sidebar {
+        transform: translateX(-100%);
+        width: 240px;
+
+        &:hover {
+            width: 240px;
+        }
+
+        .sidebar-header div:not(.brand-mark),
+        .menu-section h4,
+        .sidebar-links li a span {
+            opacity: 1;
+        }
+
+        .sidebar-links li a {
+            justify-content: flex-start;
+
+            span {
+                max-width: 200px;
+            }
+        }
+
+        &.sidebar-open {
+            transform: translateX(0);
+        }
+    }
+
+    .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+        border: none;
+        padding: 0;
+        background: rgba(0, 0, 0, 0.4);
+        z-index: 99;
+        cursor: pointer;
+    }
+
+    .hamburger-btn {
+        display: flex;
+    }
+
+    .topbar {
+        margin-left: 0;
+    }
+
+    .user-email {
+        display: none;
+    }
+
+    // 44x44 minimum touch target on mobile (WCAG/Material touch guidance).
+    .hamburger-btn,
+    .theme-toggle-btn,
+    .logout-btn {
+        min-width: 44px;
+        min-height: 44px;
+    }
+}
+
+// El reloj es decorativo, no esencial: en anchos muy chicos (teléfonos viejos/pequeños)
+// el contenido del topbar no entra y justify-content:flex-end empuja el hamburger-btn
+// fuera de la pantalla (x negativo) en vez de recortar el reloj. Lo sacamos antes de
+// que eso pase.
+@media (max-width: 400px) {
+    .topbar-clock {
+        display: none;
+    }
+}

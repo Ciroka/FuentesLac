@@ -1,0 +1,65 @@
+<div><app-navbar></app-navbar></div>
+
+<main class="contenido page-enter">
+
+  <div class="view-header view-header-row">
+    <h2>Insumos</h2>
+    <button mat-raised-button color="white" routerLink="/supplies/order">
+      <mat-icon>add</mat-icon> Registrar pedido
+    </button>
+  </div>
+
+  @if (errorMessage) {
+    <div class="supplies-error">{{ errorMessage }}</div>
+  }
+
+  <mat-tab-group>
+    <mat-tab label="Insumos">
+      <div class="search-row">
+        <mat-form-field appearance="outline" class="search-field">
+          <mat-label>Buscar insumo</mat-label>
+          <input matInput [(ngModel)]="searchTerm" (ngModelChange)="onFilterChange()" placeholder="Nombre del insumo...">
+          <mat-icon matPrefix>search</mat-icon>
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="category-field">
+          <mat-label>Categoría</mat-label>
+          <mat-select [(ngModel)]="selectedCategoryId" (ngModelChange)="onFilterChange()">
+            <mat-option [value]="null">Todas las categorías</mat-option>
+            @for (cat of categorias; track cat.id) {
+              <mat-option [value]="cat.id">{{ cat.name }}</mat-option>
+            }
+          </mat-select>
+        </mat-form-field>
+      </div>
+
+      @if (insumos().length === 0) {
+        <div class="empty-state">
+          <mat-icon>search_off</mat-icon>
+          <div class="empty-state-title">Sin resultados</div>
+          <div class="empty-state-sub">No hay insumos que coincidan con la búsqueda o la categoría seleccionada.</div>
+        </div>
+      } @else {
+        <app-supplies-table [supplies]="insumos()"></app-supplies-table>
+
+        <div class="list-pagination">
+          <button mat-stroked-button (click)="prevInsumosPage()" [disabled]="insumosPage() <= 1">Anterior</button>
+          <span class="list-page-label">Página {{ insumosPage() }}</span>
+          <button mat-stroked-button (click)="nextInsumosPage()" [disabled]="insumosPage() * limit >= insumosTotal()">Siguiente</button>
+        </div>
+      }
+    </mat-tab>
+    <mat-tab label="Pedidos">
+      <app-orders-list [orders]="pedidos()" (changed)="cargarTodo()"></app-orders-list>
+
+      @if (pedidos().length > 0) {
+        <div class="list-pagination">
+          <button mat-stroked-button (click)="prevPedidosPage()" [disabled]="pedidosPage() <= 1">Anterior</button>
+          <span class="list-page-label">Página {{ pedidosPage() }}</span>
+          <button mat-stroked-button (click)="nextPedidosPage()" [disabled]="pedidosPage() * limit >= pedidosTotal()">Siguiente</button>
+        </div>
+      }
+    </mat-tab>
+  </mat-tab-group>
+
+</main>

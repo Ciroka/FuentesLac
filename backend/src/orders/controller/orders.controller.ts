@@ -5,38 +5,50 @@ import {
   Body,
   Patch,
   Param,
-  Delete,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
+
 import { OrdersService } from '../service/orders.service';
-import { CreateOrderDto } from '../dto/create-order.dto';
-import { UpdateOrderDto } from '../dto/update-order.dto';
+import {
+  CreateOrderDto,
+  RegisterArrivalDto,
+  QueryParamsOrders,
+  OrderResponse,
+} from '../dto';
+import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 
 @Controller('orders')
 export class OrdersController {
   constructor(private readonly ordersService: OrdersService) {}
 
-  @Post()
-  create(@Body() createOrderDto: CreateOrderDto) {
-    return this.ordersService.create(createOrderDto);
-  }
-
   @Get()
-  findAll() {
-    return this.ordersService.findAll();
+  findAll(
+    @Query() params: QueryParamsOrders,
+  ): Promise<PaginatedResult<OrderResponse>> {
+    return this.ordersService.findAll(params);
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.ordersService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<OrderResponse> {
+    return this.ordersService.findOne(id);
   }
 
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOrderDto: UpdateOrderDto) {
-    return this.ordersService.update(+id, updateOrderDto);
+  @Post()
+  create(@Body() createOrderDto: CreateOrderDto): Promise<OrderResponse> {
+    return this.ordersService.create(createOrderDto);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.ordersService.remove(+id);
+  @Patch(':id/arrival')
+  registerArrival(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() registerArrivalDto: RegisterArrivalDto,
+  ): Promise<OrderResponse> {
+    return this.ordersService.registerArrival(id, registerArrivalDto);
+  }
+
+  @Patch(':id/cancel')
+  cancel(@Param('id', ParseIntPipe) id: number): Promise<OrderResponse> {
+    return this.ordersService.cancel(id);
   }
 }

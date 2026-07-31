@@ -1,0 +1,92 @@
+.profile-grid {
+  align-items: start;
+}
+
+.profile-card {
+  .section-label {
+    display: block;
+    margin-bottom: 16px;
+  }
+}
+
+.profile-facts {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  margin: 0;
+}
+
+.profile-fact {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  dt {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-family: var(--sans);
+    font-size: 12px;
+    color: var(--ink-dim);
+
+    .icon-chip {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      font-size: 16px;
+
+      &.mat-icon {
+        width: 28px;
+        height: 28px;
+        line-height: 28px;
+      }
+    }
+
+    .icon-accent {
+      background: var(--accent-soft);
+      color: var(--accent);
+    }
+
+    .icon-success {
+      background: var(--success-soft);
+      color: var(--color-success);
+    }
+
+    .icon-warning {
+      background: var(--warning-soft);
+      color: var(--color-warning);
+    }
+
+    .icon-muted {
+      background: var(--panel-2);
+      color: var(--ink-dim);
+    }
+  }
+
+  dd {
+    margin: 0;
+    font-family: var(--sans);
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--ink);
+  }
+}
+
+.profile-form {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+
+  mat-form-field {
+    width: 100%;
+  }
+
+  button {
+    align-self: flex-start;
+    margin-top: 8px;
+  }
+}

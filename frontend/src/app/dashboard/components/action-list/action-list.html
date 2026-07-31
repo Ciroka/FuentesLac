@@ -1,0 +1,25 @@
+@if (actions().length === 0) {
+  <div class="empty-state">No hay acciones pendientes</div>
+} @else {
+  <mat-list class="action-list">
+    @for (action of visibleActions(); track $index) {
+      <mat-list-item class="action-item" [ngClass]="getItemClass(action.priority)">
+        <mat-icon matListItemIcon [ngClass]="getPriorityClass(action.priority)">{{ getIcon(action.type) }}</mat-icon>
+        <div matListItemTitle class="action-label">{{ action.label }}</div>
+        <div matListItemLine class="action-detail">{{ action.detail }}</div>
+        <span matListItemMeta class="action-badge" [ngClass]="getPriorityClass(action.priority)">
+          @switch (action.priority) {
+            @case ('high') { URGENTE }
+            @case ('medium') { ATENCIÓN }
+            @case ('low') { BAJA }
+          }
+        </span>
+      </mat-list-item>
+    }
+  </mat-list>
+  @if (hasOverflow()) {
+    <button mat-button class="toggle-btn" (click)="toggle()">
+      {{ showAll() ? 'Ver menos' : 'Ver todas (' + actions().length + ')' }}
+    </button>
+  }
+}

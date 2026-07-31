@@ -1,0 +1,66 @@
+<div><app-navbar></app-navbar></div>
+
+<main class="contenido page-enter">
+  <div class="view-header">
+    <h2>Mi perfil</h2>
+  </div>
+
+  <div class="grid grid-2 profile-grid">
+    <mat-card class="profile-card">
+      <mat-card-content>
+        <span class="section-label">Datos de la cuenta</span>
+
+        @if (currentUser(); as user) {
+          <dl class="profile-facts">
+            <div class="profile-fact">
+              <dt><mat-icon class="icon-chip icon-accent">person</mat-icon> Nombre</dt>
+              <dd>{{ user.name }}</dd>
+            </div>
+            <div class="profile-fact">
+              <dt><mat-icon class="icon-chip icon-success">mail</mat-icon> Email</dt>
+              <dd>{{ user.email }}</dd>
+            </div>
+            <div class="profile-fact">
+              <dt><mat-icon class="icon-chip icon-warning">badge</mat-icon> Rol</dt>
+              <dd>{{ user.role }}</dd>
+            </div>
+            <div class="profile-fact">
+              <dt><mat-icon class="icon-chip icon-muted">event</mat-icon> Miembro desde</dt>
+              <dd>{{ user.createdAt | date:'longDate' }}</dd>
+            </div>
+          </dl>
+        }
+      </mat-card-content>
+    </mat-card>
+
+    <mat-card class="profile-card">
+      <mat-card-content>
+        <span class="section-label">Cambiar contraseña</span>
+        <form class="profile-form" (ngSubmit)="changePassword(passwordForm)" #passwordForm="ngForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Contraseña actual</mat-label>
+            <input matInput type="password" [(ngModel)]="currentPassword" name="currentPassword" required autocomplete="current-password" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Contraseña nueva</mat-label>
+            <input matInput type="password" [(ngModel)]="newPassword" name="newPassword" required minlength="8" autocomplete="new-password" />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Repetir contraseña nueva</mat-label>
+            <input matInput type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required autocomplete="new-password" />
+            @if (passwordsMismatch) {
+              <mat-error>Las contraseñas no coinciden</mat-error>
+            }
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit"
+                  [disabled]="passwordForm.invalid || passwordsMismatch || saving()">
+            <mat-icon>lock_reset</mat-icon> Actualizar contraseña
+          </button>
+        </form>
+      </mat-card-content>
+    </mat-card>
+  </div>
+</main>

@@ -1,0 +1,91 @@
+
+@if (mobileMenuOpen()) {
+    <button type="button" class="sidebar-backdrop" (click)="closeMobileMenu()" aria-label="Cerrar menú"></button>
+}
+
+<div class="container">
+    <aside class="sidebar" [class.sidebar-open]="mobileMenuOpen()">
+        <div class="sidebar-header">
+            <img class="brand-mark" src="logo.png" alt="Fuente Lac" />
+            <div>
+                <h2>Fuente Lac</h2>
+            </div>
+        </div>
+
+        <div class="menu-section">
+            <h4>
+                <span>Menu Principal</span>
+                <div class="menu-separator"></div>
+            </h4>
+
+            <ul class="sidebar-links main-links">
+                <li routerLinkActive="active">
+                    <a routerLink="/home" (click)="closeMobileMenu()">
+                        <mat-icon aria-hidden="true">speed</mat-icon>
+                        <span>Dashboard</span>
+                    </a>
+                </li>
+                <li routerLinkActive="active">
+                    <a routerLink="/supplies" (click)="closeMobileMenu()">
+                        <mat-icon aria-hidden="true">water_drop</mat-icon>
+                        <span>Insumos</span>
+                    </a>
+                </li>
+                <li routerLinkActive="active">
+                    <a routerLink="/products" (click)="closeMobileMenu()">
+                        <mat-icon aria-hidden="true">inventory_2</mat-icon>
+                        <span>Productos</span>
+                    </a>
+                </li>
+                <li routerLinkActive="active">
+                    <a routerLink="/production" (click)="closeMobileMenu()">
+                        <mat-icon aria-hidden="true">apartment</mat-icon>
+                        <span>Producción</span>
+                    </a>
+                </li>
+                <li routerLinkActive="active">
+                    <a routerLink="/sales" (click)="closeMobileMenu()">
+                        <mat-icon aria-hidden="true">local_shipping</mat-icon>
+                        <span>Ventas</span>
+                    </a>
+                </li>
+                <li routerLinkActive="active">
+                    <a routerLink="/clients" (click)="closeMobileMenu()">
+                        <mat-icon aria-hidden="true">people</mat-icon>
+                        <span>Clientes</span>
+                    </a>
+                </li>
+                @if (isAdmin()) {
+                <li routerLinkActive="active">
+                    <a routerLink="/admin" (click)="closeMobileMenu()">
+                        <mat-icon aria-hidden="true">admin_panel_settings</mat-icon>
+                        <span>Admin</span>
+                    </a>
+                </li>
+                }
+            </ul>
+            <ul class="sidebar-links bottom-links">
+                <li routerLinkActive="active"><a routerLink="/profile" (click)="closeMobileMenu()"><mat-icon aria-hidden="true">person</mat-icon>
+                <span>Mi perfil</span></a></li>
+            </ul>
+        </div>
+    </aside>
+</div>
+
+<div class="topbar">
+    <button class="hamburger-btn" (click)="toggleMobileMenu()" title="Abrir menú" aria-label="Abrir menú">
+        <mat-icon>menu</mat-icon>
+    </button>
+    <button class="theme-toggle-btn" (click)="toggleTheme()" [title]="isDarkTheme() ? 'Cambiar a modo claro' : 'Cambiar a modo oscuro'">
+        <mat-icon>{{ isDarkTheme() ? 'light_mode' : 'dark_mode' }}</mat-icon>
+    </button>
+    <a class="user-info" routerLink="/profile" title="Ver mi perfil">
+        <span class="user-avatar" aria-hidden="true">{{ userInitial() }}</span>
+        <span class="user-email">{{ userName() }}</span>
+        <span class="user-role">{{ userRole() }}</span>
+    </a>
+    <span id="clock" class="topbar-clock">{{ currentTime() }}</span>
+    <button class="logout-btn" (click)="logout()" title="Cerrar sesión">
+        <mat-icon>logout</mat-icon>
+    </button>
+</div>

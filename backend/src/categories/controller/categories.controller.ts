@@ -7,24 +7,25 @@ import {
   Param,
   Delete,
   Query,
+  ParseIntPipe,
 } from '@nestjs/common';
+
 import { CategoriesService } from '../service/categories.service';
-import { CreateCategoryDto } from '../dto/create-category.dto';
-import { UpdateCategoryDto } from '../dto/update-category.dto';
-import { QueryParamsProducts } from 'src/products/dto/params-products.dto';
-import { Product } from 'src/products/entities/product.entity';
-import { PaginatedResult } from 'src/shared/Pagination/pagination.type';
-import { CategoryResponse } from '../dto/category-response.dto';
-import { QueryParamsCategories } from '../dto/params-categories.dto';
+import {
+  CreateCategoryDto,
+  UpdateCategoryDto,
+  QueryParamsCategories,
+  CategoryResponse,
+} from '../dto';
+import { QueryParamsProducts } from '../../products/dto/request/params-products.dto';
+import { PaginatedResult } from '../../shared/pagination/pagination.type';
+import { Product } from '../../products/entities/product.entity';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
-
-  @Post()
-  create(@Body() createCategoryDto: CreateCategoryDto) {
-    return this.categoriesService.create(createCategoryDto);
-  }
 
   @Get()
   findAll(
@@ -34,28 +35,36 @@ export class CategoriesController {
   }
 
   @Get(':id')
-  findOne(@Param('id') id: string): Promise<CategoryResponse> {
-    return this.categoriesService.findOneById(+id);
+  findOne(@Param('id', ParseIntPipe) id: number): Promise<CategoryResponse> {
+    return this.categoriesService.findOneById(id);
   }
 
   @Get(':id/products')
   findAllProducts(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Query() params: QueryParamsProducts,
   ): Promise<PaginatedResult<Product>> {
-    return this.categoriesService.findAllProducts(+id, params);
+    return this.categoriesService.findAllProducts(id, params);
+  }
+
+  @Post()
+  create(
+    @Body() createCategoryDto: CreateCategoryDto,
+  ): Promise<CategoryResponse> {
+    return this.categoriesService.create(createCategoryDto);
   }
 
   @Patch(':id')
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateCategoryDto: UpdateCategoryDto,
   ): Promise<CategoryResponse> {
-    return this.categoriesService.update(+id, updateCategoryDto);
+    return this.categoriesService.update(id, updateCategoryDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string): Promise<CategoryResponse> {
-    return this.categoriesService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number): Promise<CategoryResponse> {
+    return this.categoriesService.remove(id);
   }
 }

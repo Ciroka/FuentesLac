@@ -1,20 +1,57 @@
-import { UserRole } from 'src/shared/enums/userRole.enum';
-import { Column, Entity, PrimaryGeneratedColumn } from 'typeorm';
+import {
+  Column,
+  CreateDateColumn,
+  DeleteDateColumn,
+  Entity,
+  PrimaryGeneratedColumn,
+} from 'typeorm';
 
-@Entity()
+import { UserRole } from '../../shared/enums';
+
+@Entity('users')
 export class User {
-  @PrimaryGeneratedColumn()
-  id!: number;
+  @PrimaryGeneratedColumn('uuid')
+  id!: string;
 
   @Column()
   name!: string;
 
-  @Column()
+  @Column({ unique: true })
   email!: string;
 
-  @Column()
-  hashPassword!: string;
+  @Column({ select: false, name: 'password_hash' })
+  passwordHash!: string;
 
-  @Column({ type: 'enum', enum: UserRole })
+  @Column({ type: 'text', default: UserRole.EMPLOYEE })
   role!: UserRole;
+
+  @CreateDateColumn({ name: 'created_at' })
+  createdAt!: Date;
+
+  @DeleteDateColumn({ name: 'deleted_at' })
+  deletedAt?: Date;
+
+  @Column({
+    nullable: true,
+    name: 'verification_token',
+    type: 'varchar',
+    select: false,
+  })
+  verificationToken!: string | null;
+
+  @Column({
+    nullable: true,
+    name: 'code_hash_reset_password',
+    type: 'varchar',
+    select: false,
+  })
+  codeHashResetPassword!: string | null;
+
+  @Column({
+    nullable: true,
+    name: 'reset_code_password_expires',
+    type: 'timestamptz',
+    select: false,
+  })
+  resetCodePasswordExpires!: Date | null;
 }

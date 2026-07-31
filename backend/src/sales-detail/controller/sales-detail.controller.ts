@@ -1,45 +1,31 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
+import { Controller, Get, Param, Delete, ParseIntPipe } from '@nestjs/common';
+
 import { SalesDetailService } from '../service/sales-detail.service';
-import { CreateSalesDetailDto } from '../dto/create-sales-detail.dto';
-import { UpdateSalesDetailDto } from '../dto/update-sales-detail.dto';
+import { Roles } from 'src/shared/decorators/roles.decorator';
+import { UserRole } from 'src/shared/enums';
 
 @Controller('sales-detail')
 export class SalesDetailController {
   constructor(private readonly salesDetailService: SalesDetailService) {}
-
-  @Post()
-  create(@Body() createSalesDetailDto: CreateSalesDetailDto) {
-    return this.salesDetailService.create(createSalesDetailDto);
-  }
 
   @Get()
   findAll() {
     return this.salesDetailService.findAll();
   }
 
+  @Get('sale/:saleId')
+  findBySale(@Param('saleId', ParseIntPipe) saleId: number) {
+    return this.salesDetailService.findBySale(saleId);
+  }
+
   @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.salesDetailService.findOne(+id);
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.salesDetailService.findOne(id);
   }
 
-  @Patch(':id')
-  update(
-    @Param('id') id: string,
-    @Body() updateSalesDetailDto: UpdateSalesDetailDto,
-  ) {
-    return this.salesDetailService.update(+id, updateSalesDetailDto);
-  }
-
+  @Roles(UserRole.ADMIN)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.salesDetailService.remove(+id);
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.salesDetailService.remove(id);
   }
 }

@@ -1,0 +1,18 @@
+@if (products().length === 0) {
+  <div class="empty-state">
+    <mat-icon class="empty-icon">shopping_bag</mat-icon>
+    <div class="empty-title">Sin ventas hoy</div>
+    <div class="empty-sub">Los productos más vendidos aparecerán acá a medida que se registren ventas.</div>
+  </div>
+} @else {
+  <mat-list class="selling-list">
+    @for (product of products(); track product.productName; let i = $index) {
+      <mat-list-item class="selling-item">
+        <div class="selling-rank" matListItemAvatar>#{{ i + 1 }}</div>
+        <div matListItemTitle class="selling-name">{{ product.productName }}</div>
+        <div matListItemLine class="selling-amount">{{ formatCurrency(product.amount) }}</div>
+        <span matListItemMeta class="selling-qty">{{ product.quantity }} u</span>
+      </mat-list-item>
+    }
+  </mat-list>
+}

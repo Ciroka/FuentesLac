@@ -1,5 +1,3 @@
-import { Order } from 'src/orders/entities/order.entity';
-import { Product } from 'src/products/entities/product.entity';
 import {
   Column,
   Entity,
@@ -9,7 +7,11 @@ import {
   PrimaryGeneratedColumn,
 } from 'typeorm';
 
-@Entity()
+import { Order } from '../../orders/entities/order.entity';
+import { Product } from '../../products/entities/product.entity';
+import { Supply } from '../../supplies/entities/supply.entity';
+
+@Entity('suppliers')
 export class Supplier {
   @PrimaryGeneratedColumn()
   id!: number;
@@ -35,4 +37,7 @@ export class Supplier {
 
   @OneToMany(() => Order, (orders) => orders.supplier)
   orders!: Order[];
+
+  @OneToMany(() => Supply, (supplies) => supplies.supplier)
+  supplies!: Supply[];
 }

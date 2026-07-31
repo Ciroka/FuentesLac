@@ -1,19 +1,22 @@
 import { Module } from '@nestjs/common';
-import { CategoriesService } from './service/categories.service';
-import { CategoriesController } from './controller/categories.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { ProductsModule } from '../products/products.module';
+import { CategoriesController } from './controller/categories.controller';
+import { CategoriesService } from './service/categories.service';
+import { CategoriesRepository } from './repository/categories.repository';
+import { CATEGORIES_REPOSITORY } from './repository/categories.repository.interface';
 import { Category } from './entities/category.entity';
-import { ProductsService } from 'src/products/service/products.service';
-import { CATEGORIES_REPOSITORY } from './repositories/category.repository';
-import { TypeOrmCategoryRepository } from './repositories/TypeOrmCategories.repository';
 
 @Module({
-  imports: [TypeOrmModule.forFeature([Category]), ProductsService],
+  imports: [ProductsModule, TypeOrmModule.forFeature([Category])],
   controllers: [CategoriesController],
   providers: [
     CategoriesService,
-    { provide: CATEGORIES_REPOSITORY, useClass: TypeOrmCategoryRepository },
+    {
+      provide: CATEGORIES_REPOSITORY,
+      useClass: CategoriesRepository,
+    },
   ],
-  exports: [],
+  exports: [TypeOrmModule],
 })
 export class CategoriesModule {}

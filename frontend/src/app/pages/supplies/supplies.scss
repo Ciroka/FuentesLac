@@ -1,0 +1,25 @@
+.view-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 14px;
+
+  h2 {
+    margin-bottom: 0;
+  }
+}
+
+.supplies-error {
+  margin-bottom: 10px;
+  color: var(--color-danger);
+  font-size: 12px;
+}
+
+.search-field {
+  flex: 1;
+  min-width: 200px;
+}
+
+.category-field {
+  min-width: 200px;
+}
