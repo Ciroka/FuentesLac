@@ -1,3 +1,5 @@
+import * as fs from 'fs';
+import * as path from 'path';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
@@ -77,7 +79,16 @@ import { AuditLogModule, AuditLog } from './audit-log';
         username: config.getOrThrow('POSTGRES_USER'),
         password: config.getOrThrow('POSTGRES_PASSWORD'),
         database: config.getOrThrow('POSTGRES_DB'),
-        ssl: config.get('POSTGRES_SSL') === 'true',
+        ssl:
+          config.get('POSTGRES_SSL') === 'true'
+            ? {
+                ca: fs
+                  .readFileSync(
+                    path.join(process.cwd(), 'certs/supabase-ca.crt'),
+                  )
+                  .toString(),
+              }
+            : false,
         synchronize: config.get('NODE_ENV') === 'development',
         entities: [
           User,
