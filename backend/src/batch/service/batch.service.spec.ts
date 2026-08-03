@@ -83,7 +83,7 @@ describe('BatchService', () => {
         order: OrderEnum.DESC,
         sortBy: SortByBatch.YIELD,
         productId: 7,
-      } as QueryParamsBatch);
+      });
 
       expect(batchRepository.findAll).toHaveBeenCalledWith(
         2,
