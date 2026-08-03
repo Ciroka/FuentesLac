@@ -9,6 +9,8 @@ import { BATCH_REPOSITORY } from '../repository/batch.repository.interface';
 import type { IBatchRepository } from '../repository/batch.repository.interface';
 import { Batch } from '../entities/batch.entity';
 import { SalesDetailService } from 'src/sales-detail/service/sales-detail.service';
+import { PaginatedResult } from 'src/shared/pagination/pagination.type';
+import { QueryParamsBatch } from '../dto';
 
 @Injectable()
 export class BatchService {
@@ -18,8 +20,9 @@ export class BatchService {
     private readonly salesDetailService: SalesDetailService,
   ) {}
 
-  async findAll(): Promise<Batch[]> {
-    return await this.batchRepository.findAll();
+  async findAll(params: QueryParamsBatch): Promise<PaginatedResult<Batch>> {
+    const { page, limit, order, sortBy, productId } = params;
+    return this.batchRepository.findAll(page, limit, order, sortBy, productId);
   }
 
   async findOne(id: number, manager?: EntityManager): Promise<Batch> {
