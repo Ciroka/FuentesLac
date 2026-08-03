@@ -26,6 +26,7 @@ interface SaleItemRow {
   batchId: number | null;
   quantity: number | null;
   weight: number | null;
+  unitPrice: number | null;
 }
 
 const MAX_PHOTO_SIZE_BYTES = 5 * 1024 * 1024;
@@ -132,7 +133,7 @@ export class SaleForm implements OnInit, OnDestroy {
   }
 
   private emptyItem(): SaleItemRow {
-    return { productId: null, batchId: null, quantity: null, weight: null };
+    return { productId: null, batchId: null, quantity: null, weight: null, unitPrice: null };
   }
 
   addItem(): void {
@@ -147,6 +148,7 @@ export class SaleForm implements OnInit, OnDestroy {
   onProductChange(row: SaleItemRow): void {
     row.batchId = null;
     row.quantity = null;
+    row.unitPrice = this.getProduct(row.productId)?.salePrice ?? null;
   }
 
   getBatchesForProduct(productId: number | null): Batch[] {
@@ -167,7 +169,8 @@ export class SaleForm implements OnInit, OnDestroy {
   rowSubtotal(row: SaleItemRow): number {
     const product = this.getProduct(row.productId);
     if (!product || !row.quantity) return 0;
-    return product.salePrice * row.quantity;
+    const unitPrice = row.unitPrice ?? product.salePrice;
+    return unitPrice * row.quantity;
   }
 
   get total(): number {
@@ -190,6 +193,7 @@ export class SaleForm implements OnInit, OnDestroy {
 
     return this.items.every(row => {
       if (!row.productId || !row.batchId || !row.quantity || row.quantity <= 0) return false;
+      if (row.unitPrice == null || row.unitPrice <= 0) return false;
       const batch = this.getBatch(row.batchId);
       return !!batch && row.quantity <= batch.currentStock;
     });
@@ -228,6 +232,7 @@ export class SaleForm implements OnInit, OnDestroy {
         batchId: row.batchId!,
         quantity: row.quantity!,
         weight: row.weight ?? undefined,
+        unitPrice: row.unitPrice ?? undefined,
       })),
     }).subscribe({
       next: (sale) => {

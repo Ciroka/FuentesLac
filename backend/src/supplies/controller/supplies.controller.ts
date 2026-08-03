@@ -43,6 +43,7 @@ export class SuppliesController {
     return this.suppliesService.create(createSupplyDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,

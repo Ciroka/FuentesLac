@@ -59,7 +59,7 @@
 
 .item-row {
   display: grid;
-  grid-template-columns: 1.4fr 1.4fr 0.8fr 0.8fr auto auto;
+  grid-template-columns: 1.3fr 1.3fr 0.7fr 0.7fr 0.9fr auto auto;
   align-items: center;
   gap: 10px;
   margin-bottom: 4px;
@@ -207,5 +207,28 @@
 @media (max-width: 1024px) {
   .item-row {
     grid-template-columns: 1fr 1fr;
+
+    > button {
+      grid-column: 2;
+      justify-self: end;
+    }
+  }
+}
+
+@media (max-width: 640px) {
+  .item-row {
+    grid-template-columns: 1fr;
+
+    // Se resetea tambien el justify-self del breakpoint de 1024px: en una sola
+    // columna el boton va a la izquierda, igual que en order-form.
+    > button {
+      grid-column: 1;
+      justify-self: start;
+    }
+  }
+
+  .item-subtotal {
+    text-align: left;
+    padding-top: 4px;
   }
 }

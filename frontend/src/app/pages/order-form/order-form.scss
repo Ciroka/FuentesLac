@@ -87,3 +87,14 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+@media (max-width: 640px) {
+  .item-row {
+    grid-template-columns: 1fr;
+  }
+
+  .item-subtotal {
+    text-align: left;
+    padding-top: 4px;
+  }
+}

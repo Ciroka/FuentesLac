@@ -97,3 +97,10 @@
     grid-template-columns: 1fr 1fr;
   }
 }
+
+@media (max-width: 640px) {
+  .production-line-header,
+  .supply-row {
+    grid-template-columns: 1fr;
+  }
+}

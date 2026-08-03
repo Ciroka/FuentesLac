@@ -83,6 +83,61 @@ describe('SalesService', () => {
     });
   });
 
+  describe('create', () => {
+    let saleRepo: { create: jest.Mock; save: jest.Mock };
+    let batch: { id: number; product: { salePrice: number } };
+
+    beforeEach(() => {
+      saleRepo = {
+        create: jest.fn((data: unknown) => data),
+        save: jest.fn((data: unknown) =>
+          Promise.resolve({ id: 1, ...(data as object) }),
+        ),
+      };
+      batch = { id: 10, product: { salePrice: 100 } };
+
+      dataSource.transaction.mockImplementation(
+        (cb: (manager: EntityManager) => unknown) =>
+          cb({ getRepository: () => saleRepo } as unknown as EntityManager),
+      );
+
+      (
+        batchService as unknown as {
+          findOne: jest.Mock;
+          decreaseStock: jest.Mock;
+        }
+      ).findOne = jest.fn().mockResolvedValue(batch);
+      (batchService as unknown as { decreaseStock: jest.Mock }).decreaseStock =
+        jest.fn().mockResolvedValue(undefined);
+    });
+
+    it('uses the product sale price when no unitPrice override is sent', async () => {
+      await service.create({
+        details: [{ batchId: 10, quantity: 2 }],
+      });
+
+      expect(saleRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          total: 200,
+          details: [expect.objectContaining({ unitPrice: 100, subtotal: 200 })],
+        }),
+      );
+    });
+
+    it('uses the sent unitPrice override instead of the product sale price', async () => {
+      await service.create({
+        details: [{ batchId: 10, quantity: 2, unitPrice: 80 }],
+      });
+
+      expect(saleRepo.create).toHaveBeenCalledWith(
+        expect.objectContaining({
+          total: 160,
+          details: [expect.objectContaining({ unitPrice: 80, subtotal: 160 })],
+        }),
+      );
+    });
+  });
+
   describe('remove', () => {
     it('restores the stock and reverses the sold weight for every detail before deleting the sale', async () => {
       const sale = {

@@ -99,4 +99,12 @@ export class ProductsService {
   create(product: CreateProduct): Observable<Product> {
     return this.http.post<Product>(this.api, product);
   }
+
+  update(id: number, product: Partial<CreateProduct>): Observable<Product> {
+    return this.http.patch<Product>(`${this.api}/${id}`, product);
+  }
+
+  remove(id: number): Observable<Product> {
+    return this.http.delete<Product>(`${this.api}/${id}`);
+  }
 }

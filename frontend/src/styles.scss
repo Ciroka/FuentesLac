@@ -167,6 +167,31 @@ td {
   flex-wrap: wrap;
 }
 
+// Encabezado de vista (titulo + boton de accion), compartido por Insumos,
+// Produccion y Ventas. Envuelve en pantallas angostas en vez de apretar el
+// titulo contra el boton.
+.view-header-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 14px;
+
+  h2 {
+    margin-bottom: 0;
+  }
+}
+
+// Boton de expandir/colapsar el detalle de una fila, compartido por Produccion
+// y Ventas. En mobile crece al minimo tactil (ver el bloque @media de abajo).
+// Va scopeado a .table-container porque el dashboard usa la misma clase para
+// otro boton (el "Ver todas" de action-list), que no debe heredar este tamano.
+.table-container .toggle-btn {
+  width: 28px;
+  height: 28px;
+}
+
 .grid {
   display: grid;
   gap: 14px;
@@ -278,6 +303,11 @@ td {
   // container's border-radius).
   .table-container {
     overflow-x: auto;
+  }
+  // Minimo tactil en mobile, igual que los botones de la navbar.
+  .table-container .toggle-btn {
+    min-width: 44px;
+    min-height: 44px;
   }
 }
 

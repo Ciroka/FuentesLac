@@ -27,4 +27,21 @@ describe('ProductsService', () => {
     expect(req.request.body).toEqual({ name: 'Vela', costPrice: 500, minStock: 3 });
     req.flush({ id: 1, name: 'Vela', costPrice: 500, salePrice: 800, marginPercent: 0.3, minStock: 3 });
   });
+
+  it('update patches the product by id', () => {
+    service.update(3, { salePrice: 150 }).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/products/3`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ salePrice: 150 });
+    req.flush({ id: 3, name: 'Queso Cremoso', salePrice: 150, costPrice: 90, marginPercent: 0.3, minStock: 10 });
+  });
+
+  it('remove deletes the product by id', () => {
+    service.remove(3).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/products/3`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush({ id: 3 });
+  });
 });

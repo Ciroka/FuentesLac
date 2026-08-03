@@ -13,4 +13,9 @@ export class CreateSalesDetailDto {
   @IsPositive()
   @IsOptional()
   weight?: number;
+
+  @IsNumber()
+  @IsPositive()
+  @IsOptional()
+  unitPrice?: number;
 }

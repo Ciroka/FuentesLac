@@ -29,6 +29,7 @@ export interface CreateSaleDetailRequest {
   batchId: number;
   quantity: number;
   weight?: number;
+  unitPrice?: number;
 }
 
 export interface CreateSaleRequest {

@@ -45,4 +45,12 @@ export class SuppliesService {
   create(supply: CreateSupply): Observable<Supply> {
     return this.http.post<Supply>(this.api, supply);
   }
+
+  update(id: number, supply: Partial<CreateSupply>): Observable<Supply> {
+    return this.http.patch<Supply>(`${this.api}/${id}`, supply);
+  }
+
+  remove(id: number): Observable<Supply> {
+    return this.http.delete<Supply>(`${this.api}/${id}`);
+  }
 }

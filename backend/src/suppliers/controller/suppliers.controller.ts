@@ -37,6 +37,7 @@ export class SuppliersController {
     return this.suppliersService.findOne(id);
   }
 
+  @Roles(UserRole.ADMIN)
   @Post()
   create(
     @Body() createSupplierDto: CreateSupplierDto,
@@ -44,6 +45,7 @@ export class SuppliersController {
     return this.suppliersService.create(createSupplierDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
