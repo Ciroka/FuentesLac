@@ -23,7 +23,7 @@ describe('SaleForm', () => {
     fixture.detectChanges();
     httpMock.expectOne(`${environment.apiUrl}/clients?limit=1000`).flush({ items: [] });
     httpMock.expectOne(`${environment.apiUrl}/products?limit=1000`).flush({ items: [{ id: 1, name: 'Queso Cremoso', salePrice: 100, costPrice: 60, marginPercent: 0.3, minStock: 5 }] });
-    httpMock.expectOne(`${environment.apiUrl}/batch`).flush([{ id: 10, productId: 1, currentStock: 20 }]);
+    httpMock.expectOne(`${environment.apiUrl}/batch?limit=1000`).flush({ items: [{ id: 10, productId: 1, currentStock: 20 }], total: 1, page: 1, limit: 1000 });
   });
 
   afterEach(() => httpMock.verify());

@@ -8,4 +8,5 @@ export interface Batch {
   clientBatchDate?: string;
   clientBatchCode?: string;
   productId: number;
+  product?: { id: number; name: string };
 }
