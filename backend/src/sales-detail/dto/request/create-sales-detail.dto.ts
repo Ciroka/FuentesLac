@@ -1,4 +1,5 @@
 import { IsInt, IsNumber, IsOptional, IsPositive } from 'class-validator';
+import { Type } from 'class-transformer';
 
 export class CreateSalesDetailDto {
   @IsInt()
@@ -14,6 +15,7 @@ export class CreateSalesDetailDto {
   @IsOptional()
   weight?: number;
 
+  @Type(() => Number)
   @IsNumber()
   @IsPositive()
   @IsOptional()
