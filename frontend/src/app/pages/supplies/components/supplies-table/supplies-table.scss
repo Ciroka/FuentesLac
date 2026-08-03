@@ -66,6 +66,8 @@
   padding-right: 0 !important;
 }
 
+// The whole row toggles the detail panel, not just the button — make that
+// affordance visible.
 .table-container tbody tr:not(.detail-row) {
   cursor: pointer;
 }
@@ -125,6 +127,10 @@
     padding: 6px 8px;
     border-bottom: 1px solid var(--line);
     text-align: left;
+
+    &.num {
+      text-align: right;
+    }
   }
 
   td {
@@ -133,9 +139,22 @@
     color: var(--ink);
     white-space: normal;
     overflow: visible;
+
+    &.num {
+      text-align: right;
+    }
   }
 
   tr:last-child td {
     border-bottom: none;
   }
+}
+
+.detail-empty {
+  text-align: center;
+  padding: 14px;
+  font-family: var(--sans);
+  font-size: 11px;
+  color: var(--ink-dim);
+  letter-spacing: 0.5px;
 }
