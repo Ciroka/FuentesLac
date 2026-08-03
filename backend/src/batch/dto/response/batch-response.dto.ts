@@ -10,6 +10,7 @@ export interface BatchResponse {
   clientBatchDate?: Date;
   clientBatchCode?: string;
   productId: number;
+  product?: { id: number; name: string };
 }
 
 export function toBatchResponse(batch: Batch): BatchResponse {
@@ -25,6 +26,9 @@ export function toBatchResponse(batch: Batch): BatchResponse {
       ? formatClientBatchCode(batch.clientBatchDate)
       : undefined,
     productId: batch.productId,
+    product: batch.product
+      ? { id: batch.product.id, name: batch.product.name }
+      : undefined,
   };
 }
 

@@ -6,9 +6,16 @@ import {
   Param,
   Delete,
   ParseIntPipe,
+  Query,
 } from '@nestjs/common';
 import { BatchService } from '../service/batch.service';
-import { BatchResponse, CreateBatchDto, toBatchResponse } from '../dto';
+import {
+  BatchResponse,
+  CreateBatchDto,
+  QueryParamsBatch,
+  toBatchResponse,
+} from '../dto';
+import { PaginatedResult } from 'src/shared/pagination/pagination.type';
 import { Roles } from 'src/shared/decorators/roles.decorator';
 import { UserRole } from 'src/shared/enums';
 import { Batch } from '../entities/batch.entity';
@@ -18,9 +25,11 @@ export class BatchController {
   constructor(private readonly batchService: BatchService) {}
 
   @Get()
-  async findAll(): Promise<BatchResponse[]> {
-    const batches = await this.batchService.findAll();
-    return batches.map(toBatchResponse);
+  async findAll(
+    @Query() params: QueryParamsBatch,
+  ): Promise<PaginatedResult<BatchResponse>> {
+    const result = await this.batchService.findAll(params);
+    return { ...result, items: result.items.map(toBatchResponse) };
   }
 
   @Get(':id')
