@@ -6,7 +6,6 @@ import { SalesDetailService } from 'src/sales-detail/service/sales-detail.servic
 import { Batch } from '../entities/batch.entity';
 import { OrderEnum } from 'src/shared/enums/order.enum';
 import { SortByBatch } from '../enums/sort-by.enum';
-import { QueryParamsBatch } from '../dto';
 
 describe('BatchService', () => {
   let service: BatchService;
