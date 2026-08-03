@@ -44,6 +44,12 @@
                     </a>
                 </li>
                 <li routerLinkActive="active">
+                    <a routerLink="/batches" (click)="closeMobileMenu()">
+                        <mat-icon aria-hidden="true">science</mat-icon>
+                        <span>Lotes</span>
+                    </a>
+                </li>
+                <li routerLinkActive="active">
                     <a routerLink="/sales" (click)="closeMobileMenu()">
                         <mat-icon aria-hidden="true">local_shipping</mat-icon>
                         <span>Ventas</span>
