@@ -109,3 +109,18 @@
   color: var(--color-danger);
   font-size: 12px;
 }
+
+@media (max-width: 640px) {
+  .order-line {
+    grid-template-columns: 1fr;
+    gap: 2px;
+  }
+
+  .panel-line {
+    grid-template-columns: 1fr;
+  }
+
+  .panel-input {
+    width: 100%;
+  }
+}

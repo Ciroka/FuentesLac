@@ -60,6 +60,7 @@ export class ProductsController {
     return await this.productsService.create(createProductDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,

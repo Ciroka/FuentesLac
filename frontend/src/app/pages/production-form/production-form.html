@@ -38,7 +38,10 @@
 
               <mat-form-field appearance="outline" class="line-qty">
                 <mat-label>Cantidad producida</mat-label>
-                <input matInput type="number" min="1" [(ngModel)]="line.quantity">
+                <input matInput type="number" min="1" [(ngModel)]="line.quantity" #qtyModel="ngModel">
+                @if (qtyModel.hasError('min')) {
+                  <mat-error aria-live="polite">La cantidad tiene que ser mayor a 0</mat-error>
+                }
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="line-date">
@@ -72,7 +75,12 @@
 
                   <mat-form-field appearance="outline" class="supply-qty">
                     <mat-label>Cantidad</mat-label>
-                    <input matInput type="number" min="1" [max]="getSupply(s.supplyId)?.currentStock ?? null" [(ngModel)]="s.quantity">
+                    <input matInput type="number" min="1" [max]="getSupply(s.supplyId)?.currentStock ?? null" [(ngModel)]="s.quantity" #supplyQtyModel="ngModel">
+                    @if (supplyQtyModel.hasError('max')) {
+                      <mat-error aria-live="polite">No hay stock suficiente: quedan {{ getSupply(s.supplyId)?.currentStock }}</mat-error>
+                    } @else if (supplyQtyModel.hasError('min')) {
+                      <mat-error aria-live="polite">La cantidad tiene que ser mayor a 0</mat-error>
+                    }
                   </mat-form-field>
 
                   <button mat-icon-button type="button" (click)="removeSupply(line, j)" [disabled]="line.supplies.length === 1" aria-label="Quitar insumo">

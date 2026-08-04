@@ -4,16 +4,20 @@ import { BatchService } from './batch.service';
 import { BATCH_REPOSITORY } from '../repository/batch.repository.interface';
 import { SalesDetailService } from 'src/sales-detail/service/sales-detail.service';
 import { Batch } from '../entities/batch.entity';
+import { OrderEnum } from 'src/shared/enums/order.enum';
+import { SortByBatch } from '../enums/sort-by.enum';
 
 describe('BatchService', () => {
   let service: BatchService;
   let batchRepository: {
+    findAll: jest.Mock;
     decreaseStockAtomic: jest.Mock;
     increaseStockAtomic: jest.Mock;
   };
 
   beforeEach(async () => {
     batchRepository = {
+      findAll: jest.fn(),
       decreaseStockAtomic: jest.fn(),
       increaseStockAtomic: jest.fn(),
     };
@@ -64,6 +68,30 @@ describe('BatchService', () => {
       await expect(service.increaseStock(1, 5)).rejects.toThrow(
         BadRequestException,
       );
+    });
+  });
+
+  describe('findAll', () => {
+    it('passes the destructured query params through to the repository', async () => {
+      const paginated = { items: [], total: 0, page: 2, limit: 5 };
+      batchRepository.findAll.mockResolvedValue(paginated);
+
+      const result = await service.findAll({
+        page: 2,
+        limit: 5,
+        order: OrderEnum.DESC,
+        sortBy: SortByBatch.YIELD,
+        productId: 7,
+      });
+
+      expect(batchRepository.findAll).toHaveBeenCalledWith(
+        2,
+        5,
+        OrderEnum.DESC,
+        SortByBatch.YIELD,
+        7,
+      );
+      expect(result).toBe(paginated);
     });
   });
 });

@@ -90,7 +90,7 @@ export class AuthController {
     const rawToken = req.cookies?.[REFRESH_TOKEN_COOKIE] as string | undefined;
     await this.authService.logout(rawToken);
     res.clearCookie(ACCESS_TOKEN_COOKIE);
-    res.clearCookie(REFRESH_TOKEN_COOKIE, { path: REFRESH_TOKEN_PATH });
+    res.clearCookie(REFRESH_TOKEN_COOKIE, { path: this.getRefreshTokenPath() });
     return { message: 'Sesión cerrada' };
   }
 
@@ -146,8 +146,15 @@ export class AuthController {
       httpOnly: true,
       secure: isProduction,
       sameSite: isProduction ? 'none' : 'lax',
-      path: REFRESH_TOKEN_PATH,
+      path: this.getRefreshTokenPath(),
       maxAge: refreshExpiresDays * 24 * 60 * 60 * 1000,
     });
+  }
+
+  private getRefreshTokenPath(): string {
+    return (
+      this.configService.get<string>('REFRESH_TOKEN_COOKIE_PATH') ??
+      REFRESH_TOKEN_PATH
+    );
   }
 }

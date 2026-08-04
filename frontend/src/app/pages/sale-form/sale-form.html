@@ -92,12 +92,25 @@
 
             <mat-form-field appearance="outline" class="item-qty">
               <mat-label>Cantidad</mat-label>
-              <input matInput type="number" min="1" [max]="getBatch(row.batchId)?.currentStock ?? null" [(ngModel)]="row.quantity">
+              <input matInput type="number" min="1" [max]="getBatch(row.batchId)?.currentStock ?? null" [(ngModel)]="row.quantity" #qtyModel="ngModel">
+              @if (qtyModel.hasError('max')) {
+                <mat-error aria-live="polite">No podés vender más de {{ getBatch(row.batchId)?.currentStock }} unidades de este lote</mat-error>
+              } @else if (qtyModel.hasError('min')) {
+                <mat-error aria-live="polite">La cantidad tiene que ser mayor a 0</mat-error>
+              }
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="item-weight">
               <mat-label>Peso (kg)</mat-label>
               <input matInput type="number" min="0" step="0.01" [(ngModel)]="row.weight">
+            </mat-form-field>
+
+            <mat-form-field appearance="outline" class="item-price">
+              <mat-label>Precio unit.</mat-label>
+              <input matInput type="number" min="0.01" step="0.01" [(ngModel)]="row.unitPrice" #priceModel="ngModel">
+              @if (priceModel.hasError('min')) {
+                <mat-error aria-live="polite">El precio tiene que ser mayor a $0</mat-error>
+              }
             </mat-form-field>
 
             <div class="item-subtotal">{{ formatCurrency(rowSubtotal(row)) }}</div>

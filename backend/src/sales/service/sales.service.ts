@@ -69,7 +69,7 @@ export class SalesService {
 
       for (const item of createSaleDto.details) {
         const batch = await this.batchService.findOne(item.batchId, manager);
-        const unitPrice = batch.product.salePrice;
+        const unitPrice = item.unitPrice ?? batch.product.salePrice;
         const subtotal = unitPrice * item.quantity;
         total += subtotal;
 

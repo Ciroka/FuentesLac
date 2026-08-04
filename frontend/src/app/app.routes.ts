@@ -68,6 +68,10 @@ export const routes: Routes = [
         loadComponent: () => import('./pages/production-form/production-form').then((m) => m.ProductionForm),
       },
       {
+        path: 'batches',
+        loadComponent: () => import('./pages/batches/batches').then((m) => m.Batches),
+      },
+      {
         path: 'admin',
         canActivate: [roleGuard(UserRole.ADMIN)],
         loadComponent: () => import('./pages/admin/admin').then((m) => m.Admin),

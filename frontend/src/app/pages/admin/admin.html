@@ -13,8 +13,8 @@
       </ng-template>
 
       <div class="admin-panel">
-        <span class="section-label">Nuevo insumo</span>
-        <form class="admin-form" (ngSubmit)="createSupply(supplyForm)" #supplyForm="ngForm">
+        <span class="section-label">{{ editingSupplyId() ? 'Editar insumo' : 'Nuevo insumo' }}</span>
+        <form class="admin-form" (ngSubmit)="submitSupply(supplyForm)" #supplyForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
             <input matInput [(ngModel)]="newSupply.name" name="supplyName" required />
@@ -47,10 +47,172 @@
           <mat-checkbox [(ngModel)]="newSupply.isMilk" name="supplyIsMilk">Es leche</mat-checkbox>
 
           <button mat-raised-button color="primary" type="submit" [disabled]="supplyForm.invalid || savingSupply()">
-            <mat-icon>add</mat-icon> Crear insumo
+            <mat-icon>{{ editingSupplyId() ? 'save' : 'add' }}</mat-icon>
+            {{ editingSupplyId() ? 'Guardar cambios' : 'Crear insumo' }}
           </button>
+          @if (editingSupplyId()) {
+            <button mat-stroked-button type="button" (click)="cancelEditSupply(supplyForm)">Cancelar</button>
+          }
         </form>
       </div>
+
+      <div class="section-header admin-panel-top">
+        <span class="table-label">Insumos existentes</span>
+      </div>
+
+      @if (suppliesList().length) {
+        <div class="table-container">
+          <table mat-table [dataSource]="suppliesList()">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Nombre</th>
+              <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="costPrice">
+              <th mat-header-cell *matHeaderCellDef>Costo</th>
+              <td mat-cell *matCellDef="let row" class="num">{{ row.costPrice | currency:'ARS' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="currentStock">
+              <th mat-header-cell *matHeaderCellDef>Stock</th>
+              <td mat-cell *matCellDef="let row" class="num">{{ row.currentStock }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="minStock">
+              <th mat-header-cell *matHeaderCellDef>Mínimo</th>
+              <td mat-cell *matCellDef="let row" class="num">{{ row.minStock }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="supplier">
+              <th mat-header-cell *matHeaderCellDef>Proveedor</th>
+              <td mat-cell *matCellDef="let row">{{ row.supplier?.name ?? '—' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-icon-button (click)="startEditSupply(row, supplyForm)" aria-label="Editar insumo">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="removeSupply(row, supplyForm)" aria-label="Eliminar insumo">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="suppliesColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: suppliesColumns;"></tr>
+          </table>
+        </div>
+
+        <div class="list-pagination">
+          <button mat-stroked-button (click)="prevSuppliesPage()" [disabled]="suppliesPage() <= 1">Anterior</button>
+          <span class="list-page-label">Página {{ suppliesPage() }}</span>
+          <button mat-stroked-button (click)="nextSuppliesPage()" [disabled]="suppliesPage() * suppliesLimit >= suppliesTotal()">Siguiente</button>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <mat-icon>inventory_2</mat-icon>
+          <span class="empty-state-title">Todavía no hay insumos</span>
+          <span class="empty-state-sub">Los insumos que crees van a aparecer acá.</span>
+        </div>
+      }
+    </mat-tab>
+
+    <mat-tab>
+      <ng-template mat-tab-label>
+        <mat-icon>storefront</mat-icon>
+        <span>Proveedores</span>
+      </ng-template>
+
+      <div class="admin-panel">
+        <span class="section-label">{{ editingSupplierId() ? 'Editar proveedor' : 'Nuevo proveedor' }}</span>
+        <form class="admin-form" (ngSubmit)="submitSupplier(supplierForm)" #supplierForm="ngForm">
+          <mat-form-field appearance="outline">
+            <mat-label>Nombre</mat-label>
+            <input matInput [(ngModel)]="newSupplier.name" name="supplierName" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Teléfono</mat-label>
+            <input matInput [(ngModel)]="newSupplier.phone" name="supplierPhone" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Email</mat-label>
+            <input matInput type="email" [(ngModel)]="newSupplier.email" name="supplierEmail" required email />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>Dirección</mat-label>
+            <input matInput [(ngModel)]="newSupplier.address" name="supplierAddress" required />
+          </mat-form-field>
+
+          <mat-form-field appearance="outline">
+            <mat-label>CUIT</mat-label>
+            <input matInput [(ngModel)]="newSupplier.cuit" name="supplierCuit" required />
+          </mat-form-field>
+
+          <button mat-raised-button color="primary" type="submit" [disabled]="supplierForm.invalid || savingSupplier()">
+            <mat-icon>{{ editingSupplierId() ? 'save' : 'add' }}</mat-icon>
+            {{ editingSupplierId() ? 'Guardar cambios' : 'Crear proveedor' }}
+          </button>
+          @if (editingSupplierId()) {
+            <button mat-stroked-button type="button" (click)="cancelEditSupplier(supplierForm)">Cancelar</button>
+          }
+        </form>
+      </div>
+
+      <div class="section-header admin-panel-top">
+        <span class="table-label">Proveedores existentes</span>
+      </div>
+
+      @if (suppliers.length) {
+        <div class="table-container">
+          <table mat-table [dataSource]="suppliers">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Nombre</th>
+              <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="phone">
+              <th mat-header-cell *matHeaderCellDef>Teléfono</th>
+              <td mat-cell *matCellDef="let row">{{ row.phone }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="email">
+              <th mat-header-cell *matHeaderCellDef>Email</th>
+              <td mat-cell *matCellDef="let row">{{ row.email }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="cuit">
+              <th mat-header-cell *matHeaderCellDef>CUIT</th>
+              <td mat-cell *matCellDef="let row">{{ row.cuit }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-icon-button (click)="startEditSupplier(row, supplierForm)" aria-label="Editar proveedor">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="removeSupplier(row, supplierForm)" aria-label="Eliminar proveedor">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="suppliersColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: suppliersColumns;"></tr>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <mat-icon>storefront</mat-icon>
+          <span class="empty-state-title">Todavía no hay proveedores</span>
+          <span class="empty-state-sub">Los proveedores que crees van a aparecer acá.</span>
+        </div>
+      }
     </mat-tab>
 
     <mat-tab>
@@ -60,8 +222,8 @@
       </ng-template>
 
       <div class="admin-panel">
-        <span class="section-label">Nuevo producto</span>
-        <form class="admin-form" (ngSubmit)="createProduct(productForm)" #productForm="ngForm">
+        <span class="section-label">{{ editingProductId() ? 'Editar producto' : 'Nuevo producto' }}</span>
+        <form class="admin-form" (ngSubmit)="submitProduct(productForm)" #productForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
             <input matInput [(ngModel)]="newProduct.name" name="productName" required />
@@ -98,10 +260,75 @@
           </mat-form-field>
 
           <button mat-raised-button color="primary" type="submit" [disabled]="productForm.invalid || savingProduct()">
-            <mat-icon>add</mat-icon> Crear producto
+            <mat-icon>{{ editingProductId() ? 'save' : 'add' }}</mat-icon>
+            {{ editingProductId() ? 'Guardar cambios' : 'Crear producto' }}
           </button>
+          @if (editingProductId()) {
+            <button mat-stroked-button type="button" (click)="cancelEditProduct(productForm)">Cancelar</button>
+          }
         </form>
       </div>
+
+      <div class="section-header admin-panel-top">
+        <span class="table-label">Productos existentes</span>
+      </div>
+
+      @if (products().length) {
+        <div class="table-container">
+          <table mat-table [dataSource]="products()">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Nombre</th>
+              <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="costPrice">
+              <th mat-header-cell *matHeaderCellDef>Precio de costo</th>
+              <td mat-cell *matCellDef="let row" class="num">{{ row.costPrice | currency:'ARS' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="salePrice">
+              <th mat-header-cell *matHeaderCellDef>Precio de venta</th>
+              <td mat-cell *matCellDef="let row" class="num">{{ row.salePrice | currency:'ARS' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="marginPercent">
+              <th mat-header-cell *matHeaderCellDef>Margen</th>
+              <td mat-cell *matCellDef="let row">{{ row.marginPercent * 100 | number:'1.0-2' }}%</td>
+            </ng-container>
+
+            <ng-container matColumnDef="minStock">
+              <th mat-header-cell *matHeaderCellDef>Stock mínimo</th>
+              <td mat-cell *matCellDef="let row">{{ row.minStock }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="category">
+              <th mat-header-cell *matHeaderCellDef>Categoría</th>
+              <td mat-cell *matCellDef="let row">{{ row.category?.name || '—' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-icon-button (click)="startEditProduct(row, productForm)" aria-label="Editar producto">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="removeProduct(row, productForm)" aria-label="Eliminar producto">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="productsColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: productsColumns;"></tr>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <mat-icon>category_off</mat-icon>
+          <span class="empty-state-title">Todavía no hay productos</span>
+          <span class="empty-state-sub">Los productos que crees van a aparecer acá.</span>
+        </div>
+      }
     </mat-tab>
 
     <mat-tab>
@@ -111,8 +338,8 @@
       </ng-template>
 
       <div class="admin-panel">
-        <span class="section-label">Nueva categoría</span>
-        <form class="admin-form" (ngSubmit)="createCategory(categoryForm)" #categoryForm="ngForm">
+        <span class="section-label">{{ editingCategoryId() ? 'Editar categoría' : 'Nueva categoría' }}</span>
+        <form class="admin-form" (ngSubmit)="submitCategory(categoryForm)" #categoryForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
             <input matInput [(ngModel)]="newCategory.name" name="categoryName" required />
@@ -124,10 +351,55 @@
           </mat-form-field>
 
           <button mat-raised-button color="primary" type="submit" [disabled]="categoryForm.invalid || savingCategory()">
-            <mat-icon>add</mat-icon> Crear categoría
+            <mat-icon>{{ editingCategoryId() ? 'save' : 'add' }}</mat-icon>
+            {{ editingCategoryId() ? 'Guardar cambios' : 'Crear categoría' }}
           </button>
+          @if (editingCategoryId()) {
+            <button mat-stroked-button type="button" (click)="cancelEditCategory(categoryForm)">Cancelar</button>
+          }
         </form>
       </div>
+
+      <div class="section-header admin-panel-top">
+        <span class="table-label">Categorías existentes</span>
+      </div>
+
+      @if (categories.length) {
+        <div class="table-container">
+          <table mat-table [dataSource]="categories">
+            <ng-container matColumnDef="name">
+              <th mat-header-cell *matHeaderCellDef>Nombre</th>
+              <td mat-cell *matCellDef="let row">{{ row.name }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="description">
+              <th mat-header-cell *matHeaderCellDef>Descripción</th>
+              <td mat-cell *matCellDef="let row">{{ row.description || '—' }}</td>
+            </ng-container>
+
+            <ng-container matColumnDef="actions">
+              <th mat-header-cell *matHeaderCellDef></th>
+              <td mat-cell *matCellDef="let row">
+                <button mat-icon-button (click)="startEditCategory(row, categoryForm)" aria-label="Editar categoría">
+                  <mat-icon>edit</mat-icon>
+                </button>
+                <button mat-icon-button (click)="removeCategory(row, categoryForm)" aria-label="Eliminar categoría">
+                  <mat-icon>delete</mat-icon>
+                </button>
+              </td>
+            </ng-container>
+
+            <tr mat-header-row *matHeaderRowDef="categoriesColumns"></tr>
+            <tr mat-row *matRowDef="let row; columns: categoriesColumns;"></tr>
+          </table>
+        </div>
+      } @else {
+        <div class="empty-state">
+          <mat-icon>label_off</mat-icon>
+          <span class="empty-state-title">Todavía no hay categorías</span>
+          <span class="empty-state-sub">Las categorías que crees van a aparecer acá.</span>
+        </div>
+      }
     </mat-tab>
 
     <mat-tab>

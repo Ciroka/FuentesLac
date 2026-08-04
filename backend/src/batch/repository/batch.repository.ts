@@ -4,6 +4,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 
 import { IBatchRepository } from './batch.repository.interface';
 import { Batch } from '../entities/batch.entity';
+import { PaginatedResult } from '../../shared/pagination/pagination.type';
+import { OrderEnum } from '../../shared/enums/order.enum';
+import { SortByBatch } from '../enums/sort-by.enum';
 
 @Injectable()
 export class BatchRepository implements IBatchRepository {
@@ -12,8 +15,33 @@ export class BatchRepository implements IBatchRepository {
     private readonly batchRepository: Repository<Batch>,
   ) {}
 
-  async findAll(): Promise<Batch[]> {
-    return this.batchRepository.find();
+  async findAll(
+    page: number,
+    limit: number,
+    order: OrderEnum,
+    sortBy?: SortByBatch,
+    productId?: number,
+  ): Promise<PaginatedResult<Batch>> {
+    const query = this.batchRepository
+      .createQueryBuilder('batch')
+      .leftJoinAndSelect('batch.product', 'product');
+
+    if (productId) {
+      query.andWhere('batch.productId = :productId', { productId });
+    }
+
+    if (sortBy) {
+      query.orderBy(`batch.${sortBy}`, order, 'NULLS LAST');
+    }
+    query.addOrderBy('batch.id', 'DESC');
+
+    const offset = (page - 1) * limit;
+    const [items, total] = await query
+      .take(limit)
+      .skip(offset)
+      .getManyAndCount();
+
+    return { items, total, page, limit };
   }
 
   async findOneById(

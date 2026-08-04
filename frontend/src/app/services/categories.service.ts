@@ -26,4 +26,12 @@ export class CategoriesService {
   create(category: CreateCategory): Observable<Category> {
     return this.http.post<Category>(this.api, category);
   }
+
+  update(id: number, category: Partial<CreateCategory>): Observable<Category> {
+    return this.http.patch<Category>(`${this.api}/${id}`, category);
+  }
+
+  remove(id: number): Observable<Category> {
+    return this.http.delete<Category>(`${this.api}/${id}`);
+  }
 }

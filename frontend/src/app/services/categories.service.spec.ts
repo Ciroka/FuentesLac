@@ -41,4 +41,24 @@ describe('CategoriesService', () => {
 
     expect(result).toEqual({ id: 2, name: 'Quesos', description: 'Duros y blandos' });
   });
+
+  it('update patches the category by id', () => {
+    let result: unknown;
+    service.update(2, { name: 'Blandos' }).subscribe(res => (result = res));
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/categories/2`);
+    expect(req.request.method).toBe('PATCH');
+    expect(req.request.body).toEqual({ name: 'Blandos' });
+    req.flush({ id: 2, name: 'Blandos' });
+
+    expect(result).toEqual({ id: 2, name: 'Blandos' });
+  });
+
+  it('remove deletes the category by id', () => {
+    service.remove(2).subscribe();
+
+    const req = httpMock.expectOne(`${environment.apiUrl}/categories/2`);
+    expect(req.request.method).toBe('DELETE');
+    req.flush({ id: 2 });
+  });
 });

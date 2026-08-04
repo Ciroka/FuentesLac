@@ -47,6 +47,7 @@ export class CategoriesController {
     return this.categoriesService.findAllProducts(id, params);
   }
 
+  @Roles(UserRole.ADMIN)
   @Post()
   create(
     @Body() createCategoryDto: CreateCategoryDto,
@@ -54,6 +55,7 @@ export class CategoriesController {
     return this.categoriesService.create(createCategoryDto);
   }
 
+  @Roles(UserRole.ADMIN)
   @Patch(':id')
   update(
     @Param('id', ParseIntPipe) id: number,
