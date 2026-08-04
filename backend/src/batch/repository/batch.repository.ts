@@ -33,6 +33,7 @@ export class BatchRepository implements IBatchRepository {
     if (sortBy) {
       query.orderBy(`batch.${sortBy}`, order, 'NULLS LAST');
     }
+    query.addOrderBy('batch.id', 'DESC');
 
     const offset = (page - 1) * limit;
     const [items, total] = await query

@@ -68,6 +68,10 @@
     padding: 6px 8px;
     border-bottom: 1px solid var(--line);
     text-align: left;
+
+    &.num {
+      text-align: right;
+    }
   }
 
   td {
@@ -76,6 +80,10 @@
     color: var(--ink);
     white-space: normal;
     overflow: visible;
+
+    &.num {
+      text-align: right;
+    }
   }
 
   tr:last-child td {
