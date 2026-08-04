@@ -49,7 +49,10 @@
 
             <mat-form-field appearance="outline" class="item-qty">
               <mat-label>Cantidad</mat-label>
-              <input matInput type="number" min="1" [(ngModel)]="row.quantity">
+              <input matInput type="number" min="1" [(ngModel)]="row.quantity" #qtyModel="ngModel">
+              @if (qtyModel.hasError('min')) {
+                <mat-error aria-live="polite">La cantidad tiene que ser mayor a 0</mat-error>
+              }
             </mat-form-field>
 
             <div class="item-subtotal">{{ formatCurrency(rowSubtotal(row)) }}</div>
