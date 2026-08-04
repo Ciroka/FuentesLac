@@ -70,7 +70,7 @@ describe('AuthController', () => {
   });
 
   describe('refresh_token cookie path', () => {
-    it('uses the default "/auth" path when REFRESH_TOKEN_COOKIE_PATH is not configured', async () => {
+    it('uses the default "/api/auth" path when REFRESH_TOKEN_COOKIE_PATH is not configured', async () => {
       await setupModule({});
       const { cookie, res } = createRes();
 
@@ -82,7 +82,7 @@ describe('AuthController', () => {
       expect(cookie).toHaveBeenCalledWith(
         'refresh_token',
         'refresh-token',
-        expect.objectContaining({ path: '/auth' }),
+        expect.objectContaining({ path: '/api/auth' }),
       );
     });
 
