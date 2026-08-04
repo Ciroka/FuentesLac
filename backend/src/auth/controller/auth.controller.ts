@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Throttle } from '@nestjs/throttler';
-import type { Request as ExpressRequest, Response } from 'express';
+import type { CookieOptions, Request as ExpressRequest, Response } from 'express';
 
 import {
   UserLoginRequest,
@@ -32,7 +32,7 @@ import type { AuthenticatedRequest } from '../dto/request/user-request.dto';
 
 const ACCESS_TOKEN_COOKIE = 'access_token';
 const REFRESH_TOKEN_COOKIE = 'refresh_token';
-const REFRESH_TOKEN_PATH = '/auth';
+const REFRESH_TOKEN_PATH = '/api/auth';
 
 @Controller('auth')
 export class AuthController {
@@ -89,8 +89,14 @@ export class AuthController {
   ): Promise<UserMessageResponse> {
     const rawToken = req.cookies?.[REFRESH_TOKEN_COOKIE] as string | undefined;
     await this.authService.logout(rawToken);
-    res.clearCookie(ACCESS_TOKEN_COOKIE);
-    res.clearCookie(REFRESH_TOKEN_COOKIE, { path: this.getRefreshTokenPath() });
+
+    const baseOptions = this.getBaseCookieOptions();
+    res.clearCookie(ACCESS_TOKEN_COOKIE, { ...baseOptions, path: '/' });
+    res.clearCookie(REFRESH_TOKEN_COOKIE, {
+      ...baseOptions,
+      path: this.getRefreshTokenPath(),
+    });
+
     return { message: 'Sesión cerrada' };
   }
 
@@ -126,8 +132,8 @@ export class AuthController {
     accessToken: string,
     refreshToken: string,
   ): void {
-    const isProduction =
-      this.configService.get<string>('NODE_ENV') === 'production';
+    const baseOptions = this.getBaseCookieOptions();
+
     const accessExpiresSec = Number(
       this.configService.get<string>('JWT_EXPIRES_SEC') ?? 900,
     );
@@ -136,19 +142,27 @@ export class AuthController {
     );
 
     res.cookie(ACCESS_TOKEN_COOKIE, accessToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
+      ...baseOptions,
+      path: '/',
       maxAge: accessExpiresSec * 1000,
     });
 
     res.cookie(REFRESH_TOKEN_COOKIE, refreshToken, {
-      httpOnly: true,
-      secure: isProduction,
-      sameSite: isProduction ? 'none' : 'lax',
+      ...baseOptions,
       path: this.getRefreshTokenPath(),
       maxAge: refreshExpiresDays * 24 * 60 * 60 * 1000,
     });
+  }
+
+  private getBaseCookieOptions(): CookieOptions {
+    const isProduction =
+      this.configService.get<string>('NODE_ENV') === 'production';
+
+    return {
+      httpOnly: true,
+      secure: isProduction,
+      sameSite: 'lax',
+    };
   }
 
   private getRefreshTokenPath(): string {
