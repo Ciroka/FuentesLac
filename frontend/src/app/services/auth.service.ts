@@ -9,6 +9,8 @@ interface LoginResponse {
   user: AuthUser;
 }
 
+const SESSION_HINT_KEY = 'has_session';
+
 @Injectable({ providedIn: 'root' })
 export class AuthService {
   private readonly http = inject(HttpClient);
@@ -28,7 +30,7 @@ export class AuthService {
         { email, password },
         { withCredentials: true },
       )
-      .pipe(tap(res => this._currentUser.set(res.user)));
+      .pipe(tap(res => this.onLoggedIn(res.user)));
   }
 
   register(name: string, email: string, password: string): Observable<{ user: AuthUser }> {
@@ -49,16 +51,28 @@ export class AuthService {
   refreshToken(): Observable<AuthUser> {
     return this.http
       .post<LoginResponse>(`${this.api}/refresh`, {}, { withCredentials: true })
-      .pipe(tap(res => this._currentUser.set(res.user)), map(res => res.user));
+      .pipe(tap(res => this.onLoggedIn(res.user)), map(res => res.user));
   }
 
+  /**
+   * Las cookies de sesión son httpOnly, así que el frontend no puede leerlas
+   * para saber si hay sesión antes de pegarle al backend. Sin esta bandera en
+   * localStorage, un visitante que nunca se logueó dispara un GET /auth/me
+   * (401 garantizado) seguido de un POST /auth/refresh (también 401) en cada
+   * carga de la app. Si nunca hubo sesión, ni siquiera intentamos la request.
+   */
   restoreSession(): Observable<AuthUser | null> {
+    if (localStorage.getItem(SESSION_HINT_KEY) !== '1') {
+      this._currentUser.set(null);
+      return of(null);
+    }
+
     return this.http
       .get<AuthUser>(`${this.api}/me`, { withCredentials: true })
       .pipe(
-        tap(user => this._currentUser.set(user)),
+        tap(user => this.onLoggedIn(user)),
         catchError(() => {
-          this._currentUser.set(null);
+          this.clearSession();
           return of(null);
         }),
       );
@@ -66,6 +80,12 @@ export class AuthService {
 
   clearSession(): void {
     this._currentUser.set(null);
+    localStorage.removeItem(SESSION_HINT_KEY);
+  }
+
+  private onLoggedIn(user: AuthUser): void {
+    this._currentUser.set(user);
+    localStorage.setItem(SESSION_HINT_KEY, '1');
   }
 
   changePassword(currentPassword: string, newPassword: string): Observable<{ message: string }> {
@@ -85,7 +105,7 @@ export class AuthService {
   }
 
   private onLoggedOut(): void {
-    this._currentUser.set(null);
+    this.clearSession();
     this.router.navigate(['/login']);
   }
 }

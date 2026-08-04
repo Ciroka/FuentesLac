@@ -19,6 +19,8 @@ describe('AuthService', () => {
   };
 
   beforeEach(() => {
+    localStorage.clear();
+
     TestBed.configureTestingModule({
       providers: [provideHttpClient(), provideHttpClientTesting(), provideRouter([])],
     });
@@ -47,7 +49,18 @@ describe('AuthService', () => {
     expect(service.currentUser()).toEqual(user);
   });
 
-  it('restoreSession populates the current user on success', () => {
+  it('restoreSession skips the network call when there is no session hint (never logged in)', async () => {
+    const resultPromise = firstValueFrom(service.restoreSession());
+
+    httpMock.expectNone(`${environment.apiUrl}/auth/me`);
+
+    expect(await resultPromise).toBeNull();
+    expect(service.isLoggedIn()).toBe(false);
+  });
+
+  it('restoreSession populates the current user on success when a session hint exists', () => {
+    localStorage.setItem('has_session', '1');
+
     service.restoreSession().subscribe();
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/me`);
@@ -56,7 +69,9 @@ describe('AuthService', () => {
     expect(service.currentUser()).toEqual(user);
   });
 
-  it('restoreSession clears the user on 401 instead of throwing', async () => {
+  it('restoreSession clears the user and the session hint on 401 instead of throwing', async () => {
+    localStorage.setItem('has_session', '1');
+
     const resultPromise = firstValueFrom(service.restoreSession());
 
     const req = httpMock.expectOne(`${environment.apiUrl}/auth/me`);
@@ -64,6 +79,14 @@ describe('AuthService', () => {
 
     expect(await resultPromise).toBeNull();
     expect(service.isLoggedIn()).toBe(false);
+    expect(localStorage.getItem('has_session')).toBeNull();
+  });
+
+  it('login sets the session hint so a later restoreSession will actually check the server', () => {
+    service.login('user@fuentelac.com', 'secret').subscribe();
+    httpMock.expectOne(`${environment.apiUrl}/auth/login`).flush({ user });
+
+    expect(localStorage.getItem('has_session')).toBe('1');
   });
 
   it('register posts credentials without touching the current session', () => {
@@ -80,7 +103,8 @@ describe('AuthService', () => {
     expect(service.isLoggedIn()).toBe(false);
   });
 
-  it('clearSession resets the user without an HTTP call', () => {
+  it('clearSession resets the user and the session hint without an HTTP call', () => {
+    localStorage.setItem('has_session', '1');
     service.restoreSession().subscribe();
     httpMock.expectOne(`${environment.apiUrl}/auth/me`).flush(user);
     expect(service.isLoggedIn()).toBe(true);
@@ -89,5 +113,6 @@ describe('AuthService', () => {
 
     expect(service.isLoggedIn()).toBe(false);
     expect(service.currentUser()).toBeNull();
+    expect(localStorage.getItem('has_session')).toBeNull();
   });
 });

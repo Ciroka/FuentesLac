@@ -41,7 +41,13 @@ describe('WeeklyChart', () => {
     component = fixture.componentInstance;
     themeService = TestBed.inject(ThemeService);
 
-    const today = new Date().toISOString().slice(0, 10);
+    // Fecha local (no toISOString(), que es UTC): el componente compara "hoy" en
+    // el huso horario local, así que el fixture tiene que armar la misma fecha
+    // que él espera. Con UTC, este test fallaba en cualquier huso horario negativo
+    // durante la ventana en la que la fecha UTC ya rodó al día siguiente respecto
+    // de la fecha local (ej. 21:00-23:59 en Argentina, UTC-3).
+    const now = new Date();
+    const today = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
     fixture.componentRef.setInput('days', [{ date: today, total: 10 }]);
     fixture.detectChanges();
   });
