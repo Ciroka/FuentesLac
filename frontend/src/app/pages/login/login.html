@@ -26,8 +26,13 @@
           <mat-form-field appearance="outline" class="full-width stagger-1">
             <mat-label>Email</mat-label>
             <input id="email" matInput type="email" [(ngModel)]="email" name="email" required email
-                   placeholder="ejemplo@correo.com" />
+                   placeholder="ejemplo@correo.com" #emailModel="ngModel" />
             <mat-icon matPrefix>email</mat-icon>
+            @if (emailModel.hasError('required')) {
+              <mat-error aria-live="polite">Ingresá tu email</mat-error>
+            } @else if (emailModel.hasError('email')) {
+              <mat-error aria-live="polite">Ese email no es válido</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline" class="full-width stagger-2">
@@ -35,12 +40,15 @@
             <input id="password" matInput
                    [type]="showPassword() ? 'text' : 'password'"
                    [(ngModel)]="password" name="password" required
-                   placeholder="••••••••" />
+                   placeholder="••••••••" #passwordModel="ngModel" />
             <mat-icon matPrefix>lock</mat-icon>
             <button mat-icon-button matSuffix type="button" class="password-toggle" (click)="togglePassword()"
                     [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'">
               <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
             </button>
+            @if (passwordModel.hasError('required')) {
+              <mat-error aria-live="polite">Ingresá tu contraseña</mat-error>
+            }
           </mat-form-field>
 
           <button mat-raised-button color="primary" type="submit"
