@@ -86,3 +86,17 @@
 .chip-ok { background: var(--success-soft); color: var(--color-success); }
 .chip-warn { background: var(--warning-soft); color: var(--color-warning); }
 .chip-danger { background: var(--danger-soft); color: var(--color-danger); }
+
+@media (max-width: 420px) {
+  .stock-row {
+    grid-template-columns: 1fr auto;
+    grid-template-areas:
+      "info chip"
+      "bar bar";
+    row-gap: 6px;
+  }
+
+  .stock-info { grid-area: info; }
+  .chip-status { grid-area: chip; justify-self: end; }
+  .stock-bar-container { grid-area: bar; }
+}

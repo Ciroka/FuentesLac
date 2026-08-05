@@ -66,6 +66,10 @@
     mat-form-field {
       min-width: 100%;
       width: 100%;
+      // El flex-basis de 220px del bloque desktop está pensado para el eje
+      // horizontal (flex-direction: row); en columna se aplicaría a la
+      // altura si no se resetea acá.
+      flex-basis: auto;
     }
 
     button {

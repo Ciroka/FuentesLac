@@ -26,6 +26,7 @@ import { Supply } from '../../models/supply.model';
 import { Product } from '../../models/product.model';
 import { AuthUser, UserRole } from '../../models/auth.model';
 import { AuditLog } from '../../models/audit-log.model';
+import { FormErrorPipe } from '../../shared/pipes/form-error.pipe';
 
 @Component({
   selector: 'app-admin',
@@ -33,7 +34,7 @@ import { AuditLog } from '../../models/audit-log.model';
   imports: [
     CommonModule, FormsModule, Navbar,
     MatTabsModule, MatFormFieldModule, MatInputModule, MatSelectModule, MatOptionModule,
-    MatButtonModule, MatIconModule, MatTableModule, MatCheckboxModule,
+    MatButtonModule, MatIconModule, MatTableModule, MatCheckboxModule, FormErrorPipe,
   ],
   templateUrl: './admin.html',
   styleUrl: './admin.scss',

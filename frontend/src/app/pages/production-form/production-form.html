@@ -37,8 +37,9 @@
               </mat-form-field>
 
               <mat-form-field appearance="outline" class="line-qty">
-                <mat-label>Cantidad producida</mat-label>
+                <mat-label>Cantidad producida (unidades)</mat-label>
                 <input matInput type="number" min="1" [(ngModel)]="line.quantity" #qtyModel="ngModel">
+                <mat-hint>Total de unidades de este lote</mat-hint>
                 @if (qtyModel.hasError('min')) {
                   <mat-error aria-live="polite">La cantidad tiene que ser mayor a 0</mat-error>
                 }
@@ -74,8 +75,9 @@
                   </mat-form-field>
 
                   <mat-form-field appearance="outline" class="supply-qty">
-                    <mat-label>Cantidad</mat-label>
+                    <mat-label>Cantidad consumida</mat-label>
                     <input matInput type="number" min="1" [max]="getSupply(s.supplyId)?.currentStock ?? null" [(ngModel)]="s.quantity" #supplyQtyModel="ngModel">
+                    <mat-hint>Unidad del stock: {{ getSupply(s.supplyId)?.name ?? 'este insumo' }}</mat-hint>
                     @if (supplyQtyModel.hasError('max')) {
                       <mat-error aria-live="polite">No hay stock suficiente: quedan {{ getSupply(s.supplyId)?.currentStock }}</mat-error>
                     } @else if (supplyQtyModel.hasError('min')) {

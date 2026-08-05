@@ -20,6 +20,7 @@ import { MatOptionModule } from '@angular/material/core';
 import { MatButtonModule } from '@angular/material/button';
 import { MatButtonToggleModule } from '@angular/material/button-toggle';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { FormErrorPipe } from '../../shared/pipes/form-error.pipe';
 
 interface SaleItemRow {
   productId: number | null;
@@ -39,7 +40,7 @@ const ALLOWED_PHOTO_TYPES = ['image/jpeg', 'image/png', 'image/webp'];
     Navbar, CommonModule, FormsModule, RouterLink,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
     MatSelectModule, MatOptionModule, MatButtonModule, MatButtonToggleModule,
-    MatProgressSpinnerModule,
+    MatProgressSpinnerModule, FormErrorPipe,
   ],
   templateUrl: './sale-form.html',
   styleUrl: './sale-form.scss',
