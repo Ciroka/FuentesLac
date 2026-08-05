@@ -17,31 +17,46 @@
         <form class="admin-form" (ngSubmit)="submitSupply(supplyForm)" #supplyForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
-            <input matInput [(ngModel)]="newSupply.name" name="supplyName" required />
+            <input matInput [(ngModel)]="newSupply.name" name="supplyName" required #supplyNameModel="ngModel" />
+            @if (supplyNameModel.invalid && supplyNameModel.touched) {
+              <mat-error>{{ supplyNameModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Precio de costo</mat-label>
-            <input matInput type="number" [(ngModel)]="newSupply.costPrice" name="supplyCostPrice" required min="0" />
+            <input matInput type="number" [(ngModel)]="newSupply.costPrice" name="supplyCostPrice" required min="0.01" #supplyCostPriceModel="ngModel" />
+            @if (supplyCostPriceModel.invalid && supplyCostPriceModel.touched) {
+              <mat-error>{{ supplyCostPriceModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Stock actual</mat-label>
-            <input matInput type="number" [(ngModel)]="newSupply.currentStock" name="supplyCurrentStock" min="0" />
+            <input matInput type="number" [(ngModel)]="newSupply.currentStock" name="supplyCurrentStock" min="0" #supplyCurrentStockModel="ngModel" />
+            @if (supplyCurrentStockModel.invalid && supplyCurrentStockModel.touched) {
+              <mat-error>{{ supplyCurrentStockModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Stock mínimo</mat-label>
-            <input matInput type="number" [(ngModel)]="newSupply.minStock" name="supplyMinStock" required min="0" />
+            <input matInput type="number" [(ngModel)]="newSupply.minStock" name="supplyMinStock" required min="0" #supplyMinStockModel="ngModel" />
+            @if (supplyMinStockModel.invalid && supplyMinStockModel.touched) {
+              <mat-error>{{ supplyMinStockModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Proveedor</mat-label>
-            <mat-select [(ngModel)]="newSupply.supplierId" name="supplySupplierId" required>
+            <mat-select [(ngModel)]="newSupply.supplierId" name="supplySupplierId" required #supplySupplierIdModel="ngModel">
               @for (sup of suppliers; track sup.id) {
                 <mat-option [value]="sup.id">{{ sup.name }}</mat-option>
               }
             </mat-select>
+            @if (supplySupplierIdModel.invalid && supplySupplierIdModel.touched) {
+              <mat-error>{{ supplySupplierIdModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-checkbox [(ngModel)]="newSupply.isMilk" name="supplyIsMilk">Es leche</mat-checkbox>
@@ -130,27 +145,42 @@
         <form class="admin-form" (ngSubmit)="submitSupplier(supplierForm)" #supplierForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
-            <input matInput [(ngModel)]="newSupplier.name" name="supplierName" required />
+            <input matInput [(ngModel)]="newSupplier.name" name="supplierName" required #supplierNameModel="ngModel" />
+            @if (supplierNameModel.invalid && supplierNameModel.touched) {
+              <mat-error>{{ supplierNameModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Teléfono</mat-label>
-            <input matInput [(ngModel)]="newSupplier.phone" name="supplierPhone" required />
+            <input matInput [(ngModel)]="newSupplier.phone" name="supplierPhone" required #supplierPhoneModel="ngModel" />
+            @if (supplierPhoneModel.invalid && supplierPhoneModel.touched) {
+              <mat-error>{{ supplierPhoneModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
-            <input matInput type="email" [(ngModel)]="newSupplier.email" name="supplierEmail" required email />
+            <input matInput type="email" [(ngModel)]="newSupplier.email" name="supplierEmail" required email #supplierEmailModel="ngModel" />
+            @if (supplierEmailModel.invalid && supplierEmailModel.touched) {
+              <mat-error>{{ supplierEmailModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Dirección</mat-label>
-            <input matInput [(ngModel)]="newSupplier.address" name="supplierAddress" required />
+            <input matInput [(ngModel)]="newSupplier.address" name="supplierAddress" required #supplierAddressModel="ngModel" />
+            @if (supplierAddressModel.invalid && supplierAddressModel.touched) {
+              <mat-error>{{ supplierAddressModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>CUIT</mat-label>
-            <input matInput [(ngModel)]="newSupplier.cuit" name="supplierCuit" required />
+            <input matInput [(ngModel)]="newSupplier.cuit" name="supplierCuit" required #supplierCuitModel="ngModel" />
+            @if (supplierCuitModel.invalid && supplierCuitModel.touched) {
+              <mat-error>{{ supplierCuitModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <button mat-raised-button color="primary" type="submit" [disabled]="supplierForm.invalid || savingSupplier()">
@@ -226,27 +256,42 @@
         <form class="admin-form" (ngSubmit)="submitProduct(productForm)" #productForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
-            <input matInput [(ngModel)]="newProduct.name" name="productName" required />
+            <input matInput [(ngModel)]="newProduct.name" name="productName" required #productNameModel="ngModel" />
+            @if (productNameModel.invalid && productNameModel.touched) {
+              <mat-error>{{ productNameModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Precio de costo</mat-label>
-            <input matInput type="number" [(ngModel)]="newProduct.costPrice" name="productCostPrice" required min="0" />
+            <input matInput type="number" [(ngModel)]="newProduct.costPrice" name="productCostPrice" required min="0.01" #productCostPriceModel="ngModel" />
+            @if (productCostPriceModel.invalid && productCostPriceModel.touched) {
+              <mat-error>{{ productCostPriceModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Precio de venta</mat-label>
-            <input matInput type="number" [(ngModel)]="newProduct.salePrice" name="productSalePrice" min="0" />
+            <input matInput type="number" [(ngModel)]="newProduct.salePrice" name="productSalePrice" min="0" #productSalePriceModel="ngModel" />
+            @if (productSalePriceModel.invalid && productSalePriceModel.touched) {
+              <mat-error>{{ productSalePriceModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Margen</mat-label>
-            <input matInput type="number" step="0.01" [(ngModel)]="newProduct.marginPercent" name="productMargin" min="0" />
+            <input matInput type="number" step="0.01" [(ngModel)]="newProduct.marginPercent" name="productMargin" min="0" #productMarginModel="ngModel" />
+            @if (productMarginModel.invalid && productMarginModel.touched) {
+              <mat-error>{{ productMarginModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Stock mínimo</mat-label>
-            <input matInput type="number" [(ngModel)]="newProduct.minStock" name="productMinStock" required min="0" />
+            <input matInput type="number" [(ngModel)]="newProduct.minStock" name="productMinStock" required min="0" #productMinStockModel="ngModel" />
+            @if (productMinStockModel.invalid && productMinStockModel.touched) {
+              <mat-error>{{ productMinStockModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
@@ -342,7 +387,10 @@
         <form class="admin-form" (ngSubmit)="submitCategory(categoryForm)" #categoryForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
-            <input matInput [(ngModel)]="newCategory.name" name="categoryName" required />
+            <input matInput [(ngModel)]="newCategory.name" name="categoryName" required #categoryNameModel="ngModel" />
+            @if (categoryNameModel.invalid && categoryNameModel.touched) {
+              <mat-error>{{ categoryNameModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
@@ -413,17 +461,26 @@
         <form class="admin-form" (ngSubmit)="createAccount(accountForm)" #accountForm="ngForm">
           <mat-form-field appearance="outline">
             <mat-label>Nombre</mat-label>
-            <input matInput [(ngModel)]="newAccount.name" name="accountName" required />
+            <input matInput [(ngModel)]="newAccount.name" name="accountName" required #accountNameModel="ngModel" />
+            @if (accountNameModel.invalid && accountNameModel.touched) {
+              <mat-error>{{ accountNameModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Email</mat-label>
-            <input matInput type="email" [(ngModel)]="newAccount.email" name="accountEmail" required email />
+            <input matInput type="email" [(ngModel)]="newAccount.email" name="accountEmail" required email #accountEmailModel="ngModel" />
+            @if (accountEmailModel.invalid && accountEmailModel.touched) {
+              <mat-error>{{ accountEmailModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <mat-form-field appearance="outline">
             <mat-label>Contraseña</mat-label>
-            <input matInput type="password" [(ngModel)]="newAccount.password" name="accountPassword" required minlength="8" />
+            <input matInput type="password" [(ngModel)]="newAccount.password" name="accountPassword" required minlength="8" #accountPasswordModel="ngModel" />
+            @if (accountPasswordModel.invalid && accountPasswordModel.touched) {
+              <mat-error>{{ accountPasswordModel.errors | formError }}</mat-error>
+            }
           </mat-form-field>
 
           <button mat-raised-button color="primary" type="submit" [disabled]="accountForm.invalid || savingAccount()">

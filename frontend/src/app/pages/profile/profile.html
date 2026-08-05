@@ -57,8 +57,10 @@
 
           <mat-form-field appearance="outline">
             <mat-label>Repetir contraseña nueva</mat-label>
-            <input matInput type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required autocomplete="new-password" />
-            @if (passwordsMismatch) {
+            <input matInput type="password" [(ngModel)]="confirmPassword" name="confirmPassword" required autocomplete="new-password" #confirmPasswordModel="ngModel" />
+            @if (confirmPasswordModel.hasError('required') && confirmPasswordModel.touched) {
+              <mat-error aria-live="polite">{{ confirmPasswordModel.errors | formError }}</mat-error>
+            } @else if (passwordsMismatch) {
               <mat-error>Las contraseñas no coinciden</mat-error>
             }
           </mat-form-field>

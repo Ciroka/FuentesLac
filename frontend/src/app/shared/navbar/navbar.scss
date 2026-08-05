@@ -68,7 +68,7 @@
         white-space: nowrap;
         border-radius: var(--radius-sm);
         padding: 6px 8px;
-        transition: all 0.15s ease;
+        transition: color 0.15s ease, background-color 0.15s ease;
 
         mat-icon {
             width: 38px;
@@ -232,7 +232,7 @@
     cursor: pointer;
     color: var(--ink-dim);
     margin-left: 12px;
-    transition: all 0.15s ease;
+    transition: color 0.15s ease, border-color 0.15s ease, background-color 0.15s ease;
 
     mat-icon {
         font-size: 18px;

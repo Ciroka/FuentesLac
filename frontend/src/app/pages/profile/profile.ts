@@ -9,6 +9,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
 import { toast } from 'ngx-sonner';
+import { FormErrorPipe } from '../../shared/pipes/form-error.pipe';
 
 @Component({
   selector: 'app-profile',
@@ -16,7 +17,7 @@ import { toast } from 'ngx-sonner';
   imports: [
     Navbar, CommonModule, FormsModule,
     MatCardModule, MatFormFieldModule, MatInputModule, MatIconModule,
-    MatButtonModule,
+    MatButtonModule, FormErrorPipe,
   ],
   templateUrl: './profile.html',
   styleUrl: './profile.scss',

@@ -36,23 +36,38 @@
           <div class="grid grid-3 new-client-grid">
             <mat-form-field appearance="outline">
               <mat-label>Nombre</mat-label>
-              <input matInput [(ngModel)]="newClient.name">
+              <input matInput [(ngModel)]="newClient.name" required #newClientNameModel="ngModel">
+              @if (newClientNameModel.invalid && newClientNameModel.touched) {
+                <mat-error>{{ newClientNameModel.errors | formError }}</mat-error>
+              }
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Apellido</mat-label>
-              <input matInput [(ngModel)]="newClient.lastName">
+              <input matInput [(ngModel)]="newClient.lastName" required #newClientLastNameModel="ngModel">
+              @if (newClientLastNameModel.invalid && newClientLastNameModel.touched) {
+                <mat-error>{{ newClientLastNameModel.errors | formError }}</mat-error>
+              }
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Teléfono</mat-label>
-              <input matInput [(ngModel)]="newClient.phone">
+              <input matInput [(ngModel)]="newClient.phone" required #newClientPhoneModel="ngModel">
+              @if (newClientPhoneModel.invalid && newClientPhoneModel.touched) {
+                <mat-error>{{ newClientPhoneModel.errors | formError }}</mat-error>
+              }
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>CUIT</mat-label>
-              <input matInput [(ngModel)]="newClient.cuit">
+              <input matInput [(ngModel)]="newClient.cuit" required #newClientCuitModel="ngModel">
+              @if (newClientCuitModel.invalid && newClientCuitModel.touched) {
+                <mat-error>{{ newClientCuitModel.errors | formError }}</mat-error>
+              }
             </mat-form-field>
             <mat-form-field appearance="outline">
               <mat-label>Email</mat-label>
-              <input matInput type="email" [(ngModel)]="newClient.email">
+              <input matInput type="email" [(ngModel)]="newClient.email" required email #newClientEmailModel="ngModel">
+              @if (newClientEmailModel.invalid && newClientEmailModel.touched) {
+                <mat-error>{{ newClientEmailModel.errors | formError }}</mat-error>
+              }
             </mat-form-field>
           </div>
         }
@@ -91,7 +106,7 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="item-qty">
-              <mat-label>Cantidad</mat-label>
+              <mat-label>Cantidad (unidades)</mat-label>
               <input matInput type="number" min="1" [max]="getBatch(row.batchId)?.currentStock ?? null" [(ngModel)]="row.quantity" #qtyModel="ngModel">
               @if (qtyModel.hasError('max')) {
                 <mat-error aria-live="polite">No podés vender más de {{ getBatch(row.batchId)?.currentStock }} unidades de este lote</mat-error>
@@ -101,8 +116,9 @@
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="item-weight">
-              <mat-label>Peso (kg)</mat-label>
+              <mat-label>Peso total (kg)</mat-label>
               <input matInput type="number" min="0" step="0.01" [(ngModel)]="row.weight">
+              <mat-hint>{{ row.quantity ? ('Peso de las ' + row.quantity + ' unidades juntas') : 'Peso de todas las unidades juntas' }}</mat-hint>
             </mat-form-field>
 
             <mat-form-field appearance="outline" class="item-price">
