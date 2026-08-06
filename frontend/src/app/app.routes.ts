@@ -28,6 +28,11 @@ export const routes: Routes = [
       import('./pages/reset-password/reset-password').then((m) => m.ResetPasswordPage),
   },
   {
+    // sin guard: accesible con o sin sesión iniciada
+    path: 'legal',
+    loadComponent: () => import('./pages/legal/legal').then((m) => m.Legal),
+  },
+  {
     path: '',
     canActivateChild: [authGuard],
     children: [
